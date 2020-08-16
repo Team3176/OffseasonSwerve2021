@@ -2,8 +2,8 @@ package frc.robot.constants;
 
 public class ControllerConstants {
     // ID values for joysticks and buttons
-    public static final int SPEED_STICK_ID = 0;
-    public static final int ROT_STICK_ID = 1;
+    public static final int DRIVE_STICK_ID = 0; //Left side
+    public static final int SPIN_STICK_ID = 1;  //Right side
     public static final int OPERATOR_ID = 2;
 
     // Multipliers and other constants for Controller logic

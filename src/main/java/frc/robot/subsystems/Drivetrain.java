@@ -34,7 +34,7 @@ public class Drivetrain extends SubsystemBase {
   //private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
   //    DrivetrainConstants.TRACK_WIDTH);
 
-  private final DifferentialDriveOdometry odometry;
+  //private final DifferentialDriveOdometry odometry;
 
   public Drivetrain() {
     gyro.reset();
@@ -47,6 +47,10 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+  }
+
+  public void drive() {
+    SmartDashboard.putBoolean("Are we calling drive", true);
   }
 
   /*
