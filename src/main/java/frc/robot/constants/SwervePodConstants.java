@@ -16,4 +16,5 @@ package frc.robot.constants;
  * constants are needed, to reduce verbosity.
  */
 public final class SwervePodConstants {
+    public static final double TEMP_JOYSTICK_MIN_MAX = 2.827433;
 }

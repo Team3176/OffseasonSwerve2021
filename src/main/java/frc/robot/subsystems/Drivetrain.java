@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -30,6 +32,8 @@ public class Drivetrain extends SubsystemBase {
   private static Drivetrain instance = new Drivetrain();
 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+  private final SwervePod pod;
+
 
   //private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
   //    DrivetrainConstants.TRACK_WIDTH);
@@ -38,6 +42,7 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain() {
     gyro.reset();
+    pod = new SwervePod();
     //odometry = new DifferentialDriveOdometry(getAngle());
   }
   
@@ -49,8 +54,9 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
   }
 
-  public void drive() {
+  public void drive(double drivePercent, double spinPercent) {
     SmartDashboard.putBoolean("Are we calling drive", true);
+    pod.driveNSpinPercentControl(drivePercent, spinPercent);
   }
 
   /*

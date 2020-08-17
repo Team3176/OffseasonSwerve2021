@@ -39,7 +39,7 @@ public class Controller {
         SmartDashboard.putNumber("test", test);
         SmartDashboard.putNumber("Drive Stick x", getStickAxis(driveStick, 0));
         SmartDashboard.putNumber("Drive Stick y", getStickAxis(driveStick, 1));
-        return test;
+        return getStickAxis(driveStick, 1);
 
     }
 
@@ -50,7 +50,7 @@ public class Controller {
     }
 
     /**
-     * Takes an input stick and its axis and returns a modified value with deadbanding
+     * Takes an input stick and its axis and returns a modified value with deadbands
      * 
      * @param stick The joystick you want to get an axis from
      * @param axisId 0 for the x-axis and 1 for the y-axis
