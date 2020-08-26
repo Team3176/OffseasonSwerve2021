@@ -23,8 +23,6 @@ public class ArcadeDrive extends CommandBase {
     // Calls the universal drive function of Drivetrain and passes it a ChassisSpeeds object that has been created with the desired linear and rotational speeds
     //m_Drivetrain.drive(new ChassisSpeeds(ySpeed.getAsDouble(), 0.0, rotSpeed.getAsDouble()));
 
-
-
     m_Drivetrain.drive(this.ySpeed.getAsDouble(), this.rotSpeed.getAsDouble());
     SmartDashboard.putNumber("Drive Stick y", ySpeed.getAsDouble());
     SmartDashboard.putNumber("Spin Stick y", rotSpeed.getAsDouble());

@@ -16,5 +16,24 @@ package frc.robot.constants;
  * constants are needed, to reduce verbosity.
  */
 public final class SwervePodConstants {
+    
     public static final double TEMP_JOYSTICK_MIN_MAX = 2.827433;
+
+    public static final double WHEEL_DIAMETER = 3.25; //Inches
+
+    //FUTURE CLEANING: Turn these random, hard coded ratios into constants
+    public static final double FPS_2_RPM = 12.0 * (1.0/(WHEEL_DIAMETER*Math.PI)) * (48.0/30.0) * (54.0/17.0) * 16.0;
+    public static final double REV_2_FT = (17.0/54.0) * (30.0/48.0) * (WHEEL_DIAMETER*Math.PI) * (1.0/12.0);
+
+    public static final double[] DRIVE_PID_OFFSEASON = {
+        /* kP */    0.000095,
+        /* kI */    0.0000009325,
+        /* kD */    0.0,
+        /* kF */    0.0,    //Feed forward gain constant
+        /* I-Zne */ 0.0     //The range of error for kI to take affect (like a reverse deadband)
+    };
+
+    public static final int DRIVE_CURRENT_LIMIT = 40;
+
+    public static final double DRIVE_RAMP_RATE = 0.2;
 }
