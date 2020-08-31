@@ -17,7 +17,7 @@ package frc.robot.constants;
  */
 public final class SwervePodConstants {
     
-    public static final double TEMP_JOYSTICK_MIN_MAX = 2.827433;
+    public static final double TEMP_JOYSTICK_MIN_MAX = 2.827433; //Should not be in this class
 
     public static final double WHEEL_DIAMETER = 3.25; //Inches
 

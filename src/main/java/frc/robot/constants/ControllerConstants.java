@@ -7,7 +7,8 @@ public class ControllerConstants {
     public static final int OPERATOR_ID = 2;
 
     // Multipliers and other constants for Controller logic
-    public static final double DEADBAND = .1;
+    public static final double DEADBAND = 0.1;
     public static final double SLOW_SPEED_MULT = 0.5;
     public static final double SLOW_ROT_MULT = 0.5;
+    public static final double TEMP_JOYSTICK_MIN_MAX = 2.827433;
 }

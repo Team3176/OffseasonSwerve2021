@@ -56,13 +56,16 @@ public class Controller {
      * @param axisId 0 for the x-axis and 1 for the y-axis
     *  @return The modified output of the stick and its given axis
     */
-    public double getStickAxis(Joystick stick, int axisId) { 
+    public double getStickAxis(Joystick stick, int axisId) {         
         double stickAxisOutput = 0;
         if(axisId == 0) {
             stickAxisOutput = stick.getX();
         } else if(axisId == 1) {
             stickAxisOutput = stick.getY();
         }
+        //Normalizes stickAxisOutput so that its -1 to 1
+        stickAxisOutput /= ControllerConstants.TEMP_JOYSTICK_MIN_MAX; 
+
         if(!stick.getRawButton(1)){
             // Adds in deadband logic
             if (Math.abs(stickAxisOutput) < ControllerConstants.DEADBAND) {

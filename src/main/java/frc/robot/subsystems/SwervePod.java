@@ -63,8 +63,8 @@ public class SwervePod {
     *******************/
 
     public void driveNSpinPercentControl(double drivePercent, double spinPercent) {
-        driveMotorPercentControl(-drivePercent / SwervePodConstants.TEMP_JOYSTICK_MIN_MAX);
-        spinMotorPercentControl(spinPercent / SwervePodConstants.TEMP_JOYSTICK_MIN_MAX);
+        driveMotorPercentControl(-drivePercent);
+        spinMotorPercentControl(spinPercent);
     }
 
     public void driveMotorPercentControl(double percent) {
