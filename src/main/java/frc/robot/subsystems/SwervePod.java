@@ -62,16 +62,16 @@ public class SwervePod {
     FEED FORWARD METHODS
     *******************/
 
-    public void driveNSpinPercentControl(double drivePercent, double spinPercent) {
-        driveMotorPercentControl(-drivePercent);
-        spinMotorPercentControl(spinPercent);
+    public void percentControlDriveNSpin(double drivePercent, double spinPercent) {
+        percentControlDriveMotor(-drivePercent);
+        percentControlSpinMotor(spinPercent);
     }
 
-    public void driveMotorPercentControl(double percent) {
+    public void percentControlDriveMotor(double percent) {
         driveMotor.set(percent);
     }
 
-    public void spinMotorPercentControl(double percent) {
+    public void percentControlSpinMotor(double percent) {
         spinMotor.set(ControlMode.PercentOutput, percent);
     }
 
@@ -79,20 +79,20 @@ public class SwervePod {
     PID METHODS
     ***********/
 
-    public void setPodDriveNSpin(double driveSpeed, double angle) {
-        setPodDrive(driveSpeed);
-        //setPodSpin(angle);
+    public void rpmControlDriveNSpin(double driveSpeed, double angle) {
+        rpmControlDrive(driveSpeed);
+        //rpmControlSpin(angle);
     }
 
     /**
      * @param driveSpeed The velocity value from 0 to 13 feet per second
      */
-    public void setPodDrive(double driveSpeed) {
+    public void rpmControlDrive(double driveSpeed) {
         double velocitySetPoint = driveSpeed * fps2rpm;
         driveController.setReference(velocitySetPoint, ControlType.kVelocity);
     }
 
-    public void setPodSpin(double angle) {
+    public void rpmControlSpin(double angle) {
         
     }
 
