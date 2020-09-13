@@ -35,18 +35,17 @@ public class Controller {
 
     // Gets the joystick speed input for normal arcade drive
     public double getArcadeDriveSpeed() {
-        double test = Math.sqrt(Math.pow(getStickAxis(driveStick, 0),2) + Math.pow(getStickAxis(driveStick, 1),2));
+        double test = Math.sqrt(Math.pow(getStickAxis(driveStick, 0), 2) + Math.pow(getStickAxis(driveStick, 1), 2));
         SmartDashboard.putNumber("test", test);
         SmartDashboard.putNumber("Drive Stick x", getStickAxis(driveStick, 0));
         SmartDashboard.putNumber("Drive Stick y", getStickAxis(driveStick, 1));
         return getStickAxis(driveStick, 1);
-
     }
 
     // Gets the joystick rotation input for normal arcade drive
     public double getArcadeDriveRot() {
-        SmartDashboard.putNumber("Spin Stick y", getStickAxis(spinStick, 1));
-        return getStickAxis(spinStick, 1);
+        SmartDashboard.putNumber("Spin Stick x", getStickAxis(spinStick, 0));
+        return getStickAxis(spinStick, 0);
     }
 
     /**

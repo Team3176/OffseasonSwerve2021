@@ -109,9 +109,11 @@ public class SwervePod {
     PID METHODS
     ***********/
 
-    public void velocityPIDDriveNSpin(double driveSpeed, double angle) {
+    public void velocityPIDDriveNSpin(double drivePercent, double angle) {
+        double driveSpeed = drivePercent * SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
+        angle = angle * 2 * PI;
         velocityPIDDrive(driveSpeed);
-        //velocityPIDSpin(angle);
+        velocityPIDSpin(driveSpeed, angle);
     }
 
     /**
@@ -124,8 +126,8 @@ public class SwervePod {
         //(Max speed / max joystick) * input
     }
 
-    public void velocityPIDSpin(double angle, double driveSpeed) {
-        double velocitySetPoint = driveSpeed * fps2rpm;
+    public void velocityPIDSpin(double driveSpeed, double angle) {
+        double velocitySetPoint = driveSpeed * fps2rpm;   
         double encoderSetPoint = calcSpinPos(angle);
         
         if(driveSpeed != 0) {
@@ -143,7 +145,7 @@ public class SwervePod {
      */
     private double calcSpinPos(double angle) {
         double encoderPos = spinMotor.getSelectedSensorPosition(0) - kAbsoluteOffsets[id];
-        double radianPos = encoderUnits2Radians(encoderPos);
+        double radianPos = encoderTics2Radians(encoderPos);
         radianError = angle - radianPos;
 
         if(Math.abs(radianError) > (5 * (PI / 2))) {
@@ -155,7 +157,7 @@ public class SwervePod {
             velocitySetpoint = -velocitySetpoint;
         }
 
-        encoderError = radian2EncoderUnits(radianError);
+        encoderError = radian2EncoderTics(radianError);
         driveCommand = encoderError + encoderPos + kAbsoluteOffsets[id];
         return driveCommand;
     }
@@ -171,18 +173,18 @@ public class SwervePod {
         return (tics % 4096) * (360.0 / 4096);
     }
 
-    private double radian2EncoderUnits(double radians) {
+    private double radian2EncoderTics(double radians) {
         double encoderUnits = (radians / (2 * PI)) * kEncoderUnits;
         return encoderUnits;
     }
 
-    private double encoderUnits2Radians(double encoderUnits) {
-        encoderUnits = encoderUnits % kEncoderUnits;
-        if(encoderUnits < 0) {
-            encoderUnits += kEncoderUnits;
+    private double encoderTics2Radians(double encoderTics) {
+        encoderTics = encoderTics % kEncoderUnits;
+        if(encoderTics < 0) {
+            encoderTics += encoderTics;
         }
-        encoderUnits -= (kEncoderUnits / 2);
-        double angle = (encoderUnits / kEncoderUnits) * (2 * PI);
+        encoderTics -= (kEncoderUnits / 2);
+        double angle = (encoderTics / kEncoderUnits) * (2 * PI);
         return angle;
     }
 }

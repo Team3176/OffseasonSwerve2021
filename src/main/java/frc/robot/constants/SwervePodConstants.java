@@ -23,7 +23,6 @@ public final class SwervePodConstants {
 
     public static final double ENCODER_UNITS = 4096;
 
-    //FUTURE CLEANING: Turn these random, hard coded ratios into constants
     public static final double REV_2_FT = DRIVE_GEAR_RATIO * UNKNOWN_GEAR_RATIO * (WHEEL_DIAMETER*Math.PI) * (1.0/12.0);
     public static final double FPS_2_RPM = (1.0/REV_2_FT) * 16.0;
     //public static final double FPS_2_RPM = ((1.0/DRIVE_GEAR_RATIO)* (1.0/UNKNOWN_GEAR_RATIO) * (1.0/(WHEEL_DIAMETER*Math.PI)))  * 12.0 * 16.0;
@@ -48,4 +47,5 @@ public final class SwervePodConstants {
 
     public static final int DRIVE_CURRENT_LIMIT = 40;
     public static final double DRIVE_RAMP_RATE = 0.2;
+    public static final double DRIVE_SPEED_MAX_EMPIRICAL_FPS = 13.0;
 }

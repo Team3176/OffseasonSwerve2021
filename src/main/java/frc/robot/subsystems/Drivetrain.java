@@ -55,7 +55,8 @@ public class Drivetrain extends SubsystemBase {
 
   public void drive(double drivePercent, double spinPercent) {
     SmartDashboard.putBoolean("Are we calling drive", true);
-    pod1.percentFFDriveNSpin(drivePercent, spinPercent);
+    pod1.velocityPIDDriveNSpin(drivePercent, spinPercent);
+    //pod1.percentFFDriveNSpin(drivePercent, spinPercent);
     /*
     if(drivePercent > 1.4) {
       pod.velocityPIDDriveNSpin(5.0, 0.0);
