@@ -32,8 +32,7 @@ public class Drivetrain extends SubsystemBase {
   private static Drivetrain instance = new Drivetrain();
 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-  private final SwervePod pod;
-
+  private final SwervePod pod1;
 
   //private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
   //    DrivetrainConstants.TRACK_WIDTH);
@@ -42,7 +41,7 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain() {
     gyro.reset();
-    pod = new SwervePod();
+    pod1 = new SwervePod(1);
     //odometry = new DifferentialDriveOdometry(getAngle());
   }
   
@@ -56,12 +55,12 @@ public class Drivetrain extends SubsystemBase {
 
   public void drive(double drivePercent, double spinPercent) {
     SmartDashboard.putBoolean("Are we calling drive", true);
-    pod.percentControlDriveNSpin(drivePercent, spinPercent);
+    pod1.percentFFDriveNSpin(drivePercent, spinPercent);
     /*
     if(drivePercent > 1.4) {
-      pod.rpmControlDriveNSpin(5.0, 0.0);
+      pod.velocityPIDDriveNSpin(5.0, 0.0);
     } else {
-      pod.rpmControlDriveNSpin(0.0, 0.0);
+      pod.velocityPIDDriveNSpin(0.0, 0.0);
     }
     */
   }

@@ -24,9 +24,33 @@ public class SwervePod {
     private CANEncoder driveEncoder;
     private CANPIDController driveController;
 
+    //Class constants
     private double fps2rpm = SwervePodConstants.FPS_2_RPM;
+    private double PI = Math.PI;
+    private double kEncoderUnits = SwervePodConstants.ENCODER_UNITS;
+    private double[] kAbsoluteOffsets = SwervePodConstants.OFFSETS;
+    private double gearRatio = SwervePodConstants.DRIVE_GEAR_RATIO;
+
+    //All measured in encoder units
+    private double lastEncoderPosition; //Previous position
+    private double encoderPosition; //Current position
+    private double encoderError; //Error
+
+    //All measured in radians
+    private double radianPosition; //Current position
+    private double radianError; //Error
+
+    private double driveCommand;
+    private double encoderSetpoint;
+    private double velocitySetpoint;
+
+    private int id;
     
-    public SwervePod() {
+    public SwervePod(int id/*,CANSparkMax driveMotor, TalonSRX spinMotor;*/) {
+        this.id = id;
+        //this.driveMotor = driveMotor
+        //this.spinMotor = spinMotor
+        
         driveMotor = new CANSparkMax(1, MotorType.kBrushless);
         spinMotor = new TalonSRX(2);
         driveEncoder = driveMotor.getEncoder();
@@ -36,11 +60,17 @@ public class SwervePod {
         SmartDashboard.putNumber("kP", 0);
 
         //Set up driveMotor PID
-        driveController.setP(SwervePodConstants.DRIVE_PID_OFFSEASON[0]);
-        driveController.setI(SwervePodConstants.DRIVE_PID_OFFSEASON[1]);
-        driveController.setD(SwervePodConstants.DRIVE_PID_OFFSEASON[2]);
-        driveController.setFF(SwervePodConstants.DRIVE_PID_OFFSEASON[3]);
-        driveController.setIZone(SwervePodConstants.DRIVE_PID_OFFSEASON[4]);
+        driveController.setP(SwervePodConstants.DRIVE_PID_OFFSEASON_OFFSETS[0]);
+        driveController.setI(SwervePodConstants.DRIVE_PID_OFFSEASON_OFFSETS[1]);
+        driveController.setD(SwervePodConstants.DRIVE_PID_OFFSEASON_OFFSETS[2]);
+        driveController.setFF(SwervePodConstants.DRIVE_PID_OFFSEASON_OFFSETS[3]);
+        driveController.setIZone(SwervePodConstants.DRIVE_PID_OFFSEASON_OFFSETS[4]);
+
+        //Set up steerMotor PID
+        spinMotor.config_kP(0, SwervePodConstants.SPIN_PID_CONFIG[0][id], 0);
+        spinMotor.config_kI(0, SwervePodConstants.SPIN_PID_CONFIG[1][id], 0);
+        spinMotor.config_kD(0, SwervePodConstants.SPIN_PID_CONFIG[2][id], 0);
+        spinMotor.config_kF(0, SwervePodConstants.SPIN_PID_CONFIG[3][id], 0);
 
         //Brownout Prevention
         driveMotor.setSmartCurrentLimit(SwervePodConstants.DRIVE_CURRENT_LIMIT);
@@ -62,16 +92,16 @@ public class SwervePod {
     FEED FORWARD METHODS
     *******************/
 
-    public void percentControlDriveNSpin(double drivePercent, double spinPercent) {
-        percentControlDriveMotor(-drivePercent);
-        percentControlSpinMotor(spinPercent);
+    public void percentFFDriveNSpin(double drivePercent, double spinPercent) {
+        percentFFDriveMotor(-drivePercent);
+        percentFFSpinMotor(spinPercent);
     }
 
-    public void percentControlDriveMotor(double percent) {
+    public void percentFFDriveMotor(double percent) {
         driveMotor.set(percent);
     }
 
-    public void percentControlSpinMotor(double percent) {
+    public void percentFFSpinMotor(double percent) {
         spinMotor.set(ControlMode.PercentOutput, percent);
     }
 
@@ -79,21 +109,55 @@ public class SwervePod {
     PID METHODS
     ***********/
 
-    public void rpmControlDriveNSpin(double driveSpeed, double angle) {
-        rpmControlDrive(driveSpeed);
-        //rpmControlSpin(angle);
+    public void velocityPIDDriveNSpin(double driveSpeed, double angle) {
+        velocityPIDDrive(driveSpeed);
+        //velocityPIDSpin(angle);
     }
 
     /**
      * @param driveSpeed The velocity value from 0 to 13 feet per second
      */
-    public void rpmControlDrive(double driveSpeed) {
+    public void velocityPIDDrive(double driveSpeed) {
         double velocitySetPoint = driveSpeed * fps2rpm;
         driveController.setReference(velocitySetPoint, ControlType.kVelocity);
+
+        //(Max speed / max joystick) * input
     }
 
-    public void rpmControlSpin(double angle) {
+    public void velocityPIDSpin(double angle, double driveSpeed) {
+        double velocitySetPoint = driveSpeed * fps2rpm;
+        double encoderSetPoint = calcSpinPos(angle);
         
+        if(driveSpeed != 0) {
+            spinMotor.set(ControlMode.Position, encoderSetPoint);
+            lastEncoderPosition = -encoderSetPoint;
+        } else {
+            spinMotor.set(ControlMode.Position, lastEncoderPosition);
+        }
+        driveController.setReference(velocitySetPoint, ControlType.kVelocity);
+    }
+    
+    /**
+     * @param angle Measured in radians
+     * @return
+     */
+    private double calcSpinPos(double angle) {
+        double encoderPos = spinMotor.getSelectedSensorPosition(0) - kAbsoluteOffsets[id];
+        double radianPos = encoderUnits2Radians(encoderPos);
+        radianError = angle - radianPos;
+
+        if(Math.abs(radianError) > (5 * (PI / 2))) {
+            System.out.println("Error: Overload");
+        } else if(Math.abs(radianError) > (3 * (PI / 2))) {
+            radianError -= Math.copySign(2 * PI, radianError);
+        } else if(Math.abs(radianError) > (PI / 2)) {
+            radianError -= Math.copySign(PI, radianError);
+            velocitySetpoint = -velocitySetpoint;
+        }
+
+        encoderError = radian2EncoderUnits(radianError);
+        driveCommand = encoderError + encoderPos + kAbsoluteOffsets[id];
+        return driveCommand;
     }
 
     public void steerMotorDegreeControl(double wantedDegrees) {
@@ -105,5 +169,20 @@ public class SwervePod {
 
     public double encoderTics2Degrees(double tics) {
         return (tics % 4096) * (360.0 / 4096);
+    }
+
+    private double radian2EncoderUnits(double radians) {
+        double encoderUnits = (radians / (2 * PI)) * kEncoderUnits;
+        return encoderUnits;
+    }
+
+    private double encoderUnits2Radians(double encoderUnits) {
+        encoderUnits = encoderUnits % kEncoderUnits;
+        if(encoderUnits < 0) {
+            encoderUnits += kEncoderUnits;
+        }
+        encoderUnits -= (kEncoderUnits / 2);
+        double angle = (encoderUnits / kEncoderUnits) * (2 * PI);
+        return angle;
     }
 }
