@@ -41,7 +41,7 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain() {
     gyro.reset();
-    pod1 = new SwervePod(1);
+    pod1 = new SwervePod(0);
     //odometry = new DifferentialDriveOdometry(getAngle());
   }
   
