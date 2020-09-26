@@ -33,10 +33,10 @@ public class DrivetrainConstants {
     public static final double OPEN_LOOP_RAMP_RATE = 0.5;
 
     // PID values for DriveToSetpointPID
-    public static final double DRIVETOSETPOINT_ANGLE_P = 0.0;
-    public static final double DRIVETOSETPOINT_ANGLE_I = 0.0;
-    public static final double DRIVETOSETPOINT_ANGLE_D = 0.0;
-    public static final double DRIVETOSETPOINT_DISTANCE_P = 0.0;
-    public static final double DRIVETOSETPOINT_DISTANCE_I = 0.0;
-    public static final double DRIVETOSETPOINT_DISTANCE_D = 0.0;
+    public static final double DRIVE_TO_SET_POINT_ANGLE_P = 0.0;
+    public static final double DRIVE_TO_SET_POINT_ANGLE_I = 0.0;
+    public static final double DRIVE_TO_SET_POINT_ANGLE_D = 0.0;
+    public static final double DRIVE_TO_SET_POINT_DISTANCE_P = 0.0;
+    public static final double DRIVE_TO_SET_POINT_DISTANCE_I = 0.0;
+    public static final double DRIVE_TO_SET_POINT_DISTANCE_D = 0.0;
 }

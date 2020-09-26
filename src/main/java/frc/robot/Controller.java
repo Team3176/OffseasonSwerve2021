@@ -49,11 +49,11 @@ public class Controller {
     }
 
     /**
-     * Takes an input stick and its axis and returns a modified value with deadbands
+     * Takes an input stick and its axis and returns a normalized value with deadbands
      * 
      * @param stick The joystick you want to get an axis from
      * @param axisId 0 for the x-axis and 1 for the y-axis
-    *  @return The modified output of the stick and its given axis
+    *  @return The normalized output of the stick and its given axis
     */
     public double getStickAxis(Joystick stick, int axisId) {         
         double stickAxisOutput = 0;
@@ -62,28 +62,25 @@ public class Controller {
         } else if(axisId == 1) {
             stickAxisOutput = stick.getY();
         }
-        //Normalizes stickAxisOutput so that its -1 to 1
+        //Normalizes stickAxisOutput (-1 to 1)
         stickAxisOutput /= ControllerConstants.TEMP_JOYSTICK_MIN_MAX; 
 
-        if(!stick.getRawButton(1)){
-            // Adds in deadband logic
-            if (Math.abs(stickAxisOutput) < ControllerConstants.DEADBAND) {
-                return 0.0;
-            } else if (stickAxisOutput < 0) {
-                return (stickAxisOutput + ControllerConstants.DEADBAND) * ControllerConstants.SLOW_ROT_MULT * Math.PI;
+        //If the value is greater than the deadband, continue
+        if(Math.abs(stickAxisOutput) > ControllerConstants.DEADBAND) {
+            //Subtract deadband for clean scaling
+            if (stickAxisOutput > ControllerConstants.DEADBAND) {
+                stickAxisOutput -= ControllerConstants.DEADBAND;
             } else {
-                return (stickAxisOutput - ControllerConstants.DEADBAND) * ControllerConstants.SLOW_ROT_MULT * Math.PI;
+                stickAxisOutput += ControllerConstants.DEADBAND;
             }
-        } else {
-            // Adds in deadband logic
-            if (Math.abs(stickAxisOutput) < ControllerConstants.DEADBAND) {
-                return 0.0;
-            } else if (stickAxisOutput < 0) {
-                return (stickAxisOutput + ControllerConstants.DEADBAND) * Math.PI;
-            } else {
-                return (stickAxisOutput - ControllerConstants.DEADBAND) * Math.PI;
+
+            //Reduce speed if the button isn't pressed
+            if(!stick.getRawButton(1)) {
+                stickAxisOutput *= ControllerConstants.SLOW_ROT_MULT;
             }
+            return stickAxisOutput * Math.PI;
         }
+        return 0.0;
     }
 
     public Boolean resetOdometry() {

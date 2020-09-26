@@ -117,7 +117,7 @@ public class SwervePod {
     }
 
     /**
-     * @param driveSpeed The velocity value from 0 to 13 feet per second
+     * @param driveSpeed The drive value from -1 to 1
      */
     public void velocityPIDDrive(double driveSpeed) {
         double velocitySetPoint = driveSpeed * fps2rpm;
