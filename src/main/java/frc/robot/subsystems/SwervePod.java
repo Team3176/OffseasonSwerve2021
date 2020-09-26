@@ -108,26 +108,33 @@ public class SwervePod {
     /**********
     PID METHODS
     ***********/
-
+    /**
+     * @param drivePercent desired speed of pod as a value -1 to 1, essentially a signed percentage
+     * @param angle desired rotation of pod as a value -1 to 1, essentially a signed percentage
+     */
     public void velocityPIDDriveNSpin(double drivePercent, double angle) {
         double driveSpeed = drivePercent * SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
-        angle = angle * 2 * PI;
+        angle = angle * 2 * PI;  //convert angle from a signed percentage (-1 to +1) to a signed radian (-2PI to +2PI)
         velocityPIDDrive(driveSpeed);
         velocityPIDSpin(driveSpeed, angle);
     }
 
     /**
-     * @param driveSpeed The drive value from -1 to 1
+     * @param driveSpeed desired speed of pod in units of feet-per-second, range from -MaxSpeedOfPod to +MaxSpeedOfPod
      */
     public void velocityPIDDrive(double driveSpeed) {
-        double velocitySetPoint = driveSpeed * fps2rpm;
+        double velocitySetPoint = driveSpeed * fps2rpm;  //convert driveSpeed from units of fps to rpm
         driveController.setReference(velocitySetPoint, ControlType.kVelocity);
 
         //(Max speed / max joystick) * input
     }
 
+    /**
+     * @param driveSpeed desired speed of pod in units of feet-per-second
+     * @param angle desired rotation of pod in units of radians, range from -2PI to +2PI
+     */
     public void velocityPIDSpin(double driveSpeed, double angle) {
-        double velocitySetPoint = driveSpeed * fps2rpm;   
+        double velocitySetPoint = driveSpeed * fps2rpm;  // convert driveSpeed from units of fps to rpm 
         double encoderSetPoint = calcSpinPos(angle);
         
         if(driveSpeed != 0) {
@@ -140,7 +147,7 @@ public class SwervePod {
     }
     
     /**
-     * @param angle Measured in radians
+     * @param angle desired angle of swerve pod in units of radians, range from -2PI to +2PI
      * @return
      */
     private double calcSpinPos(double angle) {
