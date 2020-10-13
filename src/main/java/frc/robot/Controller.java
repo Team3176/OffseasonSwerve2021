@@ -68,6 +68,8 @@ public class Controller {
         //If the value is greater than the deadband, continue
         if(Math.abs(stickAxisOutput) > ControllerConstants.DEADBAND) {
             //Subtract deadband for clean scaling
+            //TODO - This looks like a 10% shift and not scaling. COME BACK AND DEBUG
+            //Would this make more sense if stickAxisOutput wasn't normailized?
             if (stickAxisOutput > ControllerConstants.DEADBAND) {
                 stickAxisOutput -= ControllerConstants.DEADBAND;
             } else {
