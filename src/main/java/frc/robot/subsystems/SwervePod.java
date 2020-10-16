@@ -185,28 +185,10 @@ public class SwervePod {
         return encoderUnits;
     }
 
-    /*
-    encoderTics2Radians does not convert correctly
-        Example 1:
-        Input: encoderTics = -1024
-        204: encoderTics = -1024
-        206: encoderTics = -2048
-        208: encoderTics = -4096
-        209: angle = -2pi
-        -1024 tics (-90) != -2pi (-360)
-
-        Example 2:
-        Input: encoderTics = 2048
-        204: encoderTics = 2048
-        206: encoderTics = 2048
-        208: encoderTics = 0
-        209: angle = 0
-        2048 tics (180) != 0 (0)
-    */
     private double encoderTics2Radians(double encoderTics) {
         encoderTics = encoderTics % kEncoderUnits;
         if(encoderTics < 0) {
-            encoderTics += encoderTics;
+            encoderTics += kEncoderUnitss;
         }
         encoderTics -= (kEncoderUnits / 2);
         double angle = (encoderTics / kEncoderUnits) * (2 * PI);
