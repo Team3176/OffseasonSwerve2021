@@ -188,7 +188,7 @@ public class SwervePod {
     private double encoderTics2Radians(double encoderTics) {
         encoderTics = encoderTics % kEncoderUnits;
         if(encoderTics < 0) {
-            encoderTics += kEncoderUnitss;
+            encoderTics += kEncoderUnits;
         }
         encoderTics -= (kEncoderUnits / 2);
         double angle = (encoderTics / kEncoderUnits) * (2 * PI);
