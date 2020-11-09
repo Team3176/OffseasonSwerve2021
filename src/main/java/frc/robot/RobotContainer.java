@@ -23,7 +23,6 @@ public class RobotContainer {
   private Drivetrain m_Drivetrain;
 
   public RobotContainer() {
-
     m_Controller = Controller.getInstance();
     m_Drivetrain = Drivetrain.getInstance();
     

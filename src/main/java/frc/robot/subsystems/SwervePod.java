@@ -115,19 +115,21 @@ public class SwervePod {
     public void velocityPIDDriveNSpin(double drivePercent, double angle) {
         double driveSpeed = drivePercent * SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
         angle = angle * 2 * PI;  //convert angle from a signed percentage (-1 to +1) to a signed radian (-2PI to +2PI)
-        velocityPIDDrive(driveSpeed);
+        //velocityPIDDrive(driveSpeed);
         velocityPIDSpin(driveSpeed, angle);
+        SmartDashboard.putNumber("Spin Encoder Tics", spinMotor.getSelectedSensorPosition());
     }
 
     /**
      * @param driveSpeed desired speed of pod in units of feet-per-second, range from -MaxSpeedOfPod to +MaxSpeedOfPod
      */
+    /*
     public void velocityPIDDrive(double driveSpeed) {
         double velocitySetPoint = driveSpeed * fps2rpm;  //convert driveSpeed from units of fps to rpm
         driveController.setReference(velocitySetPoint, ControlType.kVelocity);
 
         //(Max speed / max joystick) * input
-    }
+    }*/
 
     /**
      * @param driveSpeed desired speed of pod in units of feet-per-second
@@ -139,7 +141,7 @@ public class SwervePod {
         
         if(driveSpeed != 0) {
             spinMotor.set(ControlMode.Position, encoderSetPoint);
-            lastEncoderPosition = -encoderSetPoint;
+            lastEncoderPosition = encoderSetPoint;
         } else {
             spinMotor.set(ControlMode.Position, lastEncoderPosition);
         }
