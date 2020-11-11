@@ -1,3 +1,14 @@
+/*
+NEXT
+Get the motor rotating on the translation stick
+
+TO DO
+
+HISTORY
+11/10: Got the code SEVERLY SNIPPED and transStickMag outputting to drive motor correctly
+
+*/
+
 package frc.robot;
 
 import java.io.IOException;
@@ -23,27 +34,23 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {
-  }
+  public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {
-  }
+  public void disabledPeriodic() {}
 
   @Override
-  public void autonomousInit() {
-  }
+  public void autonomousInit() {}
 
   @Override
-  public void autonomousPeriodic() {
-  }
+  public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() {
-  }
+  public void teleopInit() {}
 
   @Override
   public void teleopPeriodic() {
+    m_Controller.outputToSmartDashboard();
   }
 
   @Override
@@ -52,6 +59,5 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void testPeriodic() {
-  }
+  public void testPeriodic() {}
 }
