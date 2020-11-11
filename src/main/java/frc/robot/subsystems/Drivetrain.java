@@ -40,6 +40,6 @@ public class Drivetrain extends SubsystemBase {
 
   public void drive(double rotX, double transMag, double transAngle) {
     pod1.thrust(transMag);
-    
+    pod1.spin(transMag, transAngle);
   }
 }

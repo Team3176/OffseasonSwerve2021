@@ -3,9 +3,13 @@ NEXT
 Get the motor rotating on the translation stick
 
 TO DO
+- The swerve pod has an offset to it that needs fixed
+- Tune the pod's PID loop
+- The pod will turn 360 when the tics get too high because it goes from 4096 to 0
 
 HISTORY
 11/10: Got the code SEVERLY SNIPPED and transStickMag outputting to drive motor correctly
+11/11: After working on rotation, realized I need to get rotation workong without fancy edits yet
 
 */
 
