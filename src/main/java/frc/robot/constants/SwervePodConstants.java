@@ -17,9 +17,9 @@ package frc.robot.constants;
  */
 public final class SwervePodConstants {
 
-    public static final double WHEEL_DIAMETER = 3.25; //Inches
-    public static final double DRIVE_GEAR_RATIO = (17.0/54.0);
-    public static final double UNKNOWN_GEAR_RATIO = (30.0/48.0); //Might be its inverse
+    private static final double WHEEL_DIAMETER = 3.25; //Inches
+    private static final double DRIVE_GEAR_RATIO = (17.0/54.0);
+    private static final double UNKNOWN_GEAR_RATIO = (30.0/48.0); //Might be its inverse
 
     public static final double ENCODER_UNITS = 4096;
 
