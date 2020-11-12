@@ -23,6 +23,28 @@ public class SwervePod {
 
     private CANSparkMax driveMotor;
     private TalonSRX spinMotor;
+    private CANEncoder driveEncoder;
+    private CANPIDController driveController;
+
+    //Class constants
+    private double fps2rpm = SwervePodConstants.FPS_2_RPM;
+    private double PI = Math.PI;
+    private double kEncoderUnits = SwervePodConstants.ENCODER_UNITS;
+    private double[] kAbsoluteOffsets = SwervePodConstants.OFFSETS;
+    private double gearRatio = SwervePodConstants.DRIVE_GEAR_RATIO;
+
+    //All measured in encoder units
+    private double lastEncoderPosition; //Previous position
+    private double encoderPosition; //Current position
+    private double encoderError; //Error
+
+    //All measured in radians
+    private double radianPosition; //Current position
+    private double radianError; //Error
+
+    private double driveCommand;
+    private double encoderSetpoint;
+    private double velocitySetpoint;
 
     private int id;
     private int encoderOffset = SwervePodConstants.OFFSETS[id];
@@ -31,11 +53,15 @@ public class SwervePod {
 
     private double PI = Math.PI;
     
-    public SwervePod(int id) {
+    public SwervePod(int id/*,CANSparkMax driveMotor, TalonSRX spinMotor;*/) {
         this.id = id;
+        //this.driveMotor = driveMotor
+        //this.spinMotor = spinMotor
         
         driveMotor = new CANSparkMax(1, MotorType.kBrushless);
         spinMotor = new TalonSRX(2);
+        driveEncoder = driveMotor.getEncoder();
+        driveController = driveMotor.getPIDController();
 
         spinMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute,0,0);
 
@@ -45,9 +71,14 @@ public class SwervePod {
 		this.spinMotor.config_kF(0, SwervePodConstants.SPIN_PID_CONFIG[3][id], 0);
     }
 
-    public void thrust(double transMag) {
-        driveMotor.set(transMag);
-        SmartDashboard.putNumber("TM", transMag);
+    private double encoderTics2Radians(double encoderTics) {
+        encoderTics = encoderTics % kEncoderUnits;
+        if(encoderTics < 0) {
+            encoderTics += kEncoderUnits;
+        }
+        encoderTics -= (kEncoderUnits / 2);
+        double angle = (encoderTics / kEncoderUnits) * (2 * PI);
+        return angle;
     }
 
     public void spin(double transMag, double transAngle) {
