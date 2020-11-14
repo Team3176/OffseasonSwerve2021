@@ -34,8 +34,7 @@ public class Controller {
         if(Math.sqrt(magSquared) > 1) {
             return 1 * ControllerConstants.SLOW_DRIVE_MULT;
         }
-        //Normalizes stickAxisOutput (-1 to 1)
-        stickAxisOutput /= ControllerConstants.TEMP_JOYSTICK_MIN_MAX; 
+        return magSquared;
     }
 
     public double getTransStickAngleRads() {
