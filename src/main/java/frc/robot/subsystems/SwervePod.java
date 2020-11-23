@@ -77,17 +77,26 @@ public class SwervePod {
      */
     private double calcSpinPos(double angle) {
         int encoderPos = spinMotor.getSelectedSensorPosition(0) - encoderOffset;
+        SmartDashboard.putNumber("SSP", spinMotor.getSelectedSensorPosition(0));
+        SmartDashboard.putNumber("encoderPos", encoderPos);
         double radianPos = tics2Rads(encoderPos);
+        SmartDashboard.putNumber("angle", angle);
         radianError = angle - radianPos;
+        SmartDashboard.putNumber("radPos", radianPos);
 
         if(Math.abs(radianError) > (5 * (PI / 2))) {
             System.out.println("Error: Overload");
+            SmartDashboard.putNumber("radError 52", radianError);
         } else if(Math.abs(radianError) > (3 * (PI / 2))) {
             radianError -= Math.copySign(2 * PI, radianError);
+            SmartDashboard.putNumber("radError 32", radianError);
         } else if(Math.abs(radianError) > (PI / 2)) {
             radianError -= Math.copySign(PI, radianError);
             flipThrust = !flipThrust;
+            SmartDashboard.putNumber("radError 12", radianError);
         }
+        SmartDashboard.putNumber("round test", (double)(Math.sin((1/8) * Math.PI)));
+        System.out.print((double)(Math.sin((1/8) * Math.PI)));
 
         encoderError = rads2Tics(radianError);
         driveCommand = encoderError + encoderPos + encoderOffset;
