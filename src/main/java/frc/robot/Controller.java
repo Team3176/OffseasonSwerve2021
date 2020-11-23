@@ -34,7 +34,7 @@ public class Controller {
         if(Math.sqrt(magSquared) > 1) {
             return 1 * ControllerConstants.SLOW_DRIVE_MULT;
         }
-        return magSquared;
+        return Math.sqrt(magSquared) * ControllerConstants.SLOW_DRIVE_MULT;
     }
 
     public double getTransStickAngleRads() {

@@ -21,7 +21,7 @@ import frc.robot.constants.SwervePodConstants;
 
 public class SwervePod {
 
-    private CANSparkMax driveMotor;
+    private CANSparkMax thrustMotor;
     private TalonSRX spinMotor;
 
     private int id;
@@ -31,14 +31,16 @@ public class SwervePod {
     private double radianError;
     private double encoderError;
     private double driveCommand;
-    private boolean flipDrive;
+    private boolean flipThrust;
 
     private double PI = Math.PI;
+
+    private boolean flipper = true;
     
     public SwervePod(int id) {
         this.id = id;
         
-        driveMotor = new CANSparkMax(1, MotorType.kBrushless);
+        thrustMotor = new CANSparkMax(1, MotorType.kBrushless);
         spinMotor = new TalonSRX(2);
 
         //spinMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute,0,0);
@@ -50,18 +52,23 @@ public class SwervePod {
     }
 
     public void thrust(double transMag) {
-        if(flipDrive) { transMag = -transMag; }
-        driveMotor.set(transMag);
+        if(flipThrust) { transMag = -transMag; }
+        flipper = !flipper;
+        SmartDashboard.putBoolean("thrusting", flipper);
+        thrustMotor.set(transMag);
     }
 
     public void spin(double transMag, double transAngle) {
         double encoderSetPos = calcSpinPos(transAngle);
         if(transMag != 0) {
             spinMotor.set(ControlMode.Position, encoderSetPos);
+            SmartDashboard.putNumber("encoderSetPos", encoderSetPos);
             lastEncoderPos = encoderSetPos;
         } else {
             spinMotor.set(ControlMode.Position, lastEncoderPos);
+            SmartDashboard.putNumber("lastEncoderPos", lastEncoderPos);
         }
+        
     }
 
     /**
@@ -79,7 +86,7 @@ public class SwervePod {
             radianError -= Math.copySign(2 * PI, radianError);
         } else if(Math.abs(radianError) > (PI / 2)) {
             radianError -= Math.copySign(PI, radianError);
-            flipDrive = !flipDrive;
+            flipThrust = !flipThrust;
         }
 
         encoderError = rads2Tics(radianError);

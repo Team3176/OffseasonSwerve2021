@@ -11,7 +11,7 @@ TO DO
 HISTORY
 11/10: Got the code SEVERLY SNIPPED and transStickMag outputting to drive motor correctly
 11/11: After working on rotation, realized I need to get rotation workong without fancy edits yet
-11/13: Got the rotation working but there are still soem errors that need fixed
+11/13: Got the rotation working but there are still some errors that need fixed
 
 */
 
