@@ -43,6 +43,8 @@ public class Controller {
             To flip to the right side, make x negative then add Pi to shift everyhting to positive
         */
         double angle = Math.atan2(getTransStickY(), -getTransStickX());
+        SmartDashboard.putNumber("GetTS -X", -getTransStickX());
+        SmartDashboard.putNumber("GetTS Y", getTransStickY());
         SmartDashboard.putNumber("angle in controller", angle);
         SmartDashboard.putNumber("angle plus pi in controller", (double)(angle + Math.PI));
         return angle + Math.PI;

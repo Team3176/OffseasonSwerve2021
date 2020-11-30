@@ -34,8 +34,6 @@ public class SwervePod {
     private boolean flipThrust;
 
     private double PI = Math.PI;
-
-    private boolean flipper = true;
     
     public SwervePod(int id) {
         this.id = id;
@@ -53,8 +51,6 @@ public class SwervePod {
 
     public void thrust(double transMag) {
         if(flipThrust) { transMag = -transMag; }
-        flipper = !flipper;
-        SmartDashboard.putBoolean("thrusting", flipper);
         thrustMotor.set(transMag);
     }
 
@@ -68,7 +64,6 @@ public class SwervePod {
             spinMotor.set(ControlMode.Position, lastEncoderPos);
             SmartDashboard.putNumber("lastEncoderPos", lastEncoderPos);
         }
-        
     }
 
     /**
