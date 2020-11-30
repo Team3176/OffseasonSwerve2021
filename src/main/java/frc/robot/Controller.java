@@ -39,10 +39,12 @@ public class Controller {
 
     public double getTransStickAngleRads() {
         /*
-            Atan2 yields -1 to 1 radians where the highest magnitude is on the left of the circle
+            Atan2 yields -pi to pi radians where the highest magnitude is on the left of the circle
             To flip to the right side, make x negative then add Pi to shift everyhting to positive
         */
         double angle = Math.atan2(getTransStickY(), -getTransStickX());
+        SmartDashboard.putNumber("angle in controller", angle);
+        SmartDashboard.putNumber("angle plus pi in controller", (double)(angle + Math.PI));
         return angle + Math.PI;
     }
 

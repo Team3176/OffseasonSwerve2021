@@ -18,13 +18,13 @@ public class SwerveDrive extends CommandBase {
     this.transMag = transMag;
     this.transAngle = transAngle;
     addRequirements(m_Drivetrain);
-    SmartDashboard.putNumber("transMag Const", this.transMag.getAsDouble());
+    SmartDashboard.putNumber("transAngle Constr", this.transAngle.getAsDouble());
   }
 
   @Override
   public void execute() {
     m_Drivetrain.drive(this.rotX.getAsDouble(), this.transMag.getAsDouble(), this.transAngle.getAsDouble());
-    SmartDashboard.putNumber("transMag Exe", this.transMag.getAsDouble());
+    SmartDashboard.putNumber("transAngle Exe", this.transAngle.getAsDouble());
   }
 
   @Override
