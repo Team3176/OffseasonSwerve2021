@@ -59,7 +59,7 @@ public class SwervePod {
     }
 
     public void spin(double transMag, double transAngle) {
-        this.initRadianDifference += (transAngle - this.lastTransAngle);
+        this.initRadianDifference += ((transAngle % (2 * PI)) - (this.lastTransAngle % (2 * PI)));
         double encoderSetPos = calcSpinPos(transAngle);
         if(transMag != 0) {
             spinMotor.set(ControlMode.Position, encoderSetPos);
@@ -103,7 +103,8 @@ public class SwervePod {
         System.out.print((double)(Math.sin((1/8) * Math.PI)));
 
         encoderError = rads2Tics(radianError);
-        driveCommand = encoderError + encoderPos + encoderOffset + this.initRadianDifference;
+        driveCommand = encoderError + encoderPos + encoderOffset/* + this.initRadianDifference*/;
+        SmartDashboard.putNumber("DriveCommand", driveCommand);
         return driveCommand;
     }
 

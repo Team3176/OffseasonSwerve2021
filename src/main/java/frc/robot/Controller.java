@@ -42,17 +42,12 @@ public class Controller {
             Atan2 yields -pi to pi radians where the highest magnitude is on the left of the circle
             To flip to the right side, make x negative then add Pi to shift everyhting to positive
         */
-        double angle = Math.atan2(getTransStickY(), -getTransStickX());
-        SmartDashboard.putNumber("GetTS -X", -getTransStickX());
-        SmartDashboard.putNumber("GetTS Y", getTransStickY());
+        //double angle = Math.atan2(getTransStickY(), -getTransStickX());
+        double angle = getTransStickX() * 2 * Math.PI;
         SmartDashboard.putNumber("angle in controller", angle);
-        SmartDashboard.putNumber("angle plus pi in controller", (double)(angle + Math.PI));
-        return angle + Math.PI;
+        return angle;
     }
 
     public void outputToSmartDashboard() {
-        SmartDashboard.putNumber("transStickX", getTransStickX());
-        SmartDashboard.putNumber("transStickY", getTransStickY());
-        SmartDashboard.putNumber("transStickMag", getTransStickMag());
     }
 }
