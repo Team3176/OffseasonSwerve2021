@@ -31,6 +31,8 @@ public class SwervePod {
     private double radianError;
     private double encoderError;
     private double driveCommand;
+    private double lastTransAngle;
+    private double initRadianDifference; //init pos versus now pos
     private boolean flipThrust;
 
     private double PI = Math.PI;
@@ -40,6 +42,8 @@ public class SwervePod {
         
         thrustMotor = new CANSparkMax(1, MotorType.kBrushless);
         spinMotor = new TalonSRX(2);
+
+        this.lastTransAngle = 0;
 
         //spinMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute,0,0);
 
@@ -55,6 +59,7 @@ public class SwervePod {
     }
 
     public void spin(double transMag, double transAngle) {
+        this.initRadianDifference += (transAngle - this.lastTransAngle);
         double encoderSetPos = calcSpinPos(transAngle);
         if(transMag != 0) {
             spinMotor.set(ControlMode.Position, encoderSetPos);
@@ -64,6 +69,10 @@ public class SwervePod {
             spinMotor.set(ControlMode.Position, lastEncoderPos);
             SmartDashboard.putNumber("lastEncoderPos", lastEncoderPos);
         }
+        SmartDashboard.putNumber("transAngle", transAngle);
+        SmartDashboard.putNumber("lastTransAngle", lastTransAngle);
+        SmartDashboard.putNumber("initRadianDifference", initRadianDifference);
+        this.lastTransAngle = transAngle;
     }
 
     /**
@@ -94,7 +103,7 @@ public class SwervePod {
         System.out.print((double)(Math.sin((1/8) * Math.PI)));
 
         encoderError = rads2Tics(radianError);
-        driveCommand = encoderError + encoderPos + encoderOffset;
+        driveCommand = encoderError + encoderPos + encoderOffset + this.initRadianDifference;
         return driveCommand;
     }
 
