@@ -61,7 +61,8 @@ public class SwervePod {
     public void spin(double transMag, double transAngle) {
         this.initRadianDifference += ((transAngle % (2 * PI)) - (this.lastTransAngle % (2 * PI)));
         double encoderSetPos = calcSpinPos(transAngle);
-        if(transMag != 0) {
+        //if(transMag != 0) {
+        if(true) {
             spinMotor.set(ControlMode.Position, encoderSetPos);
             SmartDashboard.putNumber("encoderSetPos", encoderSetPos);
             lastEncoderPos = encoderSetPos;

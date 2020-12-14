@@ -15,7 +15,7 @@ public class RobotContainer {
     m_Drivetrain.setDefaultCommand(new SwerveDrive(
       () -> m_Controller.getRotStickX(), 
       () -> m_Controller.getTransStickMag(),
-      () -> m_Controller.getTransStickAngleRads()));
+      () -> m_Controller.getRotStickRads()));
 
     configureButtonBindings();
   }
