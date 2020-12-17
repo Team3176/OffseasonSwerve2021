@@ -1,8 +1,8 @@
 package frc.robot.constants;
 
 public class DrivetrainConstants {
+    
     // IDs for Drivetrain motors and solenoids
-
     public static final int LEFT_MASTER_ID =  2;
     public static final int LEFT_FOLLOWER_ID = 22 ;
     public static final int RIGHT_MASTER_ID =  1;
@@ -23,8 +23,14 @@ public class DrivetrainConstants {
     public static final double VELOCITY_RATIO = (7.1631/10000.0)*0.3048;
     public static final double POSITION_RATIO = (7.1631/100000.0)*0.3048;
 
-    // Drivetrain width for kinematics and odometry
+    // Drivetrain measurements
     public static final double TRACK_WIDTH = 0.6096;
+    public static final double DRIVETRAIN_LENGTH = 30.5; //Inches
+    public static final double DRIVETRAIN_WIDTH = 29.5; //Inches
+    public static final double WHEEL_DIAMETER = 3.25; //Inches
+    public static final double DRIVETRAIN_MAX_WHEEL_SPEED = 13.5; //ft/s
+    public static final double DRIVETRAIN_MAX_ROTATION_SPEED = 5; //rad/s
+
 
     // Speed limits
     public static final double MAX_LINEAR_SPEED = 4;
