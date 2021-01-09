@@ -21,8 +21,8 @@ import frc.robot.constants.SwervePodConstants;
 
 public class SwervePod {
 
-    private CANSparkMax thrustMotor;
-    private TalonSRX spinMotor;
+    private CANSparkMax driveController;
+    private TalonSRX spinController;
 
     private int id;
     private int encoderOffset = SwervePodConstants.OFFSETS[id];
@@ -37,25 +37,24 @@ public class SwervePod {
 
     private double PI = Math.PI;
     
-    public SwervePod(int id) {
+    public SwervePod(int id, CANSparkMax driveController, TalonSRX spinController) {
         this.id = id;
-        
-        thrustMotor = new CANSparkMax(1, MotorType.kBrushless);
-        spinMotor = new TalonSRX(2);
-
+        this.driveController = driveController;
+        this.spinController = spinController;
+ 
         this.lastTransAngle = 0;
 
         //spinMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute,0,0);
 
-        this.spinMotor.config_kP(0, SwervePodConstants.SPIN_PID_CONFIG[0][id], 0);
-		this.spinMotor.config_kI(0, SwervePodConstants.SPIN_PID_CONFIG[1][id], 0);
-		this.spinMotor.config_kD(0, SwervePodConstants.SPIN_PID_CONFIG[2][id], 0);
-		this.spinMotor.config_kF(0, SwervePodConstants.SPIN_PID_CONFIG[3][id], 0);
+        this.spinController.config_kP(0, SwervePodConstants.SPIN_PID_CONFIG[0][id], 0);
+		this.spinController.config_kI(0, SwervePodConstants.SPIN_PID_CONFIG[1][id], 0);
+		this.spinController.config_kD(0, SwervePodConstants.SPIN_PID_CONFIG[2][id], 0);
+		this.spinController.config_kF(0, SwervePodConstants.SPIN_PID_CONFIG[3][id], 0);
     }
 
     public void thrust(double transMag) {
         if(flipThrust) { transMag = -transMag; }
-        thrustMotor.set(transMag);
+        driveController.set(transMag);
     }
 
     public void spin(double transMag, double transAngle) {
@@ -63,11 +62,11 @@ public class SwervePod {
         double encoderSetPos = calcSpinPos(transAngle);
         //if(transMag != 0) {
         if(true) {
-            spinMotor.set(ControlMode.Position, encoderSetPos);
+            spinController.set(ControlMode.Position, encoderSetPos);
             SmartDashboard.putNumber("encoderSetPos", encoderSetPos);
             lastEncoderPos = encoderSetPos;
         } else {
-            spinMotor.set(ControlMode.Position, lastEncoderPos);
+            spinController.set(ControlMode.Position, lastEncoderPos);
             SmartDashboard.putNumber("lastEncoderPos", lastEncoderPos);
         }
         SmartDashboard.putNumber("transAngle", transAngle);
@@ -81,8 +80,8 @@ public class SwervePod {
      * @return
      */
     private double calcSpinPos(double angle) {
-        int encoderPos = spinMotor.getSelectedSensorPosition(0) - encoderOffset;
-        SmartDashboard.putNumber("SSP", spinMotor.getSelectedSensorPosition(0));
+        int encoderPos = spinController.getSelectedSensorPosition(0) - encoderOffset;
+        SmartDashboard.putNumber("SSP", spinController.getSelectedSensorPosition(0));
         SmartDashboard.putNumber("encoderPos", encoderPos);
         double radianPos = tics2Rads(encoderPos);
         SmartDashboard.putNumber("angle", angle);
