@@ -23,7 +23,7 @@ public class SwerveDrive extends CommandBase {
 
   @Override
   public void execute() {
-    drivetrain.drive(this.rotX.getAsDouble(), this.transMag.getAsDouble(), this.transAngle.getAsDouble());
+    //drivetrain.drive(this.rotX.getAsDouble(), this.transMag.getAsDouble(), this.transAngle.getAsDouble());
     SmartDashboard.putNumber("transAngle Exe", this.transAngle.getAsDouble());
   }
 

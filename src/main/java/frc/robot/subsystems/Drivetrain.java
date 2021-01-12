@@ -169,6 +169,12 @@ public class Drivetrain extends SubsystemBase {
       spinCommand *= maxRotation;
     }
 
+    //Create arrays for the speed and angle of each pod
+    double[] podDrive = new double[4];
+    double[] podSPin = new double[4];
+
+
+
     
   }
 
@@ -180,6 +186,10 @@ public class Drivetrain extends SubsystemBase {
     // -pi to pi; 0 = straight
     currentAngle = ((((gyro.getAngle() + 90) * Math.PI/180.0)) % (2*Math.PI));
   }
+/*
+  private double getRadius(String component) {
+    
+  }*/
 
   /*
   public void drive(double drivePercent, double spinPercent) {
