@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-//TODO: Clean these later
+//TODO: Clean these imports
 import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -201,6 +201,7 @@ public class Drivetrain extends SubsystemBase {
       }
     }
 
+    //TODO: Turn defense into a command
     // If defense is enabled, free pods in a defensive position
     if(controller.defenseEnabled()) {
       pods.get(0).set(0.0, -1.0 * Math.PI * 4.0);
@@ -222,7 +223,7 @@ public class Drivetrain extends SubsystemBase {
   private double getRadius(String component) {
     //Omitted if statements where we pivoted around a pod
     //This'll be orbit and dosado in the future
-    if(controller.orbit() || controller.dosado()) {
+    if(false /* orbiting || dosadoing */) {
       //Do special things to components based on radius and more
     } else {
       if(component.equals("A") || component.equals("B")) { return length / 2.0 ; }

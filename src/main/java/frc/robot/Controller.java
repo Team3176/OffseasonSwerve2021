@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.constants.ControllerConstants;
 
@@ -11,6 +12,10 @@ public class Controller {
     private final Joystick transStick;
     private final Joystick rotStick;
 
+    private final JoystickButton swerveNeutralButton;
+    private final JoystickButton orbitButton;
+    private final JoystickButton dosadoButton;
+
     public static Controller getInstance() {
         return instance;
     }
@@ -18,6 +23,10 @@ public class Controller {
     public Controller() {
         transStick = new Joystick(ControllerConstants.TRANSLATION_STICK_ID);
         rotStick = new Joystick(ControllerConstants.ROTATION_STICK_ID);
+
+        swerveNeutralButton = new JoystickButton(transStick, 1); // Subject to change
+        orbitButton = new JoystickButton(rotStick, 2); // Subject to change
+        dosadoButton = new JoystickButton(rotStick, 3); // Subject to change
     }
 
     public double getRotStickX() { return rotStick.getX(); }
@@ -46,12 +55,16 @@ public class Controller {
     public void outputToSmartDashboard() {
     }
 
-    public boolean orbit(/*some parameters */) {
-        return transStick.getRawButton(5); // ID an/or stick may change
+    public JoystickButton getSwerveNeutralButton() {
+        return swerveNeutralButton;
     }
 
-    public boolean dosado(/*some parameters */) {
-        return transStick.getRawButton(6); // ID an/or stick may change
+    public JoystickButton getOrbitButton() {
+        return orbitButton;
+    }
+
+    public JoystickButton getDosadoButton() {
+        return dosadoButton;
     }
 
     public boolean defenseEnabled() {
