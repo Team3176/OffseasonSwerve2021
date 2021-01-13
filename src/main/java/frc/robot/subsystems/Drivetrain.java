@@ -68,13 +68,9 @@ public class Drivetrain extends SubsystemBase {
   private double maxRotation;
   private double maxAccel;
 
-  private double relMaxSPeed;
+  private double relMaxSpeed;
   private double currentAngle;
   private double lastAngle;
-
-  private double forwardCommand;
-  private double strafeCommand;
-  private double spinCommand;
 
   private double startTime = 0;
   private double currentTIme = 0;
@@ -137,10 +133,14 @@ public class Drivetrain extends SubsystemBase {
 
     isVisionDriving = false;
 
+    //TODO: We initialize to face forward but how do we make this into a command?
+    //Maybe we say drive with the below parameters, but where?
+    /*
     // Start wheels in a forward facing direction
-    forwardCommand = Math.pow(10, -15); // Not sure why this is >0
+    forwardCommand = Math.pow(10, -15); // Has to be positive to turn that direction?
     strafeCommand = 0.0;
     spinCommand = 0.0;
+    */
   }
   
   // Prevents more than one instance of drivetrian
@@ -148,7 +148,7 @@ public class Drivetrain extends SubsystemBase {
     return instance;
   }
 
-  private void drive() {
+  public void drive(double forwardCommand, double strafeCommand, double spinCommand) {
     if(mCoordType == coordType.FIELD_CENTRIC) {
       final double temp = forwardCommand * Math.sin(currentAngle) + strafeCommand * Math.cos(currentAngle);
       strafeCommand = (-forwardCommand * Math.cos(currentAngle) + strafeCommand * Math.sin(currentAngle));
@@ -169,27 +169,68 @@ public class Drivetrain extends SubsystemBase {
       spinCommand *= maxRotation;
     }
 
-    //Create arrays for the speed and angle of each pod
+    // Create arrays for the speed and angle of each pod
     double[] podDrive = new double[4];
-    double[] podSPin = new double[4];
+    double[] podSpin = new double[4];
 
+    double a = strafeCommand + spinCommand * getRadius("A");
+    double b = strafeCommand - spinCommand * getRadius("B");
+    double c = strafeCommand - spinCommand * getRadius("C");
+    double d = strafeCommand + spinCommand * getRadius("D");
 
+    // Calculate speed and angle of each pod
+    podDrive[0] = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2));
+    podSpin[0] = Math.atan2(b, c);
 
-    
-  }
+    podDrive[1] = Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2));
+    podSpin[1] = Math.atan2(b, d);
 
-  @Override
-  public void periodic() {
+    podDrive[2] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
+    podSpin[2] = Math.atan2(a, c);
+
+    podDrive[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
+    podSpin[3] = Math.atan2(a, c);
+
+    // Find the highest pod speed...
+    relMaxSpeed = Math.max(Math.max(podDrive[0], podDrive[1]), Math.max(podDrive[2], podDrive[3]));
+
+    // ..then normalize if a pod is exceeding our max speed
+    if(relMaxSpeed > maxSpeed) {
+      for(int i = 0; i < pods.size(); i++) {
+        podDrive[i] /= (relMaxSpeed / maxSpeed);
+      }
+    }
+
+    // If defense is enabled, free pods in a defensive position
+    if(controller.defenseEnabled()) {
+      pods.get(0).set(0.0, -1.0 * Math.PI * 4.0);
+      pods.get(1).set(0.0, 1.0 * Math.PI * 4.0);
+      pods.get(2).set(0.0, 3.0 * Math.PI * 4.0);
+      pods.get(3).set(0.0, -3.0 * Math.PI * 4.0);
+    } else { // If not in defense, drive normally
+      for(int i = 0; i < pods.size(); i++) {
+        pods.get(i).set(podDrive[i], podSpin[i]);
+      }
+    } 
   }
 
   private void updateAngle() {
     // -pi to pi; 0 = straight
     currentAngle = ((((gyro.getAngle() + 90) * Math.PI/180.0)) % (2*Math.PI));
   }
-/*
+
   private double getRadius(String component) {
-    
-  }*/
+    //Omitted if statements where we pivoted around a pod
+    //This'll be orbit and dosado in the future
+    if(controller.orbit() || controller.dosado()) {
+      //Do special things to components based on radius and more
+    } else {
+      if(component.equals("A") || component.equals("B")) { return length / 2.0 ; }
+      else { return width / 2.0; }
+    }
+    return 0.0;
+  }
+
 
   /*
   public void drive(double drivePercent, double spinPercent) {

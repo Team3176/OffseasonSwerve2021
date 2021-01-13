@@ -1,24 +1,38 @@
 package frc.robot;
 
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.commands.SwerveDrive;
+import edu.wpi.first.wpilibj.Joystick;
 
+import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.SwerveNeutral;
+
+import frc.robot.constants.ControllerConstants;
+
+import frc.robot.subsystems.Drivetrain;
 public class RobotContainer {
 
-  private Controller m_Controller;
-  private Drivetrain m_Drivetrain;
+  private Controller controller;
+  private Drivetrain drivetrain;
+
+  private final Joystick transStick;
+  private final Joystick rotStick;
 
   public RobotContainer() {
-    m_Controller = Controller.getInstance();
-    m_Drivetrain = Drivetrain.getInstance();
-    
-    m_Drivetrain.setDefaultCommand(new SwerveDrive(
-      () -> m_Controller.getRotStickX(), 
-      () -> m_Controller.getTransStickMag(),
-      () -> m_Controller.getRotStickRads()));
+    controller = Controller.getInstance();
+    drivetrain = Drivetrain.getInstance();
+
+    transStick = new Joystick(ControllerConstants.TRANSLATION_STICK_ID);
+    rotStick = new Joystick(ControllerConstants.ROTATION_STICK_ID);
+
+    drivetrain.setDefaultCommand(new SwerveDrive(
+      () -> controller.getTransStickY(), 
+      () -> controller.getTransStickX(),
+      () -> controller.getRotStickX()));
 
     configureButtonBindings();
   }
 
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+
+    controller.getSwerveNeutralButton().whenHeld(new SwerveNeutral());
+  }
 }

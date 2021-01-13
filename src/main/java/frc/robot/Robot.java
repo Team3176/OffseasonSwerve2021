@@ -25,13 +25,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
 
-  private RobotContainer m_robotContainer;
+  private RobotContainer robotContainer;
 
-  private Controller m_Controller = Controller.getInstance();
+  private Controller controller = Controller.getInstance();
 
   @Override
   public void robotInit() {
-    m_robotContainer = new RobotContainer();
+    robotContainer = new RobotContainer();
   }
 
   @Override
@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    m_Controller.outputToSmartDashboard();
+    controller.outputToSmartDashboard();
   }
 
   @Override

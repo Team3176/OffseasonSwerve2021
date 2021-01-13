@@ -45,4 +45,16 @@ public class Controller {
 
     public void outputToSmartDashboard() {
     }
+
+    public boolean orbit(/*some parameters */) {
+        return transStick.getRawButton(5); // ID an/or stick may change
+    }
+
+    public boolean dosado(/*some parameters */) {
+        return transStick.getRawButton(6); // ID an/or stick may change
+    }
+
+    public boolean defenseEnabled() {
+        return transStick.getRawButton(7); // ID an/or stick may change
+    }
 }

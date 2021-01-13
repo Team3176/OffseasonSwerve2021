@@ -57,7 +57,7 @@ public class SwervePod {
         driveController.set(transMag);
     }
 
-    public void spin(double transMag, double transAngle) {
+    public void set(double transMag, double transAngle) {
         this.initRadianDifference += ((transAngle % (2 * PI)) - (this.lastTransAngle % (2 * PI)));
         double encoderSetPos = calcSpinPos(transAngle);
         //if(transMag != 0) {
