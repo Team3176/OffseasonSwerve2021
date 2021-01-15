@@ -1,38 +1,39 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-
-import frc.robot.commands.SwerveDrive;
-import frc.robot.commands.SwerveNeutral;
-
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.teleop.SwerveDefense;
+import frc.robot.commands.teleop.SwerveDrive;
+import frc.robot.commands.teleop.SwerveVision;
 import frc.robot.constants.ControllerConstants;
 
 import frc.robot.subsystems.Drivetrain;
 public class RobotContainer {
 
+  private Joystick xboxController = new Joystick(ControllerConstants.XBOX_CONTROLLER_ID);
+
   private Controller controller;
   private Drivetrain drivetrain;
-
-  private final Joystick transStick;
-  private final Joystick rotStick;
 
   public RobotContainer() {
     controller = Controller.getInstance();
     drivetrain = Drivetrain.getInstance();
 
-    transStick = new Joystick(ControllerConstants.TRANSLATION_STICK_ID);
-    rotStick = new Joystick(ControllerConstants.ROTATION_STICK_ID);
-
     drivetrain.setDefaultCommand(new SwerveDrive(
-      () -> controller.getTransStickY(), 
-      () -> controller.getTransStickX(),
-      () -> controller.getRotStickX()));
+      () -> controller.getForward(), 
+      () -> controller.getStrafe(),
+      () -> controller.getSpin()));
 
     configureButtonBindings();
   }
 
   private void configureButtonBindings() {
-
-    controller.getSwerveNeutralButton().whenHeld(new SwerveNeutral());
+    // Drivetrain buttons
+    controller.getDefenseButton().whenHeld(new SwerveDefense());
+    controller.getVisionButton().whenHeld(new SwerveVision(
+      () -> controller.getForward(), 
+      () -> controller.getStrafe()));
   }
 }

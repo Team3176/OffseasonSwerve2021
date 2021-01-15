@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 //TODO: Clean these imports
+//TODO: Recognize the red dependecys because seeing red is annoying
 import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -31,8 +32,8 @@ import frc.robot.Controller;
 
 public class Drivetrain extends SubsystemBase {
   private static Drivetrain instance = new Drivetrain();
-
   private Controller controller = Controller.getInstance();
+
   private PowerDistributionPanel PDP = new PowerDistributionPanel(0);
   private AHRS gyro;
 
@@ -78,15 +79,15 @@ public class Drivetrain extends SubsystemBase {
   private boolean isVisionDriving;
 
   public enum state {
-    NEUTRAL,
+    DEFENSE,
     DRIVE,
-    AUTON
+    VISION
   }
 
   public enum coordType {
-    ROBOT_CENTRIC,
+    BACK_ROBOT_CENTRIC,
     FIELD_CENTRIC,
-    BACK_ROBOT_CENTRIC
+    ROBOT_CENTRIC
   }
 
   public enum inputType {
@@ -149,6 +150,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(double forwardCommand, double strafeCommand, double spinCommand) {
+    updateAngle();
+    
+    //TODO: How are we going to enter these states using buttons?
     if(mCoordType == coordType.FIELD_CENTRIC) {
       final double temp = forwardCommand * Math.sin(currentAngle) + strafeCommand * Math.cos(currentAngle);
       strafeCommand = (-forwardCommand * Math.cos(currentAngle) + strafeCommand * Math.sin(currentAngle));
@@ -169,14 +173,18 @@ public class Drivetrain extends SubsystemBase {
       spinCommand *= maxRotation;
     }
 
+    calculateNSetPodPositions(forwardCommand, strafeCommand, spinCommand);
+  }
+
+  private void calculateNSetPodPositions(double forwardCommand, double strafeCommand, double spinCommand) {
     // Create arrays for the speed and angle of each pod
     double[] podDrive = new double[4];
     double[] podSpin = new double[4];
 
     double a = strafeCommand + spinCommand * getRadius("A");
     double b = strafeCommand - spinCommand * getRadius("B");
-    double c = strafeCommand - spinCommand * getRadius("C");
-    double d = strafeCommand + spinCommand * getRadius("D");
+    double c = forwardCommand - spinCommand * getRadius("C");
+    double d = forwardCommand + spinCommand * getRadius("D");
 
     // Calculate speed and angle of each pod
     podDrive[0] = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2));
@@ -191,28 +199,25 @@ public class Drivetrain extends SubsystemBase {
     podDrive[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
     podSpin[3] = Math.atan2(a, c);
 
-    // Find the highest pod speed...
+    // Find the highest pod speed then normalize if a pod is exceeding our max speed
     relMaxSpeed = Math.max(Math.max(podDrive[0], podDrive[1]), Math.max(podDrive[2], podDrive[3]));
-
-    // ..then normalize if a pod is exceeding our max speed
     if(relMaxSpeed > maxSpeed) {
       for(int i = 0; i < pods.size(); i++) {
         podDrive[i] /= (relMaxSpeed / maxSpeed);
       }
     }
 
-    //TODO: Turn defense into a command
-    // If defense is enabled, free pods in a defensive position
-    if(controller.defenseEnabled()) {
-      pods.get(0).set(0.0, -1.0 * Math.PI * 4.0);
-      pods.get(1).set(0.0, 1.0 * Math.PI * 4.0);
-      pods.get(2).set(0.0, 3.0 * Math.PI * 4.0);
-      pods.get(3).set(0.0, -3.0 * Math.PI * 4.0);
-    } else { // If not in defense, drive normally
-      for(int i = 0; i < pods.size(); i++) {
-        pods.get(i).set(podDrive[i], podSpin[i]);
-      }
-    } 
+    // Set calculated drive and spins to each pod
+    for(int i = 0; i < pods.size(); i++) {
+      pods.get(i).set(podDrive[i], podSpin[i]);
+    }
+  }
+
+  public void enterDefense() {
+    pods.get(0).set(0.0, -1.0 * Math.PI * 4.0);
+    pods.get(1).set(0.0, 1.0 * Math.PI * 4.0);
+    pods.get(2).set(0.0, 3.0 * Math.PI * 4.0);
+    pods.get(3).set(0.0, -3.0 * Math.PI * 4.0);
   }
 
   private void updateAngle() {
@@ -221,15 +226,19 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private double getRadius(String component) {
-    //Omitted if statements where we pivoted around a pod
-    //This'll be orbit and dosado in the future
+    // Omitted if statements where we pivoted around a pod
+    // This'll be orbit and dosado in the future
     if(false /* orbiting || dosadoing */) {
-      //Do special things to components based on radius and more
+      // Do special things to components based on radius and more
     } else {
       if(component.equals("A") || component.equals("B")) { return length / 2.0 ; }
       else { return width / 2.0; }
     }
     return 0.0;
+  }
+
+  public void setWantedState(state wantedState) {
+    this.wantedState = wantedState;
   }
 
 

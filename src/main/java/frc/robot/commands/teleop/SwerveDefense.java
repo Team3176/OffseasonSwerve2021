@@ -1,22 +1,21 @@
-package frc.robot.commands;
+package frc.robot.commands.teleop;
 
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Drivetrain.state;
 
-public class SwerveNeutral extends CommandBase {
+public class SwerveDefense extends CommandBase {
   private Drivetrain drivetrain = Drivetrain.getInstance();
 
-  public SwerveNeutral() {
+  public SwerveDefense() {
     addRequirements(drivetrain);
   }
 
   @Override
   public void execute() {
-    drivetrain.drive(0.0, 0.0, 0.0);
+    drivetrain.setWantedState(state.DEFENSE);
+    drivetrain.enterDefense();
   }
 
   @Override
