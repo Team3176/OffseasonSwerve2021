@@ -12,7 +12,17 @@ public class CrossInitLine extends CommandBase {
 
     @Override
     public void execute() {
-        
+        /*
+        if(time stuff) {
+            drivetrain.drive(some parameters)
+        } else if(time stuff) {
+            drivetrain.drive(other parameters)
+        } else if(more time stuff) {
+            driavetrain.state(vision);
+            drivetrain.drive(parameters) //but it will stay locked on or something
+            shooter.shoot()
+        }
+        */
     }
 
     @Override

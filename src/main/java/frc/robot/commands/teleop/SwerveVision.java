@@ -5,7 +5,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Drivetrain.state;
+import frc.robot.subsystems.Drivetrain.driveMode;
 
 /* 
 My hope for vision is that we'll be able to translate however we want but control of spin
@@ -25,8 +25,12 @@ public class SwerveVision extends CommandBase {
   }
 
   @Override
+  public void initialize() {
+    drivetrain.setDriveMode(driveMode.VISION);
+  }
+
+  @Override
   public void execute() {
-    drivetrain.setWantedState(state.VISION);
     drivetrain.drive(forwardCommand, strafeCommand, 0.0); // Spin would be automaticly adjusted to stay locked on
   }
 

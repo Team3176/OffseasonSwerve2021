@@ -35,6 +35,7 @@ public class DrivetrainConstants {
     public static final double MAX_ROT_SPEED = 5.0; // rad/s
     public static final int ENCODER_UNITS = 4096; // tics
 
+    public static final double NON_TURBO_PERCENT_OUT_CAP = 0.5;
     // Speed limits
     /*
     public static final double MAX_LINEAR_SPEED = 4;

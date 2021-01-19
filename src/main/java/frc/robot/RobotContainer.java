@@ -1,9 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.teleop.SwerveDefense;
 import frc.robot.commands.teleop.SwerveDrive;
 import frc.robot.commands.teleop.SwerveVision;
@@ -21,10 +18,14 @@ public class RobotContainer {
     controller = Controller.getInstance();
     drivetrain = Drivetrain.getInstance();
 
+    // TODO: Is there a way to not have 6 inputs and check driveModes another way?
     drivetrain.setDefaultCommand(new SwerveDrive(
       () -> controller.getForward(), 
       () -> controller.getStrafe(),
-      () -> controller.getSpin()));
+      () -> controller.getSpin(),
+      () -> controller.isFieldCentricButtonPressed(),
+      () -> controller.isRobotCentricButtonPressed(),
+      () -> controller.isBackRobotCentricButtonPressed()));
 
     configureButtonBindings();
   }

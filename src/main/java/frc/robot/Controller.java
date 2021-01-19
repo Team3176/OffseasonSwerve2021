@@ -14,8 +14,11 @@ public class Controller {
     // Drivetrain buttons
     private final JoystickButton orbitButton;
     private final JoystickButton dosadoButton;
-    private final JoystickButton defenseButton;
     private final JoystickButton visionButton;
+    private final JoystickButton defenseButton;
+    private final JoystickButton fieldCentricButton;
+    private final JoystickButton robotCentricButton;
+    private final JoystickButton backRobotCentricButton;
 
     public static Controller getInstance() { return instance; }
 
@@ -28,6 +31,9 @@ public class Controller {
         dosadoButton = new JoystickButton(rotStick, 3);
         defenseButton = new JoystickButton(transStick, 2);
         visionButton = new JoystickButton(transStick, 3); //Should be part of the xbox controller later
+        fieldCentricButton = new JoystickButton(transStick, 4);
+        robotCentricButton = new JoystickButton(transStick, 5);
+        backRobotCentricButton = new JoystickButton(transStick, 6);
     }
 
     public double getForward() { return transStick.getY(); }
@@ -42,7 +48,13 @@ public class Controller {
 
     public JoystickButton getDosadoButton() { return dosadoButton; }
 
+    public JoystickButton getVisionButton() { return visionButton; }
+
     public JoystickButton getDefenseButton() { return defenseButton; }
 
-    public JoystickButton getVisionButton() { return visionButton; }
+    public boolean isFieldCentricButtonPressed() { return fieldCentricButton.get(); }
+
+    public boolean isRobotCentricButtonPressed() { return robotCentricButton.get(); }    
+
+    public boolean isBackRobotCentricButtonPressed() { return backRobotCentricButton.get(); }
 }

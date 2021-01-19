@@ -3,7 +3,7 @@ package frc.robot.commands.teleop;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Drivetrain.state;
+import frc.robot.subsystems.Drivetrain.driveMode;
 
 public class SwerveDefense extends CommandBase {
   private Drivetrain drivetrain = Drivetrain.getInstance();
@@ -13,9 +13,13 @@ public class SwerveDefense extends CommandBase {
   }
 
   @Override
+  public void initialize() {
+    drivetrain.setDriveMode(driveMode.DEFENSE);
+  }
+
+  @Override
   public void execute() {
-    drivetrain.setWantedState(state.DEFENSE);
-    drivetrain.enterDefense();
+    drivetrain.drive(0.0, 0.0, 0.0);
   }
 
   @Override
