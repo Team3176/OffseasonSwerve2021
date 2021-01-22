@@ -29,9 +29,9 @@ public class Drivetrain extends SubsystemBase {
 
   private ArrayList<SwervePod> pods;
 
-  private SwervePod podFR;
-  private SwervePod podFL;
-  private SwervePod podBL;
+  // private SwervePod podFR;
+  // private SwervePod podFL;
+  // private SwervePod podBL;
   private SwervePod podBR;
 
   private coordType currentCoordType;
@@ -83,10 +83,11 @@ public class Drivetrain extends SubsystemBase {
 
   private Drivetrain() {
     // Instantiate pods
-    podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
-    podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
-    podBR = new SwervePod(2, driveControllers[2], spinControllers[2]);
-    podBL = new SwervePod(3, driveControllers[3], spinControllers[3]);
+    // podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
+    // podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
+    // podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
+    podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
+    
 
     currentCoordType = coordType.FIELD_CENTRIC;
 
@@ -94,9 +95,9 @@ public class Drivetrain extends SubsystemBase {
 
     // Instantiate array list then add instantiated pods to list
     pods = new ArrayList<SwervePod>();
-    pods.add(podFR);
-    pods.add(podFL);
-    pods.add(podBL);
+    // pods.add(podFR);
+    // pods.add(podFL);
+    // pods.add(podBL);
     pods.add(podBR);
 
     // Setting constants
@@ -176,24 +177,24 @@ public class Drivetrain extends SubsystemBase {
       podDrive[1] = Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2));
       podSpin[1] = Math.atan2(b, d);
 
-      podDrive[2] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
-      podSpin[2] = Math.atan2(a, c);
+      podDrive[2] = Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2));
+      podSpin[2] = Math.atan2(a, d);
 
-      podDrive[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
+      podDrive[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));//Use math.hypot() instead
       podSpin[3] = Math.atan2(a, c);
 
       // Find the highest pod speed then normalize if a pod is exceeding our max speed
       relMaxSpeed = Math.max(Math.max(podDrive[0], podDrive[1]), Math.max(podDrive[2], podDrive[3]));
       if(relMaxSpeed > maxSpeed) {
-        for(int i = 0; i < pods.size(); i++) {
-          podDrive[i] /= (relMaxSpeed / maxSpeed);
-        }
+        // for(int i = 0; i < pods.size(); i++) {
+          podDrive[3] /= (relMaxSpeed / maxSpeed);
+        // }
       }
 
       // Set calculated drive and spins to each pod
-      for(int i = 0; i < pods.size(); i++) {
-        pods.get(i).set(podDrive[i], podSpin[i]);
-      }
+      // for(int i = 0; i < pods.size(); i++) {
+        pods.get(0).set(podDrive[3], podSpin[3]);
+      // }
 
     } else { // Enter defenseive position
       pods.get(0).set(0.0, -1.0 * Math.PI * 4.0);

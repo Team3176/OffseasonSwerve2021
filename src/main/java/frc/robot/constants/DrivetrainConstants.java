@@ -7,7 +7,7 @@ public class DrivetrainConstants {
     public static final int DRIVE_ONE_CID = 1;
     public static final int DRIVE_TWO_CID = 2;
     public static final int DRIVE_THREE_CID = 3;
-    public static final int DRIVE_FOUR_CID = 4;
+    public static final int DRIVE_FOUR_CID = 5;
 
     //CAN IDs
     public static final int STEER_ONE_CID = 11;

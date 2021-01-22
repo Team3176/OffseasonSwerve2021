@@ -61,15 +61,18 @@ public class SwervePod {
     public void set(double transMag, double transAngle) {
         this.initRadianDifference += ((transAngle % (2 * PI)) - (this.lastTransAngle % (2 * PI)));
         double encoderSetPos = calcSpinPos(transAngle);
-        //if(transMag != 0) {
-        if(true) {
+        if(transMag != 0) {
+        // if(true) {
             spinController.set(ControlMode.Position, encoderSetPos);
             SmartDashboard.putNumber("encoderSetPos", encoderSetPos);
             lastEncoderPos = encoderSetPos;
         } else {
             spinController.set(ControlMode.Position, lastEncoderPos);
             SmartDashboard.putNumber("lastEncoderPos", lastEncoderPos);
-        }
+        } 
+        thrust(transMag);
+        SmartDashboard.putNumber("Encoder Pos", encoderSetPos);
+        SmartDashboard.putNumber("TransMag", transMag);
         SmartDashboard.putNumber("transAngle", transAngle);
         SmartDashboard.putNumber("lastTransAngle", lastTransAngle);
         SmartDashboard.putNumber("initRadianDifference", initRadianDifference);

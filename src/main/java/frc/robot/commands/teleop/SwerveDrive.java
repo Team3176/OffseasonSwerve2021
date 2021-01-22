@@ -11,22 +11,22 @@ import frc.robot.subsystems.Drivetrain.driveMode;
 
 public class SwerveDrive extends CommandBase {
   private Drivetrain drivetrain = Drivetrain.getInstance();
-  private double forwardCommand;
-  private double strafeCommand;
-  private double spinCommand;
+  private DoubleSupplier forwardCommand;
+  private DoubleSupplier strafeCommand;
+  private DoubleSupplier spinCommand;
 
-  private boolean isFieldCentric;
-  private boolean isRobotCentric;
-  private boolean isBackRobotCentric;
+  private BooleanSupplier isFieldCentric;
+  private BooleanSupplier isRobotCentric;
+  private BooleanSupplier isBackRobotCentric;
 
   public SwerveDrive( DoubleSupplier forwardCommand, DoubleSupplier strafeCommand, DoubleSupplier spinCommand,
                       BooleanSupplier isFieldCentric, BooleanSupplier isRobotCentric, BooleanSupplier isBackRobotCentric) {
-    this.forwardCommand = forwardCommand.getAsDouble();
-    this.strafeCommand = strafeCommand.getAsDouble();
-    this.spinCommand = spinCommand.getAsDouble();
-    this.isFieldCentric = isFieldCentric.getAsBoolean();
-    this.isRobotCentric = isRobotCentric.getAsBoolean();
-    this.isBackRobotCentric = isBackRobotCentric.getAsBoolean();
+    this.forwardCommand = forwardCommand;
+    this.strafeCommand = strafeCommand;
+    this.spinCommand = spinCommand;
+    this.isFieldCentric = isFieldCentric;
+    this.isRobotCentric = isRobotCentric;
+    this.isBackRobotCentric = isBackRobotCentric;
     addRequirements(drivetrain);
   }
 
@@ -37,16 +37,18 @@ public class SwerveDrive extends CommandBase {
 
   @Override
   public void execute() {
-    if(isFieldCentric) {
+
+    if(isFieldCentric.getAsBoolean()) {
       drivetrain.setCoordType(coordType.FIELD_CENTRIC);
     }
-    if(isRobotCentric) {
+    if(isRobotCentric.getAsBoolean()) {
       drivetrain.setCoordType(coordType.ROBOT_CENTRIC);
     }
-    if(isBackRobotCentric) {
+    if(isBackRobotCentric.getAsBoolean()) {
       drivetrain.setCoordType(coordType.BACK_ROBOT_CENTRIC);
     }
-    drivetrain.drive(forwardCommand, strafeCommand, spinCommand);
+    drivetrain.drive(forwardCommand.getAsDouble(), strafeCommand.getAsDouble(), spinCommand.getAsDouble());
+    System.out.println("hello" + forwardCommand.getAsDouble() + ", " + strafeCommand.getAsDouble() + ", " + spinCommand.getAsDouble());
   }
 
   @Override
