@@ -10,6 +10,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -155,6 +156,10 @@ public class Drivetrain extends SubsystemBase {
       forwardCommand *= -1;
     }
 
+    // TODO: This should be a state
+    forwardCommand *= DrivetrainConstants.MAX_WHEEL_SPEED;
+    strafeCommand *= DrivetrainConstants.MAX_WHEEL_SPEED;
+
     calculateNSetPodPositions(forwardCommand, strafeCommand, spinCommand);
   }
 
@@ -166,10 +171,16 @@ public class Drivetrain extends SubsystemBase {
       double[] podSpin = new double[4];
 
       double a = strafeCommand + spinCommand * getRadius("A");
+      SmartDashboard.putNumber("a", a);
       double b = strafeCommand - spinCommand * getRadius("B");
       double c = forwardCommand - spinCommand * getRadius("C");
+      SmartDashboard.putNumber("c", c);
       double d = forwardCommand + spinCommand * getRadius("D");
+      SmartDashboard.putNumber("forwardCommand", forwardCommand);
+      SmartDashboard.putNumber("strafeCommand", strafeCommand);
+      SmartDashboard.putNumber("spinCommand", spinCommand);
 
+      // TODO: Look at use of Math.hypot() instead
       // Calculate speed and angle of each pod
       podDrive[0] = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2));
       podSpin[0] = Math.atan2(b, c);
@@ -180,7 +191,7 @@ public class Drivetrain extends SubsystemBase {
       podDrive[2] = Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2));
       podSpin[2] = Math.atan2(a, d);
 
-      podDrive[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));//Use math.hypot() instead
+      podDrive[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
       podSpin[3] = Math.atan2(a, c);
 
       // Find the highest pod speed then normalize if a pod is exceeding our max speed
@@ -193,7 +204,9 @@ public class Drivetrain extends SubsystemBase {
 
       // Set calculated drive and spins to each pod
       // for(int i = 0; i < pods.size(); i++) {
-        pods.get(0).set(podDrive[3], podSpin[3]);
+        pods.get(0).set(podDrive[3], podSpin[3]);        
+        SmartDashboard.putNumber("podDrive", podDrive[3]);
+        SmartDashboard.putNumber("podSpin", podSpin[3]);
       // }
 
     } else { // Enter defenseive position

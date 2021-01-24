@@ -33,10 +33,10 @@ public class SwervePod {
     private double encoderError;
     private double driveCommand;
     private double lastTransAngle;
-    private double initRadianDifference; //init pos versus now pos
     private boolean flipThrust;
 
     private double PI = Math.PI;
+    private double maxFps = SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
     
     public SwervePod(int id, CANSparkMax driveController, TalonSRX spinController) {
         this.id = id;
@@ -53,30 +53,28 @@ public class SwervePod {
 		this.spinController.config_kF(0, SwervePodConstants.SPIN_PID_CONFIG[3][id], 0);
     }
 
-    public void thrust(double transMag) {
-        if(flipThrust) { transMag = -transMag; }
-        driveController.set(transMag);
+    public void thrust(double speed) {
+        if(flipThrust) { speed = -speed; }
+        driveController.set(speed);
     }
 
-    public void set(double transMag, double transAngle) {
-        this.initRadianDifference += ((transAngle % (2 * PI)) - (this.lastTransAngle % (2 * PI)));
-        double encoderSetPos = calcSpinPos(transAngle);
-        if(transMag != 0) {
+    public void set(double speed, double angle) {
+        double encoderSetPos = rads2Tics(angle) + encoderOffset;
+        //double encoderSetPos = calcSpinPos(transAngle);
+        if(speed != 0) {
         // if(true) {
             spinController.set(ControlMode.Position, encoderSetPos);
-            SmartDashboard.putNumber("encoderSetPos", encoderSetPos);
             lastEncoderPos = encoderSetPos;
         } else {
             spinController.set(ControlMode.Position, lastEncoderPos);
-            SmartDashboard.putNumber("lastEncoderPos", lastEncoderPos);
         } 
-        thrust(transMag);
+        thrust(speed);
         SmartDashboard.putNumber("Encoder Pos", encoderSetPos);
-        SmartDashboard.putNumber("TransMag", transMag);
-        SmartDashboard.putNumber("transAngle", transAngle);
+        SmartDashboard.putNumber("speed", speed);
+        SmartDashboard.putNumber("angle", angle);
         SmartDashboard.putNumber("lastTransAngle", lastTransAngle);
-        SmartDashboard.putNumber("initRadianDifference", initRadianDifference);
-        this.lastTransAngle = transAngle;
+        SmartDashboard.putNumber("encoder Pos", spinController.getSelectedSensorPosition());
+        this.lastTransAngle = angle;
     }
 
     /**
@@ -104,10 +102,9 @@ public class SwervePod {
             SmartDashboard.putNumber("radError 12", radianError);
         }
         SmartDashboard.putNumber("round test", (double)(Math.sin((1/8) * Math.PI)));
-        System.out.print((double)(Math.sin((1/8) * Math.PI)));
 
         encoderError = rads2Tics(radianError);
-        driveCommand = encoderError + encoderPos + encoderOffset/* + this.initRadianDifference*/;
+        driveCommand = encoderError + encoderPos + encoderOffset;
         SmartDashboard.putNumber("DriveCommand", driveCommand);
         return driveCommand;
     }

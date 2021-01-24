@@ -48,7 +48,6 @@ public class SwerveDrive extends CommandBase {
       drivetrain.setCoordType(coordType.BACK_ROBOT_CENTRIC);
     }
     drivetrain.drive(forwardCommand.getAsDouble(), strafeCommand.getAsDouble(), spinCommand.getAsDouble());
-    System.out.println("hello" + forwardCommand.getAsDouble() + ", " + strafeCommand.getAsDouble() + ", " + spinCommand.getAsDouble());
   }
 
   @Override

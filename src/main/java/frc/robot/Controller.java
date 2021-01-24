@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.constants.ControllerConstants;
@@ -40,7 +41,13 @@ public class Controller {
     public double getStrafe() { return transStick.getX(); }
     public double getSpin() { return rotStick.getX(); }    
 
-    public void outputToSmartDashboard() { }
+    public void outputToSmartDashboard() { 
+        SmartDashboard.putNumber("forward", getForward());
+        SmartDashboard.putNumber("strafe", getStrafe());
+        SmartDashboard.putNumber("spin", getSpin());
+        
+
+    }
 
     /* Buttons */
 
