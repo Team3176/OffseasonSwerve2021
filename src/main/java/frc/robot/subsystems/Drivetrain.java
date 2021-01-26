@@ -30,9 +30,9 @@ public class Drivetrain extends SubsystemBase {
 
   private ArrayList<SwervePod> pods;
 
-  // private SwervePod podFR;
-  // private SwervePod podFL;
-  // private SwervePod podBL;
+  private SwervePod podFR;
+  private SwervePod podFL;
+  private SwervePod podBL;
   private SwervePod podBR;
 
   private coordType currentCoordType;
@@ -84,9 +84,9 @@ public class Drivetrain extends SubsystemBase {
 
   private Drivetrain() {
     // Instantiate pods
-    // podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
-    // podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
-    // podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
+    podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
+    podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
+    podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
     podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
     
 
@@ -96,9 +96,9 @@ public class Drivetrain extends SubsystemBase {
 
     // Instantiate array list then add instantiated pods to list
     pods = new ArrayList<SwervePod>();
-    // pods.add(podFR);
-    // pods.add(podFL);
-    // pods.add(podBL);
+    pods.add(podFR);
+    pods.add(podFL);
+    pods.add(podBL);
     pods.add(podBR);
 
     // Setting constants
@@ -156,7 +156,7 @@ public class Drivetrain extends SubsystemBase {
       forwardCommand *= -1;
     }
 
-    // TODO: This should be a state
+    // TODO: I'm not sure this should be needed - it seems like a problem with converting from percent to fps from class to class
     forwardCommand *= DrivetrainConstants.MAX_WHEEL_SPEED;
     strafeCommand *= DrivetrainConstants.MAX_WHEEL_SPEED;
 
@@ -171,14 +171,9 @@ public class Drivetrain extends SubsystemBase {
       double[] podSpin = new double[4];
 
       double a = strafeCommand + spinCommand * getRadius("A");
-      SmartDashboard.putNumber("a", a);
       double b = strafeCommand - spinCommand * getRadius("B");
       double c = forwardCommand - spinCommand * getRadius("C");
-      SmartDashboard.putNumber("c", c);
       double d = forwardCommand + spinCommand * getRadius("D");
-      SmartDashboard.putNumber("forwardCommand", forwardCommand);
-      SmartDashboard.putNumber("strafeCommand", strafeCommand);
-      SmartDashboard.putNumber("spinCommand", spinCommand);
 
       // TODO: Look at use of Math.hypot() instead
       // Calculate speed and angle of each pod
@@ -197,24 +192,31 @@ public class Drivetrain extends SubsystemBase {
       // Find the highest pod speed then normalize if a pod is exceeding our max speed
       relMaxSpeed = Math.max(Math.max(podDrive[0], podDrive[1]), Math.max(podDrive[2], podDrive[3]));
       if(relMaxSpeed > maxSpeed) {
-        // for(int i = 0; i < pods.size(); i++) {
-          podDrive[3] /= (relMaxSpeed / maxSpeed);
-        // }
+        for(int i = 0; i < pods.size(); i++) {
+          podDrive[i] /= (relMaxSpeed / maxSpeed);
+        }
       }
 
       // Set calculated drive and spins to each pod
-      // for(int i = 0; i < pods.size(); i++) {
-        pods.get(0).set(podDrive[3], podSpin[3]);        
-        SmartDashboard.putNumber("podDrive", podDrive[3]);
-        SmartDashboard.putNumber("podSpin", podSpin[3]);
-      // }
+      for(int i = 0; i < pods.size(); i++) {
+        pods.get(i).set(podDrive[i], podSpin[i]);        
+      }
+
+      SmartDashboard.putNumber("P1 Tics", spinControllers[0].getSelectedSensorPosition());
+      SmartDashboard.putNumber("P2 Tics", spinControllers[1].getSelectedSensorPosition());
+      SmartDashboard.putNumber("P3 Tics", spinControllers[2].getSelectedSensorPosition());
+      SmartDashboard.putNumber("P4 Tics", spinControllers[3].getSelectedSensorPosition());
 
     } else { // Enter defenseive position
-      pods.get(0).set(0.0, -1.0 * Math.PI * 4.0);
-      pods.get(1).set(0.0, 1.0 * Math.PI * 4.0);
-      pods.get(2).set(0.0, 3.0 * Math.PI * 4.0);
-      pods.get(3).set(0.0, -3.0 * Math.PI * 4.0);
+      double smallNum = Math.pow(10, -15);
+      pods.get(0).set(smallNum, -1.0 * Math.PI / 4.0);
+      pods.get(1).set(smallNum, 1.0 * Math.PI / 4.0);
+      pods.get(2).set(smallNum, 3.0 * Math.PI / 4.0);
+      pods.get(3).set(smallNum, -3.0 * Math.PI / 4.0);
+      SmartDashboard.putBoolean("isDefending", true);
     }
+
+    SmartDashboard.putBoolean("isDefending", false);
   }
 
   private void updateAngle() {

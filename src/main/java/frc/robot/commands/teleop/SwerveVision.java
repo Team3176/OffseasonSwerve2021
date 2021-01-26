@@ -15,12 +15,12 @@ well, we could drive across the field while staying locked onto the target with 
 
 public class SwerveVision extends CommandBase {
   private Drivetrain drivetrain = Drivetrain.getInstance();
-  private double forwardCommand;
-  private double strafeCommand;
+  private DoubleSupplier forwardCommand;
+  private DoubleSupplier strafeCommand;
 
   public SwerveVision(DoubleSupplier forwardCommand, DoubleSupplier strafeCommand) {
-    this.forwardCommand = forwardCommand.getAsDouble();
-    this.strafeCommand = strafeCommand.getAsDouble();
+    this.forwardCommand = forwardCommand;
+    this.strafeCommand = strafeCommand;
     addRequirements(drivetrain);
   }
 
@@ -31,7 +31,7 @@ public class SwerveVision extends CommandBase {
 
   @Override
   public void execute() {
-    drivetrain.drive(forwardCommand, strafeCommand, 0.0); // Spin would be automaticly adjusted to stay locked on
+    drivetrain.drive(forwardCommand.getAsDouble(), strafeCommand.getAsDouble(), 0.0); // Spin would be automaticly adjusted to stay locked on
   }
 
   @Override

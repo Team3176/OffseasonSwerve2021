@@ -28,7 +28,7 @@ public final class SwervePodConstants {
     };
 
    // public static final int[] OFFSETS = {0};
-    public static final int[] OFFSETS = {738, 410, 475, 948};
+    public static final int[] OFFSETS = {-1314, -1626, -1661, -1067};
 
     public static final int DRIVE_CURRENT_LIMIT = 40;
     public static final double DRIVE_RAMP_RATE = 0.2;

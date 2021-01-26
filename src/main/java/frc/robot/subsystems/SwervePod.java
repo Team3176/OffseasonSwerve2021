@@ -55,7 +55,7 @@ public class SwervePod {
 
     public void thrust(double speed) {
         if(flipThrust) { speed = -speed; }
-        driveController.set(speed);
+        driveController.set(speed / maxFps);
     }
 
     public void set(double speed, double angle) {

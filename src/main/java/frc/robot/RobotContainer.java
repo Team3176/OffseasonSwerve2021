@@ -23,8 +23,6 @@ public class RobotContainer {
       () -> controller.getForward(), 
       () -> controller.getStrafe(),
       () -> controller.getSpin(),
-
-      
       () -> controller.isFieldCentricButtonPressed(),
       () -> controller.isRobotCentricButtonPressed(),
       () -> controller.isBackRobotCentricButtonPressed()));
