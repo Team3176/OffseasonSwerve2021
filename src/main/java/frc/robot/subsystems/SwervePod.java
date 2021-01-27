@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 //TODO: Recognize the red dependecys because seeing red is annoying
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -14,8 +16,12 @@ import com.revrobotics.ControlType;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.constants.SwervePodConstants;
@@ -37,48 +43,59 @@ public class SwervePod {
 
     private double PI = Math.PI;
     private double maxFps = SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
-    
+
+    double p;
+    double i;
+    double d;
+    double f;
+
     public SwervePod(int id, CANSparkMax driveController, TalonSRX spinController) {
         this.id = id;
         this.driveController = driveController;
         this.spinController = spinController;
- 
+
         this.lastTransAngle = 0;
 
-        //spinMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute,0,0);
+        p = SwervePodConstants.SPIN_PID_CONFIG[0][id];
+        i = SwervePodConstants.SPIN_PID_CONFIG[1][id];
+        d = SwervePodConstants.SPIN_PID_CONFIG[2][id];
+        f = SwervePodConstants.SPIN_PID_CONFIG[3][id];
 
-        this.spinController.config_kP(0, SwervePodConstants.SPIN_PID_CONFIG[0][id], 0);
-		this.spinController.config_kI(0, SwervePodConstants.SPIN_PID_CONFIG[1][id], 0);
-		this.spinController.config_kD(0, SwervePodConstants.SPIN_PID_CONFIG[2][id], 0);
-		this.spinController.config_kF(0, SwervePodConstants.SPIN_PID_CONFIG[3][id], 0);
+        // spinMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute,0,0);
+        this.spinController.config_kP(0, SmartDashboard.getNumber("P", p), 0);
+        this.spinController.config_kI(0, SmartDashboard.getNumber("I", i), 0);
+        this.spinController.config_kD(0, SmartDashboard.getNumber("D", d), 0);
+        this.spinController.config_kF(0, SmartDashboard.getNumber("F", f), 0);
     }
 
     public void thrust(double speed) {
-        if(flipThrust) { speed = -speed; }
+        if (flipThrust) {
+            speed = -speed;
+        }
         driveController.set(speed / maxFps);
     }
 
     public void set(double speed, double angle) {
         double encoderSetPos = rads2Tics(angle) + encoderOffset;
-        //double encoderSetPos = calcSpinPos(transAngle);
-        if(speed != 0) {
-        // if(true) {
+        // double encoderSetPos = calcSpinPos(transAngle);
+        if (speed != 0) {
+            // if(true) {
             spinController.set(ControlMode.Position, encoderSetPos);
             lastEncoderPos = encoderSetPos;
         } else {
             spinController.set(ControlMode.Position, lastEncoderPos);
-        } 
+        }
         thrust(speed);
-        SmartDashboard.putNumber("Encoder Pos", encoderSetPos);
-        SmartDashboard.putNumber("speed", speed);
-        SmartDashboard.putNumber("angle", angle);
-        SmartDashboard.putNumber("lastTransAngle", lastTransAngle);
-        SmartDashboard.putNumber("encoder Pos", spinController.getSelectedSensorPosition());
+        spinController.config_kP(0, SmartDashboard.getNumber("P", 0), 0);
+        spinController.config_kI(0, SmartDashboard.getNumber("I", 0), 0);
+        spinController.config_kD(0, SmartDashboard.getNumber("D", 0), 0);
+        spinController.config_kF(0, SmartDashboard.getNumber("F", 0), 0);
         this.lastTransAngle = angle;
     }
 
     /**
-     * @param angle desired angle of swerve pod in units of radians, range from -2PI to +2PI
+     * @param angle desired angle of swerve pod in units of radians, range from -2PI
+     *              to +2PI
      * @return
      */
     private double calcSpinPos(double angle) {
@@ -90,18 +107,18 @@ public class SwervePod {
         radianError = angle - radianPos;
         SmartDashboard.putNumber("radPos", radianPos);
 
-        if(Math.abs(radianError) > (5 * (PI / 2))) {
+        if (Math.abs(radianError) > (5 * (PI / 2))) {
             System.out.println("Error: Overload");
             SmartDashboard.putNumber("radError 52", radianError);
-        } else if(Math.abs(radianError) > (3 * (PI / 2))) {
+        } else if (Math.abs(radianError) > (3 * (PI / 2))) {
             radianError -= Math.copySign(2 * PI, radianError);
             SmartDashboard.putNumber("radError 32", radianError);
-        } else if(Math.abs(radianError) > (PI / 2)) {
+        } else if (Math.abs(radianError) > (PI / 2)) {
             radianError -= Math.copySign(PI, radianError);
             flipThrust = !flipThrust;
             SmartDashboard.putNumber("radError 12", radianError);
         }
-        SmartDashboard.putNumber("round test", (double)(Math.sin((1/8) * Math.PI)));
+        SmartDashboard.putNumber("round test", (double) (Math.sin((1 / 8) * Math.PI)));
 
         encoderError = rads2Tics(radianError);
         driveCommand = encoderError + encoderPos + encoderOffset;
@@ -110,7 +127,7 @@ public class SwervePod {
     }
 
     private int rads2Tics(double rads) {
-        return (int)((4096 / (PI * 2)) * rads);
+        return (int) ((4096 / (PI * 2)) * rads);
     }
 
     private double tics2Rads(int tics) {

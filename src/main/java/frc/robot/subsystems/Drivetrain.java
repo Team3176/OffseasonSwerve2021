@@ -31,9 +31,9 @@ public class Drivetrain extends SubsystemBase {
   private ArrayList<SwervePod> pods;
 
   private SwervePod podFR;
-  private SwervePod podFL;
-  private SwervePod podBL;
-  private SwervePod podBR;
+  //private SwervePod podFL;
+  //private SwervePod podBL;
+  //private SwervePod podBR;
 
   private coordType currentCoordType;
   private driveMode currentDriveMode;
@@ -85,9 +85,9 @@ public class Drivetrain extends SubsystemBase {
   private Drivetrain() {
     // Instantiate pods
     podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
-    podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
-    podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
-    podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
+    //podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
+    //podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
+    //podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
     
 
     currentCoordType = coordType.FIELD_CENTRIC;
@@ -97,9 +97,9 @@ public class Drivetrain extends SubsystemBase {
     // Instantiate array list then add instantiated pods to list
     pods = new ArrayList<SwervePod>();
     pods.add(podFR);
-    pods.add(podFL);
-    pods.add(podBL);
-    pods.add(podBR);
+    //pods.add(podFL);
+    //pods.add(podBL);
+    //pods.add(podBR);
 
     // Setting constants
     length = DrivetrainConstants.LENGTH;
@@ -129,6 +129,14 @@ public class Drivetrain extends SubsystemBase {
   
   // Prevents more than one instance of drivetrian
   public static Drivetrain getInstance() { return instance; }
+
+  public void drive(double degreeSetPoint) {
+    double smallNum = Math.pow(10, -15);
+    double radianSetPoint = degreeSetPoint * ((Math.PI) / 180);
+    pods.get(0).set(smallNum, radianSetPoint);
+    SmartDashboard.putNumber("ActualTics", spinControllers[0].getSelectedSensorPosition() + 1314 /*offset*/);
+    SmartDashboard.putNumber("WantedTics", degreeSetPoint * (4096.0 / 360.0));
+  }
 
   public void drive(double forwardCommand, double strafeCommand, double spinCommand) {
     // TODO: Make the gyro reset if a certain button is pushed
@@ -201,11 +209,6 @@ public class Drivetrain extends SubsystemBase {
       for(int i = 0; i < pods.size(); i++) {
         pods.get(i).set(podDrive[i], podSpin[i]);        
       }
-
-      SmartDashboard.putNumber("P1 Tics", spinControllers[0].getSelectedSensorPosition());
-      SmartDashboard.putNumber("P2 Tics", spinControllers[1].getSelectedSensorPosition());
-      SmartDashboard.putNumber("P3 Tics", spinControllers[2].getSelectedSensorPosition());
-      SmartDashboard.putNumber("P4 Tics", spinControllers[3].getSelectedSensorPosition());
 
     } else { // Enter defenseive position
       double smallNum = Math.pow(10, -15);
