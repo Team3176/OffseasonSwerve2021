@@ -47,7 +47,7 @@ public class SwerveDrive extends CommandBase {
     if(isBackRobotCentric.getAsBoolean()) {
       drivetrain.setCoordType(coordType.BACK_ROBOT_CENTRIC);
     }
-    drivetrain.drive((spinCommand.getAsDouble() + 1) * 180);
+    drivetrain.drive(forwardCommand.getAsDouble(), strafeCommand.getAsDouble(), spinCommand.getAsDouble());
   }
 
   @Override

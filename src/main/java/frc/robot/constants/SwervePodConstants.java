@@ -21,14 +21,14 @@ public final class SwervePodConstants {
     };
 
     public static final double[][] SPIN_PID_CONFIG = {
-        /* kP */    {3.0, 1.0, 1.0, 4.5},
-        /* kI */    {0.0023, 0.0, 0.0, 0.0023},
-        /* kD */    {190.0, 400.0, 400.0, 190.0},
-        /* kF */    {0.00001, 0.00001, 0.00001, 0.00001}    //Feed forward gain constant
+        /* kP */    {1.91, 0.94, 0.98, 2.41},
+        /* kI */    {0.0, 0.0, 0.0, 0.0},
+        /* kD */    {70.6, 300.0, 300.0, 152.0},
+        /* kF */    {0.0, 0.0, 0.0, 0.0}    //Feed forward gain constant
     };
 
    // public static final int[] OFFSETS = {0};
-    public static final int[] OFFSETS = {-1314, -1626, -1661, -1067};
+    public static final int[] OFFSETS = {869, 223, 2288, 1275};
 
     public static final int DRIVE_CURRENT_LIMIT = 40;
     public static final double DRIVE_RAMP_RATE = 0.2;

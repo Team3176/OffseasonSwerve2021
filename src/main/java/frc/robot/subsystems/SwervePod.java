@@ -44,11 +44,6 @@ public class SwervePod {
     private double PI = Math.PI;
     private double maxFps = SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
 
-    double p;
-    double i;
-    double d;
-    double f;
-
     public SwervePod(int id, CANSparkMax driveController, TalonSRX spinController) {
         this.id = id;
         this.driveController = driveController;
@@ -56,16 +51,10 @@ public class SwervePod {
 
         this.lastTransAngle = 0;
 
-        p = SwervePodConstants.SPIN_PID_CONFIG[0][id];
-        i = SwervePodConstants.SPIN_PID_CONFIG[1][id];
-        d = SwervePodConstants.SPIN_PID_CONFIG[2][id];
-        f = SwervePodConstants.SPIN_PID_CONFIG[3][id];
-
-        // spinMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute,0,0);
-        this.spinController.config_kP(0, SmartDashboard.getNumber("P", p), 0);
-        this.spinController.config_kI(0, SmartDashboard.getNumber("I", i), 0);
-        this.spinController.config_kD(0, SmartDashboard.getNumber("D", d), 0);
-        this.spinController.config_kF(0, SmartDashboard.getNumber("F", f), 0);
+        this.spinController.config_kP(0, SwervePodConstants.SPIN_PID_CONFIG[0][id], 0);
+        this.spinController.config_kI(0, SwervePodConstants.SPIN_PID_CONFIG[1][id], 0);
+        this.spinController.config_kD(0, SwervePodConstants.SPIN_PID_CONFIG[2][id], 0);
+        this.spinController.config_kF(0, SwervePodConstants.SPIN_PID_CONFIG[3][id], 0);
     }
 
     public void thrust(double speed) {
@@ -86,11 +75,8 @@ public class SwervePod {
             spinController.set(ControlMode.Position, lastEncoderPos);
         }
         thrust(speed);
-        spinController.config_kP(0, SmartDashboard.getNumber("P", 0), 0);
-        spinController.config_kI(0, SmartDashboard.getNumber("I", 0), 0);
-        spinController.config_kD(0, SmartDashboard.getNumber("D", 0), 0);
-        spinController.config_kF(0, SmartDashboard.getNumber("F", 0), 0);
         this.lastTransAngle = angle;
+        SmartDashboard.putNumber("Pod " + id + " tics", spinController.getSelectedSensorPosition());
     }
 
     /**
