@@ -32,14 +32,15 @@ public class SwervePod {
     private TalonSRX spinController;
 
     private int id;
-    private int encoderOffset = SwervePodConstants.OFFSETS[id];
+    private int encoderOffset; 
+
+    private int off = 0;
 
     private double lastEncoderPos;
     private double radianError;
     private double encoderError;
     private double driveCommand;
-    private double lastTransAngle;
-    private boolean flipThrust;
+    private double velocitySetPoint;
 
     private double PI = Math.PI;
     private double maxFps = SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
@@ -49,34 +50,27 @@ public class SwervePod {
         this.driveController = driveController;
         this.spinController = spinController;
 
-        this.lastTransAngle = 0;
-
         this.spinController.config_kP(0, SwervePodConstants.SPIN_PID_CONFIG[0][id], 0);
         this.spinController.config_kI(0, SwervePodConstants.SPIN_PID_CONFIG[1][id], 0);
         this.spinController.config_kD(0, SwervePodConstants.SPIN_PID_CONFIG[2][id], 0);
         this.spinController.config_kF(0, SwervePodConstants.SPIN_PID_CONFIG[3][id], 0);
-    }
 
-    public void thrust(double speed) {
-        if (flipThrust) {
-            speed = -speed;
-        }
-        driveController.set(speed / maxFps);
+        encoderOffset = SwervePodConstants.OFFSETS[id];
+
+        SmartDashboard.putNumber("offset P" + id, off);
     }
 
     public void set(double speed, double angle) {
-        double encoderSetPos = rads2Tics(angle) + encoderOffset;
-        // double encoderSetPos = calcSpinPos(transAngle);
+        velocitySetPoint = speed;
+        // double encoderSetPos = rads2Tics(angle) + encoderOffset + SmartDashboard.getNumber("offset P" + id, off);
+        double encoderSetPos = calcSpinPos(angle);
         if (speed != 0) {
-            // if(true) {
             spinController.set(ControlMode.Position, encoderSetPos);
             lastEncoderPos = encoderSetPos;
         } else {
             spinController.set(ControlMode.Position, lastEncoderPos);
         }
-        thrust(speed);
-        this.lastTransAngle = angle;
-        SmartDashboard.putNumber("Pod " + id + " tics", spinController.getSelectedSensorPosition());
+        driveController.set(velocitySetPoint / maxFps);
     }
 
     /**
@@ -86,29 +80,19 @@ public class SwervePod {
      */
     private double calcSpinPos(double angle) {
         int encoderPos = spinController.getSelectedSensorPosition(0) - encoderOffset;
-        SmartDashboard.putNumber("SSP", spinController.getSelectedSensorPosition(0));
-        SmartDashboard.putNumber("encoderPos", encoderPos);
         double radianPos = tics2Rads(encoderPos);
-        SmartDashboard.putNumber("angle", angle);
         radianError = angle - radianPos;
-        SmartDashboard.putNumber("radPos", radianPos);
 
         if (Math.abs(radianError) > (5 * (PI / 2))) {
             System.out.println("Error: Overload");
-            SmartDashboard.putNumber("radError 52", radianError);
         } else if (Math.abs(radianError) > (3 * (PI / 2))) {
             radianError -= Math.copySign(2 * PI, radianError);
-            SmartDashboard.putNumber("radError 32", radianError);
         } else if (Math.abs(radianError) > (PI / 2)) {
             radianError -= Math.copySign(PI, radianError);
-            flipThrust = !flipThrust;
-            SmartDashboard.putNumber("radError 12", radianError);
+            velocitySetPoint = -velocitySetPoint;
         }
-        SmartDashboard.putNumber("round test", (double) (Math.sin((1 / 8) * Math.PI)));
-
         encoderError = rads2Tics(radianError);
         driveCommand = encoderError + encoderPos + encoderOffset;
-        SmartDashboard.putNumber("DriveCommand", driveCommand);
         return driveCommand;
     }
 

@@ -27,8 +27,8 @@ public final class SwervePodConstants {
         /* kF */    {0.0, 0.0, 0.0, 0.0}    //Feed forward gain constant
     };
 
-   // public static final int[] OFFSETS = {0};
-    public static final int[] OFFSETS = {869, 223, 2288, 1275};
+    // public static final int[] OFFSETS = {2768, 2432, 2494, 3016};
+    public static final int[] OFFSETS = {4846, 6575, 2456, 7081};
 
     public static final int DRIVE_CURRENT_LIMIT = 40;
     public static final double DRIVE_RAMP_RATE = 0.2;
