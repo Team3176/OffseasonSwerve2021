@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.*; 
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
@@ -28,7 +29,7 @@ import frc.robot.constants.SwervePodConstants;
 
 public class SwervePod {
 
-    private CANSparkMax driveController;
+    private WPI_TalonSRX driveController;
     private TalonSRX spinController;
 
     private int id;
@@ -45,7 +46,7 @@ public class SwervePod {
     private double PI = Math.PI;
     private double maxFps = SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
 
-    public SwervePod(int id, CANSparkMax driveController, TalonSRX spinController) {
+    public SwervePod(int id, WPI_TalonSRX driveController, TalonSRX spinController) {
         this.id = id;
         this.driveController = driveController;
         this.spinController = spinController;
@@ -62,7 +63,6 @@ public class SwervePod {
 
     public void set(double speed, double angle) {
         velocitySetPoint = speed;
-        // double encoderSetPos = rads2Tics(angle) + encoderOffset + SmartDashboard.getNumber("offset P" + id, off);
         double encoderSetPos = calcSpinPos(angle);
         if (speed != 0) {
             spinController.set(ControlMode.Position, encoderSetPos);
@@ -70,7 +70,9 @@ public class SwervePod {
         } else {
             spinController.set(ControlMode.Position, lastEncoderPos);
         }
-        driveController.set(velocitySetPoint / maxFps);
+        
+        driveController.set(ControlMode.PercentOutput, speed);
+//        driveController.set(ControlMode., velocitySetPoint / maxFps);
     }
 
     /**
