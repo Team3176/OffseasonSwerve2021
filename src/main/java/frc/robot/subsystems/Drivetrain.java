@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 //TODO: Recognize the red dependecys because seeing red is annoying
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.*;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -30,10 +30,10 @@ public class Drivetrain extends SubsystemBase {
 
   private ArrayList<SwervePod> pods;
 
-  private SwervePod podFR;
+  // private SwervePod podFR;
   // private SwervePod podFL;
   // private SwervePod podBL;
-  // private SwervePod podBR;
+  private SwervePod podBR;
 
   private coordType currentCoordType;
   private driveMode currentDriveMode;
@@ -42,10 +42,10 @@ public class Drivetrain extends SubsystemBase {
 
   private double lastGyroClock;
 
-  public WPI_TalonSRX[] driveControllers = {new WPI_TalonSRX(DrivetrainConstants.DRIVE_ONE_CID),
-                                            new WPI_TalonSRX(DrivetrainConstants.DRIVE_TWO_CID),
-                                            new WPI_TalonSRX(DrivetrainConstants.DRIVE_THREE_CID),
-                                            new WPI_TalonSRX(DrivetrainConstants.DRIVE_FOUR_CID)};
+  public TalonFX[] driveControllers = {new TalonFX(DrivetrainConstants.DRIVE_ONE_CID),
+                                            new TalonFX(DrivetrainConstants.DRIVE_TWO_CID),
+                                            new TalonFX(DrivetrainConstants.DRIVE_THREE_CID),
+                                            new TalonFX(DrivetrainConstants.DRIVE_FOUR_CID)};
 
   public TalonSRX[] spinControllers = {new TalonSRX(DrivetrainConstants.STEER_ONE_CID),
                                         new TalonSRX(DrivetrainConstants.STEER_TWO_CID),
@@ -84,10 +84,10 @@ public class Drivetrain extends SubsystemBase {
 
   private Drivetrain() {
     // Instantiate pods
-    podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
+    // podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
     // podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
     // podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
-    // podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
+    podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
     
 
     currentCoordType = coordType.FIELD_CENTRIC;
@@ -96,10 +96,10 @@ public class Drivetrain extends SubsystemBase {
 
     // Instantiate array list then add instantiated pods to list
     pods = new ArrayList<SwervePod>();
-    pods.add(podFR);
+    // pods.add(podFR);
     // pods.add(podFL);
     // pods.add(podBL);
-    // pods.add(podBR);
+    pods.add(podBR);
 
     // Setting constants
     length = DrivetrainConstants.LENGTH;
@@ -155,11 +155,6 @@ public class Drivetrain extends SubsystemBase {
       strafeCommand *= -1;
       forwardCommand *= -1;
     }
-
-    // TODO: I'm not sure this should be needed - it seems like a problem with converting from percent to fps from class to class
-    forwardCommand *= DrivetrainConstants.MAX_WHEEL_SPEED;
-    strafeCommand *= DrivetrainConstants.MAX_WHEEL_SPEED;
-
     calculateNSetPodPositions(forwardCommand, strafeCommand, spinCommand);
   }
 
@@ -199,7 +194,9 @@ public class Drivetrain extends SubsystemBase {
 
       // Set calculated drive and spins to each pod
       for(int i = 0; i < pods.size(); i++) {
-        pods.get(i).set(podDrive[i], podSpin[i]);        
+        pods.get(i).set(podDrive[i], podSpin[i]);      
+        SmartDashboard.putNumber("Pod3 Drive", podDrive[i]);  
+        SmartDashboard.putNumber("Pod3 Spin", podSpin[i]);  
       }
 
     } else { // Enter defenseive position

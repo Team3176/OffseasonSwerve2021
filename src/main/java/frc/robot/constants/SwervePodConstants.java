@@ -3,15 +3,30 @@ package frc.robot.constants;
 public final class SwervePodConstants {
 
     private static final double WHEEL_DIAMETER = 3.25; //Inches
-    private static final double DRIVE_GEAR_RATIO = (17.0/54.0);
+    private static final double WHEEL_CIRCUMFERENCE = 3.25 * Math.PI;
     private static final double UNKNOWN_GEAR_RATIO = (30.0/48.0); //Might be its inverse
 
-    public static final double ENCODER_UNITS = 4096;
-
-    public static final double REV_2_FT = DRIVE_GEAR_RATIO * UNKNOWN_GEAR_RATIO * (WHEEL_DIAMETER*Math.PI) * (1.0/12.0);
-    public static final double FPS_2_RPM = (1.0/REV_2_FT) * 16.0;
-    //public static final double FPS_2_RPM = ((1.0/DRIVE_GEAR_RATIO)* (1.0/UNKNOWN_GEAR_RATIO) * (1.0/(WHEEL_DIAMETER*Math.PI)))  * 12.0 * 16.0;
+    private static final double SPIN_GEAR_RATIO = 70.0/1.0;
+    private static final double DRIVE_GEAR_RATIO = (54.0 / 14.0) * (48.0 / 30.0);
+    // private static final double 
+    // SPIN
+    // 140 rev/min
+    // after 70 to 1 --> 2 rev/min
+    // encoder reads 4096 * 2
+    // wheel spins 2 rev/min
     
+    // DRIVE
+    // 54 / 14
+    // 48 / 30
+    // So 6.17... motor revolutions means 1 wheel rotation
+
+
+
+  
+
+    public static final double ENCODER_UNITS = 4096;
+    
+    // What is this for
     public static final double[] DRIVE_PID_OFFSEASON_OFFSETS = {
         /* kP */    0.000095,
         /* kI */    0.0000009325,
@@ -32,5 +47,5 @@ public final class SwervePodConstants {
 
     public static final int DRIVE_CURRENT_LIMIT = 40;
     public static final double DRIVE_RAMP_RATE = 0.2;
-    public static final double DRIVE_SPEED_MAX_EMPIRICAL_FPS = 13.0;
+    public static final double DRIVE_SPEED_MAX_EMPIRICAL_FPS = 13.79;
 }

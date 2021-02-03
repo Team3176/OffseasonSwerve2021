@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.*; 
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
@@ -29,7 +30,7 @@ import frc.robot.constants.SwervePodConstants;
 
 public class SwervePod {
 
-    private WPI_TalonSRX driveController;
+    private TalonFX driveController;
     private TalonSRX spinController;
 
     private int id;
@@ -46,7 +47,7 @@ public class SwervePod {
     private double PI = Math.PI;
     private double maxFps = SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
 
-    public SwervePod(int id, WPI_TalonSRX driveController, TalonSRX spinController) {
+    public SwervePod(int id, TalonFX driveController, TalonSRX spinController) {
         this.id = id;
         this.driveController = driveController;
         this.spinController = spinController;
@@ -61,23 +62,34 @@ public class SwervePod {
         SmartDashboard.putNumber("offset P" + id, off);
     }
 
-    public void set(double speed, double angle) {
-        velocitySetPoint = speed;
-        double encoderSetPos = calcSpinPos(angle);
-        if (speed != 0) {
+    /**
+     * @param podDrive Something
+     * @param podSpin Angle from 0 to -2pi
+     */
+    public void set(double podDrive, double podSpin) {
+        double ticsPer100ms = podDrive * 2000.0 * 2048.0 / 600.0;
+        SmartDashboard.putNumber("McQueen", ticsPer100ms);
+        velocitySetPoint = podDrive * SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
+        double encoderSetPos = calcSpinPos(podSpin);
+        if (podDrive != 0) {
             spinController.set(ControlMode.Position, encoderSetPos);
             lastEncoderPos = encoderSetPos;
         } else {
             spinController.set(ControlMode.Position, lastEncoderPos);
         }
         
-        driveController.set(ControlMode.PercentOutput, speed);
+        driveController.set(TalonFXControlMode.Velocity, ticsPer100ms);
+        if(id == 3) {
+            SmartDashboard.putNumber("Pod3 Tics", spinController.getSelectedSensorPosition()); 
+            SmartDashboard.putNumber("ESP", encoderSetPos);
+        }
+        
+
 //        driveController.set(ControlMode., velocitySetPoint / maxFps);
     }
 
     /**
-     * @param angle desired angle of swerve pod in units of radians, range from -2PI
-     *              to +2PI
+     * @param angle desired angle of swerve pod in units of radians, range from -2PI to +2PI
      * @return
      */
     private double calcSpinPos(double angle) {
