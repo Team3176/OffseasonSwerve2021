@@ -42,7 +42,7 @@ public class SwervePod {
     private double radianError;
     private double encoderError;
     private double driveCommand;
-    private double velocitySetPoint;
+    private boolean flipDrive;
 
     private double PI = Math.PI;
     private double maxFps = SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
@@ -52,10 +52,15 @@ public class SwervePod {
         this.driveController = driveController;
         this.spinController = spinController;
 
-        this.spinController.config_kP(0, SwervePodConstants.SPIN_PID_CONFIG[0][id], 0);
-        this.spinController.config_kI(0, SwervePodConstants.SPIN_PID_CONFIG[1][id], 0);
-        this.spinController.config_kD(0, SwervePodConstants.SPIN_PID_CONFIG[2][id], 0);
-        this.spinController.config_kF(0, SwervePodConstants.SPIN_PID_CONFIG[3][id], 0);
+        // this.driveController.config_kP(0, SwervePodConstants.Drive_PID[0][id], 0);
+        // this.driveController.config_kI(0, SwervePodConstants.Drive_PID[1][id], 0);
+        // this.driveController.config_kD(0, SwervePodConstants.Drive_PID[2][id], 0);
+        // this.driveController.config_kF(0, SwervePodConstants.Drive_PID[3][id], 0);
+
+        this.spinController.config_kP(0, SwervePodConstants.SPIN_PID[0][id], 0);
+        this.spinController.config_kI(0, SwervePodConstants.SPIN_PID[1][id], 0);
+        this.spinController.config_kD(0, SwervePodConstants.SPIN_PID[2][id], 0);
+        this.spinController.config_kF(0, SwervePodConstants.SPIN_PID[3][id], 0);
 
         encoderOffset = SwervePodConstants.OFFSETS[id];
 
@@ -67,9 +72,7 @@ public class SwervePod {
      * @param podSpin Angle from 0 to -2pi
      */
     public void set(double podDrive, double podSpin) {
-        double ticsPer100ms = podDrive * 2000.0 * 2048.0 / 600.0;
-        SmartDashboard.putNumber("McQueen", ticsPer100ms);
-        velocitySetPoint = podDrive * SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
+        double velTicsPer100ms = podDrive * 2000.0 * 2048.0 / 600.0;
         double encoderSetPos = calcSpinPos(podSpin);
         if (podDrive != 0) {
             spinController.set(ControlMode.Position, encoderSetPos);
@@ -77,15 +80,12 @@ public class SwervePod {
         } else {
             spinController.set(ControlMode.Position, lastEncoderPos);
         }
-        
-        driveController.set(TalonFXControlMode.Velocity, ticsPer100ms);
-        if(id == 3) {
-            SmartDashboard.putNumber("Pod3 Tics", spinController.getSelectedSensorPosition()); 
-            SmartDashboard.putNumber("ESP", encoderSetPos);
-        }
-        
 
-//        driveController.set(ControlMode., velocitySetPoint / maxFps);
+        if(flipDrive) { 
+            velTicsPer100ms *= -1; 
+            flipDrive = !flipDrive; 
+        }
+        driveController.set(TalonFXControlMode.Velocity, velTicsPer100ms);
     }
 
     /**
@@ -103,7 +103,7 @@ public class SwervePod {
             radianError -= Math.copySign(2 * PI, radianError);
         } else if (Math.abs(radianError) > (PI / 2)) {
             radianError -= Math.copySign(PI, radianError);
-            velocitySetPoint = -velocitySetPoint;
+            flipDrive = !flipDrive;
         }
         encoderError = rads2Tics(radianError);
         driveCommand = encoderError + encoderPos + encoderOffset;
