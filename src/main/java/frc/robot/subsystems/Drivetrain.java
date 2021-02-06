@@ -31,9 +31,9 @@ public class Drivetrain extends SubsystemBase {
   private ArrayList<SwervePod> pods;
 
   // private SwervePod podFR;
-  // private SwervePod podFL;
+  private SwervePod podFL;
   // private SwervePod podBL;
-  private SwervePod podBR;
+  // private SwervePod podBR;
 
   private coordType currentCoordType;
   private driveMode currentDriveMode;
@@ -85,9 +85,9 @@ public class Drivetrain extends SubsystemBase {
   private Drivetrain() {
     // Instantiate pods
     // podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
-    // podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
+    podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
     // podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
-    podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
+    // podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
     
 
     currentCoordType = coordType.FIELD_CENTRIC;
@@ -97,9 +97,9 @@ public class Drivetrain extends SubsystemBase {
     // Instantiate array list then add instantiated pods to list
     pods = new ArrayList<SwervePod>();
     // pods.add(podFR);
-    // pods.add(podFL);
+    pods.add(podFL);
     // pods.add(podBL);
-    pods.add(podBR);
+    // pods.add(podBR);
 
     // Setting constants
     length = DrivetrainConstants.LENGTH;
@@ -129,6 +129,14 @@ public class Drivetrain extends SubsystemBase {
   
   // Prevents more than one instance of drivetrian
   public static Drivetrain getInstance() { return instance; }
+  public void drive(double forwardCommand, double strafeCommand, double spinCommand, int uselessVariable) {
+    double smallNum = Math.pow(10, -15);
+    double angle = (spinCommand + Math.PI) * Math.PI;
+    pods.get(0).set(forwardCommand + spinCommand, -1.0 * Math.PI / 4.0);
+    SmartDashboard.putNumber("forwardCom", forwardCommand);
+    SmartDashboard.putNumber("spinCom", spinCommand);
+    SmartDashboard.putNumber("tics", spinControllers[1].getSelectedSensorPosition());
+  }
 
   public void drive(double forwardCommand, double strafeCommand, double spinCommand) {
     // TODO: Make the gyro reset if a certain button is pushed

@@ -35,7 +35,7 @@ public class SwervePod {
 
     private int id;
     private int encoderOffset; 
-
+    private double kEncoderUnitsPerRevolution;
     private int off = 0;
 
     private double lastEncoderPos;
@@ -52,6 +52,7 @@ public class SwervePod {
         this.driveController = driveController;
         this.spinController = spinController;
 
+        // TODO: May or may not need this. Figure that out then add or delete
         // this.driveController.config_kP(0, SwervePodConstants.Drive_PID[0][id], 0);
         // this.driveController.config_kI(0, SwervePodConstants.Drive_PID[1][id], 0);
         // this.driveController.config_kD(0, SwervePodConstants.Drive_PID[2][id], 0);
@@ -63,6 +64,7 @@ public class SwervePod {
         this.spinController.config_kF(0, SwervePodConstants.SPIN_PID[3][id], 0);
 
         encoderOffset = SwervePodConstants.OFFSETS[id];
+        kEncoderUnitsPerRevolution = SwervePodConstants.ENCODER_UNITS;
 
         SmartDashboard.putNumber("offset P" + id, off);
     }
@@ -111,10 +113,17 @@ public class SwervePod {
     }
 
     private int rads2Tics(double rads) {
-        return (int) ((4096 / (PI * 2)) * rads);
+        //return (int) ((kEndoderUnitsPerRevolution / (PI * 2)) * rads);
+        double tics = ((rads / (2.0*Math.PI)) * kEncoderUnitsPerRevolution);
+        return (int) tics;
     }
 
-    private double tics2Rads(int tics) {
-        return ((PI * 2) / 4096) * tics;
+    private double tics2Rads(double tics) {
+        tics = tics % kEncoderUnitsPerRevolution;
+        if(tics < 0) {
+            tics += kEncoderUnitsPerRevolution;
+        }
+        tics -= (kEncoderUnitsPerRevolution / 2);
+        return (tics / kEncoderUnitsPerRevolution) * (2 * PI);
     }
 }
