@@ -44,6 +44,11 @@ public class SwervePod {
     private double driveCommand;
     private boolean flipDrive;
 
+    private double p = SwervePodConstants.SPIN_PID[0][id];
+    private double i = SwervePodConstants.SPIN_PID[1][id];
+    private double d = SwervePodConstants.SPIN_PID[2][id];
+    private double f = SwervePodConstants.SPIN_PID[3][id];
+
     private double PI = Math.PI;
     private double maxFps = SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
 
@@ -58,15 +63,18 @@ public class SwervePod {
         // this.driveController.config_kD(0, SwervePodConstants.Drive_PID[2][id], 0);
         // this.driveController.config_kF(0, SwervePodConstants.Drive_PID[3][id], 0);
 
-        this.spinController.config_kP(0, SwervePodConstants.SPIN_PID[0][id], 0);
-        this.spinController.config_kI(0, SwervePodConstants.SPIN_PID[1][id], 0);
-        this.spinController.config_kD(0, SwervePodConstants.SPIN_PID[2][id], 0);
-        this.spinController.config_kF(0, SwervePodConstants.SPIN_PID[3][id], 0);
+        SmartDashboard.putNumber("P", p);
+        SmartDashboard.putNumber("I", i);
+        SmartDashboard.putNumber("D", d);
+        SmartDashboard.putNumber("F", f);
+
+        this.spinController.config_kP(0, SmartDashboard.getNumber("P", p), 0);
+        this.spinController.config_kI(0, SmartDashboard.getNumber("I", i), 0);
+        this.spinController.config_kD(0, SmartDashboard.getNumber("D", d), 0);
+        this.spinController.config_kF(0, SmartDashboard.getNumber("F", f), 0);
 
         encoderOffset = SwervePodConstants.OFFSETS[id];
         kEncoderUnitsPerRevolution = SwervePodConstants.ENCODER_UNITS;
-
-        SmartDashboard.putNumber("offset P" + id, off);
     }
 
     /**
@@ -88,6 +96,9 @@ public class SwervePod {
             flipDrive = !flipDrive; 
         }
         driveController.set(TalonFXControlMode.Velocity, velTicsPer100ms);
+        SmartDashboard.putNumber("tics", spinController.getSelectedSensorPosition());
+        SmartDashboard.putNumber("SPTics", encoderSetPos);
+        SmartDashboard.putNumber("Error", spinController.getSelectedSensorPosition() - encoderSetPos);
     }
 
     /**

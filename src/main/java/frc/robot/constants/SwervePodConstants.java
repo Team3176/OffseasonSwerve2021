@@ -33,8 +33,8 @@ public final class SwervePodConstants {
         /* kD */    {70.6, 300.0, 300.0, 0.0},
         /* kF */    {0.0, 0.0, 0.0, 0.0}    // Feed forward gain constant
     };
-
-    public static final int[] OFFSETS = {4846, 6575, 2456, 7081};
+    // public static final int[] OFFSETS = {4846, 6575, 2456, 7081};
+    public static final int[] OFFSETS = {-2667, 3514, -1329, -1191};
 
     public static final double DRIVE_SPEED_MAX_EMPIRICAL_FPS = 13.79;
 }

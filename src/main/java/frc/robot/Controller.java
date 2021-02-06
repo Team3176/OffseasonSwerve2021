@@ -41,11 +41,7 @@ public class Controller {
     public double getStrafe() { return transStick.getX(); }
     public double getSpin() { return rotStick.getX(); }    
 
-    public void outputToSmartDashboard() { 
-        SmartDashboard.putNumber("forward", getForward());
-        SmartDashboard.putNumber("strafe", getStrafe());
-        SmartDashboard.putNumber("spin", getSpin());
-        
+    public void outputToSmartDashboard() {     
 
     }
 

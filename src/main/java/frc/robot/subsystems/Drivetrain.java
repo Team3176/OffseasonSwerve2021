@@ -134,9 +134,6 @@ public class Drivetrain extends SubsystemBase {
     double smallNum = Math.pow(10, -15);
     double angle = (spinCommand * Math.PI) + Math.PI;
     pods.get(0).set(smallNum, angle);
-    SmartDashboard.putNumber("forwardCom", forwardCommand);
-    SmartDashboard.putNumber("spinCom", spinCommand);
-    SmartDashboard.putNumber("tics", spinControllers[1].getSelectedSensorPosition());
   }
 
   public void drive(double forwardCommand, double strafeCommand, double spinCommand) {
@@ -204,8 +201,6 @@ public class Drivetrain extends SubsystemBase {
       // Set calculated drive and spins to each pod
       for(int i = 0; i < pods.size(); i++) {
         pods.get(i).set(podDrive[i], podSpin[i]);      
-        SmartDashboard.putNumber("Pod3 Drive", podDrive[i]);  
-        SmartDashboard.putNumber("Pod3 Spin", podSpin[i]);  
       }
 
     } else { // Enter defenseive position
