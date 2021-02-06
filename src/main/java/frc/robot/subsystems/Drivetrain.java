@@ -129,10 +129,11 @@ public class Drivetrain extends SubsystemBase {
   
   // Prevents more than one instance of drivetrian
   public static Drivetrain getInstance() { return instance; }
+
   public void drive(double forwardCommand, double strafeCommand, double spinCommand, int uselessVariable) {
     double smallNum = Math.pow(10, -15);
-    double angle = (spinCommand + Math.PI) * Math.PI;
-    pods.get(0).set(forwardCommand + spinCommand, -1.0 * Math.PI / 4.0);
+    double angle = (spinCommand * Math.PI) + Math.PI;
+    pods.get(0).set(smallNum, angle);
     SmartDashboard.putNumber("forwardCom", forwardCommand);
     SmartDashboard.putNumber("spinCom", spinCommand);
     SmartDashboard.putNumber("tics", spinControllers[1].getSelectedSensorPosition());
