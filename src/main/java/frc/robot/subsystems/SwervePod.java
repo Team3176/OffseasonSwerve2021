@@ -58,20 +58,20 @@ public class SwervePod {
         this.spinController = spinController;
 
         // TODO: May or may not need this. Figure that out then add or delete
-        // this.driveController.config_kP(0, SwervePodConstants.Drive_PID[0][id], 0);
-        // this.driveController.config_kI(0, SwervePodConstants.Drive_PID[1][id], 0);
-        // this.driveController.config_kD(0, SwervePodConstants.Drive_PID[2][id], 0);
-        // this.driveController.config_kF(0, SwervePodConstants.Drive_PID[3][id], 0);
+        this.driveController.config_kP(0, SwervePodConstants.DRIVE_PID[0][2], 0);
+        this.driveController.config_kI(0, SwervePodConstants.DRIVE_PID[1][2], 0);
+        this.driveController.config_kD(0, SwervePodConstants.DRIVE_PID[2][2], 0);
+        this.driveController.config_kF(0, SwervePodConstants.DRIVE_PID[3][2], 0);
 
         SmartDashboard.putNumber("P", p);
         SmartDashboard.putNumber("I", i);
         SmartDashboard.putNumber("D", d);
         SmartDashboard.putNumber("F", f);
 
-        this.spinController.config_kP(0, SmartDashboard.getNumber("P", p), 0);
-        this.spinController.config_kI(0, SmartDashboard.getNumber("I", i), 0);
-        this.spinController.config_kD(0, SmartDashboard.getNumber("D", d), 0);
-        this.spinController.config_kF(0, SmartDashboard.getNumber("F", f), 0);
+        this.spinController.config_kP(0, p, 0);
+        this.spinController.config_kI(0, i, 0);
+        this.spinController.config_kD(0, d, 0);
+        this.spinController.config_kF(0, f, 0);
 
         encoderOffset = SwervePodConstants.OFFSETS[id];
         kEncoderUnitsPerRevolution = SwervePodConstants.ENCODER_UNITS;
@@ -79,9 +79,13 @@ public class SwervePod {
 
     /**
      * @param podDrive Something
-     * @param podSpin Angle from 0 to -2pi
+     * @param podSpin Angle from 0 to 2pi
      */
     public void set(double podDrive, double podSpin) {
+        this.spinController.config_kP(0, SmartDashboard.getNumber("P", p), 0);
+        this.spinController.config_kI(0, SmartDashboard.getNumber("I", i), 0);
+        this.spinController.config_kD(0, SmartDashboard.getNumber("D", d), 0);
+        this.spinController.config_kF(0, SmartDashboard.getNumber("F", f), 0);
         double velTicsPer100ms = podDrive * 2000.0 * 2048.0 / 600.0;
         double encoderSetPos = calcSpinPos(podSpin);
         if (podDrive != 0) {
@@ -102,7 +106,7 @@ public class SwervePod {
     }
 
     /**
-     * @param angle desired angle of swerve pod in units of radians, range from -2PI to +2PI
+     * @param angle desired angle of swerve pod in units of radians, range from 0 to +2PI
      * @return
      */
     private double calcSpinPos(double angle) {

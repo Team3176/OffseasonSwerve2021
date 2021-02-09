@@ -20,7 +20,7 @@ public final class SwervePodConstants {
     public static final double ENCODER_UNITS = 4096;
     
     public static final double[][] DRIVE_PID = {
-        /* kP */    {0.0, 0.0, 0.0, 0.0},
+        /* kP */    {0.15, 0.15, 0.15, 0.15},
         /* kI */    {0.0, 0.0, 0.0, 0.0},
         /* kD */    {0.0, 0.0, 0.0, 0.0},
         /* kF */    {0.0, 0.0, 0.0, 0.0},    // Feed forward gain constant
@@ -28,9 +28,9 @@ public final class SwervePodConstants {
     };
     // BR P: 2.41, I: 0.0, D: 152.0, F: 0.0
     public static final double[][] SPIN_PID = {
-        /* kP */    {1.91, 0.94, 0.98, 0.0},
+        /* kP */    {2.0, 0.94, 0.98, 1.0},
         /* kI */    {0.0, 0.0, 0.0, 0.0},
-        /* kD */    {70.6, 300.0, 300.0, 0.0},
+        /* kD */    {50.0, 300.0, 300.0, 100.0},
         /* kF */    {0.0, 0.0, 0.0, 0.0}    // Feed forward gain constant
     };
     // public static final int[] OFFSETS = {4846, 6575, 2456, 7081};
