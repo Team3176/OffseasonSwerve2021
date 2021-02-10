@@ -42,7 +42,7 @@ public class SwervePod {
     private double radianError;
     private double encoderError;
     private double driveCommand;
-    private boolean flipDrive;
+    private double velTicsPer100ms;
 
     private double p = SwervePodConstants.SPIN_PID[0][id];
     private double i = SwervePodConstants.SPIN_PID[1][id];
@@ -56,6 +56,9 @@ public class SwervePod {
         this.id = id;
         this.driveController = driveController;
         this.spinController = spinController;
+
+        this.driveController.configFactoryDefault();
+        this.spinController.configFactoryDefault();
 
         // TODO: May or may not need this. Figure that out then add or delete
         this.driveController.config_kP(0, SwervePodConstants.DRIVE_PID[0][2], 0);
@@ -86,18 +89,13 @@ public class SwervePod {
         this.spinController.config_kI(0, SmartDashboard.getNumber("I", i), 0);
         this.spinController.config_kD(0, SmartDashboard.getNumber("D", d), 0);
         this.spinController.config_kF(0, SmartDashboard.getNumber("F", f), 0);
-        double velTicsPer100ms = podDrive * 2000.0 * 2048.0 / 600.0;
+        velTicsPer100ms = podDrive * 2000.0 * 2048.0 / 600.0;
         double encoderSetPos = calcSpinPos(podSpin);
         if (podDrive != 0) {
             spinController.set(ControlMode.Position, encoderSetPos);
             lastEncoderPos = encoderSetPos;
         } else {
             spinController.set(ControlMode.Position, lastEncoderPos);
-        }
-
-        if(flipDrive) { 
-            velTicsPer100ms *= -1; 
-            flipDrive = !flipDrive; 
         }
         driveController.set(TalonFXControlMode.Velocity, velTicsPer100ms);
         SmartDashboard.putNumber("tics", spinController.getSelectedSensorPosition());
@@ -120,7 +118,9 @@ public class SwervePod {
             radianError -= Math.copySign(2 * PI, radianError);
         } else if (Math.abs(radianError) > (PI / 2)) {
             radianError -= Math.copySign(PI, radianError);
-            flipDrive = !flipDrive;
+            velTicsPer100ms = -velTicsPer100ms;
+            System.out.println("Flip thingy");
+            SmartDashboard.putNumber("radian Error", radianError);
         }
         encoderError = rads2Tics(radianError);
         driveCommand = encoderError + encoderPos + encoderOffset;

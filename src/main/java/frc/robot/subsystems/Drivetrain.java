@@ -79,22 +79,22 @@ public class Drivetrain extends SubsystemBase {
 
   // private SwervePod podFR;
   // private SwervePod podFL;
-  private SwervePod podBL;
-  // private SwervePod podBR;
+  // private SwervePod podBL;
+  private SwervePod podBR;
 
   private Drivetrain() {
     // Instantiate pods
     // podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
     // podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
-    podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
-    // podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
+    // podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
+    podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
 
     // Instantiate array list then add instantiated pods to list
     pods = new ArrayList<SwervePod>();
     // pods.add(podFR);
     // pods.add(podFL);
-    pods.add(podBL);
-    // pods.add(podBR);
+    // pods.add(podBL);
+    pods.add(podBR);
 
     currentCoordType = coordType.FIELD_CENTRIC;
 

@@ -28,9 +28,11 @@ public final class SwervePodConstants {
     };
     // BR P: 2.41, I: 0.0, D: 152.0, F: 0.0
     public static final double[][] SPIN_PID = {
-        /* kP */    {2.0, 0.94, 0.98, 1.0},
+        //           FR    FL    BL     BR
+        // Gave up on BL and BR - untunable
+        /* kP */    {1.0, 2.0, 0.9, 1.0},
         /* kI */    {0.0, 0.0, 0.0, 0.0},
-        /* kD */    {50.0, 300.0, 300.0, 100.0},
+        /* kD */    {25.0, 50.0, 500.0, 100.0},
         /* kF */    {0.0, 0.0, 0.0, 0.0}    // Feed forward gain constant
     };
     // public static final int[] OFFSETS = {4846, 6575, 2456, 7081};
