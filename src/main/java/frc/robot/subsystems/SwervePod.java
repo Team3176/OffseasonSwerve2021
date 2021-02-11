@@ -59,6 +59,8 @@ public class SwervePod {
         this.id = id;
         this.driveController = driveController;
         this.spinController = spinController;
+        this.driveController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+        this.spinController.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0);
 
         this.driveController.configFactoryDefault();
         this.spinController.configFactoryDefault();
