@@ -137,7 +137,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void drive(double forwardCommand, double strafeCommand, double spinCommand, int uselessVariable) {
     double smallNum = Math.pow(10, -15);
-    spinCommand = (spinCommand - (-1))/(1 - (-1));  //rescales spinCommand to a 0..1 range
+    //spinCommand = (spinCommand - (-1))/(1 - (-1));  //rescales spinCommand to a 0..1 range
     double angle = (spinCommand * Math.PI) + Math.PI;  // <- diff coord system than -1..1 = 0..2Pi
                                                        // This coord system is 0..1 = Pi..2Pi, & 
                                                        //                      0..-1 = Pi..-2PI
