@@ -108,6 +108,7 @@ public class SwervePod {
         this.spinController.config_kI(kSlotIdx_spin, SmartDashboard.getNumber("I", i), kTimeoutMs_spin);
         this.spinController.config_kD(kSlotIdx_spin, SmartDashboard.getNumber("D", d), kTimeoutMs_spin);
         this.spinController.config_kF(kSlotIdx_spin, SmartDashboard.getNumber("F", f), kTimeoutMs_spin);
+            // TODO: need check ether output values. speed vs %-values
         velTicsPer100ms = podDrive * 2000.0 * kDriveEncoderUnitsPerRevolution / 600.0;
         double encoderSetPos = calcSpinPos(podSpin);
         if (podDrive != 0) {
