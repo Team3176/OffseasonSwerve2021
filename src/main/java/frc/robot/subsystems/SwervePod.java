@@ -40,7 +40,10 @@ public class SwervePod {
 
     private double lastEncoderPos;
     private double radianError;
+    private double radianPos;
     private double encoderError;
+    private double encoderPos;
+
     private double driveCommand;
     private double velTicsPer100ms;
 
@@ -81,7 +84,7 @@ public class SwervePod {
     }
 
     /**
-     * @param podDrive Something
+     * @param podDrive -1 to 1 (I think) but isn't ether giving 0-13 ft/s?
      * @param podSpin Angle from 0 to 2pi
      */
     public void set(double podDrive, double podSpin) {
@@ -98,6 +101,7 @@ public class SwervePod {
             spinController.set(ControlMode.Position, lastEncoderPos);
         }
         driveController.set(TalonFXControlMode.Velocity, velTicsPer100ms);
+     
         SmartDashboard.putNumber("tics", spinController.getSelectedSensorPosition());
         SmartDashboard.putNumber("SPTics", encoderSetPos);
         SmartDashboard.putNumber("Error", spinController.getSelectedSensorPosition() - encoderSetPos);
@@ -108,13 +112,14 @@ public class SwervePod {
      * @return
      */
     private double calcSpinPos(double angle) {
-        int encoderPos = spinController.getSelectedSensorPosition(0) - encoderOffset;
-        double radianPos = tics2Rads(encoderPos);
+        encoderPos = spinController.getSelectedSensorPosition(0) - encoderOffset;
+        radianPos = tics2Rads(encoderPos);
         radianError = angle - radianPos;
 
-        if (Math.abs(radianError) > (5 * (PI / 2))) {
-            System.out.println("Error: Overload");
-        } else if (Math.abs(radianError) > (3 * (PI / 2))) {
+        //if (Math.abs(radianError) > (5 * (PI / 2))) {
+        //    System.out.println("Error: Overload");
+        //} else if (Math.abs(radianError) > (3 * (PI / 2))) {
+        if (Math.abs(radianError) > (3 * (PI / 2))) {
             radianError -= Math.copySign(2 * PI, radianError);
         } else if (Math.abs(radianError) > (PI / 2)) {
             radianError -= Math.copySign(PI, radianError);
@@ -124,7 +129,12 @@ public class SwervePod {
         }
         encoderError = rads2Tics(radianError);
         driveCommand = encoderError + encoderPos + encoderOffset;
-        return driveCommand;
+        return (driveCommand);
+    }
+
+    public void goHome() {
+        double homePos = 0 + encoderOffset;
+        spinController.set(ControlMode.Position, homePos);
     }
 
     private int rads2Tics(double rads) {

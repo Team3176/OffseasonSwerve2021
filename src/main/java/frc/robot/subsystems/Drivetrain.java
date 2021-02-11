@@ -10,7 +10,12 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,6 +32,13 @@ public class Drivetrain extends SubsystemBase {
 
   private PowerDistributionPanel PDP = new PowerDistributionPanel(0);
   private AHRS gyro;
+
+  private ArrayList<SwervePod> pods;
+
+  // private SwervePod podFR;
+  private SwervePod podFL;
+  // private SwervePod podBL;
+  // private SwervePod podBR;
 
   private coordType currentCoordType;
   private driveMode currentDriveMode;
@@ -75,30 +87,24 @@ public class Drivetrain extends SubsystemBase {
     ROBOT_CENTRIC
   }
 
-  private ArrayList<SwervePod> pods;
-
-  // private SwervePod podFR;
-  // private SwervePod podFL;
-  // private SwervePod podBL;
-  private SwervePod podBR;
-
   private Drivetrain() {
     // Instantiate pods
     // podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
-    // podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
+    podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
     // podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
-    podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
-
-    // Instantiate array list then add instantiated pods to list
-    pods = new ArrayList<SwervePod>();
-    // pods.add(podFR);
-    // pods.add(podFL);
-    // pods.add(podBL);
-    pods.add(podBR);
+    // podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
+    
 
     currentCoordType = coordType.FIELD_CENTRIC;
 
     autonVision = false;
+
+    // Instantiate array list then add instantiated pods to list
+    pods = new ArrayList<SwervePod>();
+    // pods.add(podFR);
+    pods.add(podFL);
+    // pods.add(podBL);
+    // pods.add(podBR);
 
     // Setting constants
     length = DrivetrainConstants.LENGTH;
@@ -131,10 +137,20 @@ public class Drivetrain extends SubsystemBase {
 
   public void drive(double forwardCommand, double strafeCommand, double spinCommand, int uselessVariable) {
     double smallNum = Math.pow(10, -15);
-    double angle = (spinCommand * Math.PI) + Math.PI;
+    spinCommand = (spinCommand - (-1))/(1 - (-1));  //rescales spinCommand to a 0..1 range
+    double angle = (spinCommand * Math.PI) + Math.PI;  // <- diff coord system than -1..1 = 0..2Pi
+                                                       // This coord system is 0..1 = Pi..2Pi, & 
+                                                       //                      0..-1 = Pi..-2PI
+                                                       //                      right?
+                                                       //             Fixed by new rescaling at line 140?
     pods.get(0).set(smallNum, angle);
   }
-
+  /**
+   * 
+   * @param forwardCommand range of {-1,1}
+   * @param strafeCommand range of {-1, 1}
+   * @param spinCommand range of {-1, 1}
+   */
   public void drive(double forwardCommand, double strafeCommand, double spinCommand) {
     // TODO: Make the gyro reset if a certain button is pushed
     updateAngle();
@@ -149,20 +165,29 @@ public class Drivetrain extends SubsystemBase {
       final double temp = forwardCommand * Math.sin(currentAngle) + strafeCommand * Math.cos(currentAngle);
       strafeCommand = (-forwardCommand * Math.cos(currentAngle) + strafeCommand * Math.sin(currentAngle));
       forwardCommand = temp;
+      SmartDashboard.putString("currentCoordType", "FIELD_CENTRIC");
     }
     // TODO: Find out why we multiply by 0.75
     if(currentCoordType == coordType.ROBOT_CENTRIC) {
       strafeCommand *= 0.75;
       forwardCommand *= 0.75;
       spinCommand *= 0.75;
+      SmartDashboard.putString("currentCoordType", "ROBOT_CENTRIC");
     }
     if(currentCoordType == coordType.BACK_ROBOT_CENTRIC) {
       strafeCommand *= -1;
       forwardCommand *= -1;
+      SmartDashboard.putString("currentCoordType", "BACK_ROBOT_CENTRIC");
     }
-    calculateNSetPodPositions(forwardCommand, strafeCommand, spinCommand);
+    calculateNSetPodPositions(forwardCommand, strafeCommand, spinCommand);    
   }
 
+  /**
+   * 
+   * @param forwardCommand range of {-1,1} coming from translation stick Y-Axis
+   * @param strafeCommand range of {-1,1} coming from translation stick X-Axis
+   * @param spinCommand range of {}
+   */
   private void calculateNSetPodPositions(double forwardCommand, double strafeCommand, double spinCommand) {
     
     if(currentDriveMode != driveMode.DEFENSE) {
@@ -170,9 +195,9 @@ public class Drivetrain extends SubsystemBase {
       double[] podDrive = new double[4];
       double[] podSpin = new double[4];
 
-      double a = strafeCommand + spinCommand * getRadius("A");
-      double b = strafeCommand - spinCommand * getRadius("B");
-      double c = forwardCommand - spinCommand * getRadius("C");
+      double a = strafeCommand + spinCommand * getRadius("A");  //TODO: check that output from getRadius is correct for ABC&D
+      double b = strafeCommand - spinCommand * getRadius("B");  //TODO: A & B should = klength / 2
+      double c = forwardCommand - spinCommand * getRadius("C");  // TODO: C & D should = kwidth / 2
       double d = forwardCommand + spinCommand * getRadius("D");
 
       // TODO: Look at use of Math.hypot() instead
@@ -217,6 +242,7 @@ public class Drivetrain extends SubsystemBase {
   private void updateAngle() {
     // -pi to pi; 0 = straight
     currentAngle = ((((gyro.getAngle() + 90) * Math.PI/180.0)) % (2*Math.PI));
+    SmartDashboard.putNumber("currentAngleViaGyro", currentAngle);
   }
 
   private double getRadius(String component) {
@@ -226,7 +252,7 @@ public class Drivetrain extends SubsystemBase {
       // Do special things to components based on radius and more
     } else {
       if(component.equals("A") || component.equals("B")) { return length / 2.0 ; }
-      else { return width / 2.0; }
+      else { return width / 2.0; }  //TODO: place to check for forward vs back pods working vs not working
     }
     return 0.0;
   }
