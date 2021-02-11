@@ -35,7 +35,8 @@ public class SwervePod {
 
     private int id;
     private int encoderOffset; 
-    private double kEncoderUnitsPerRevolution;
+    private double kSpinEncoderUnitsPerRevolution;
+    private double kDriveEncoderUnitsPerRevolution;
     private int off = 0;
 
     private double lastEncoderPos;
@@ -47,10 +48,18 @@ public class SwervePod {
     private double driveCommand;
     private double velTicsPer100ms;
 
+    public int kSlotIdx_spin, kPIDLoopIdx_spin, kTimeoutMs_spin;
+
+
     private double p = SwervePodConstants.SPIN_PID[0][id];
     private double i = SwervePodConstants.SPIN_PID[1][id];
     private double d = SwervePodConstants.SPIN_PID[2][id];
     private double f = SwervePodConstants.SPIN_PID[3][id];
+
+    private double kP_drive = SwervePodConstants.DRIVE_PID[0][id];
+    private double kI_drive = SwervePodConstants.DRIVE_PID[1][id];
+    private double kD_drive = SwervePodConstants.DRIVE_PID[2][id];
+    private double kF_drive = SwervePodConstants.DRIVE_PID[3][id];
 
     private double PI = Math.PI;
     private double maxFps = SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
@@ -66,24 +75,28 @@ public class SwervePod {
         this.driveController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
         this.spinController.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0);
 
-        // TODO: May or may not need this. Figure that out then add or delete
-        this.driveController.config_kP(0, SwervePodConstants.DRIVE_PID[0][2], 0);
-        this.driveController.config_kI(0, SwervePodConstants.DRIVE_PID[1][2], 0);
-        this.driveController.config_kD(0, SwervePodConstants.DRIVE_PID[2][2], 0);
-        this.driveController.config_kF(0, SwervePodConstants.DRIVE_PID[3][2], 0);
+        this.driveController.config_kP(0, kP_drive, 0);
+        this.driveController.config_kI(0, kI_drive, 0);
+        this.driveController.config_kD(0, kD_drive, 0);
+        this.driveController.config_kF(0, kF_drive, 0);
 
         SmartDashboard.putNumber("P", p);
         SmartDashboard.putNumber("I", i);
         SmartDashboard.putNumber("D", d);
         SmartDashboard.putNumber("F", f);
 
-        this.spinController.config_kP(0, p, 0);
-        this.spinController.config_kI(0, i, 0);
-        this.spinController.config_kD(0, d, 0);
-        this.spinController.config_kF(0, f, 0);
+        this.spinController.config_kP(kPIDLoopIdx_spin, p, kTimeoutMs_spin);
+        this.spinController.config_kI(kPIDLoopIdx_spin, i, kTimeoutMs_spin);
+        this.spinController.config_kD(kPIDLoopIdx_spin, d, kTimeoutMs_spin);
+        this.spinController.config_kF(kPIDLoopIdx_spin, f, kTimeoutMs_spin);
 
         encoderOffset = SwervePodConstants.OFFSETS[id];
-        kEncoderUnitsPerRevolution = SwervePodConstants.ENCODER_UNITS;
+        kSpinEncoderUnitsPerRevolution = SwervePodConstants.SPIN_ENCODER_UNITS_PER_REVOLUTION;
+        kDriveEncoderUnitsPerRevolution = SwervePodConstants.DRIVE_ENCODER_UNITS_PER_REVOLUTION;
+        kSlotIdx_spin = SwervePodConstants.TALON_PID_SLOT_ID;
+        kPIDLoopIdx_spin = SwervePodConstants.TALON_PID_LOOP_ID;
+        kTimeoutMs_spin = SwervePodConstants.TALON_TIMEOUT_MS;
+
     }
 
     /**
@@ -91,11 +104,11 @@ public class SwervePod {
      * @param podSpin Angle from 0 to 2pi
      */
     public void set(double podDrive, double podSpin) {
-        this.spinController.config_kP(0, SmartDashboard.getNumber("P", p), 0);
-        this.spinController.config_kI(0, SmartDashboard.getNumber("I", i), 0);
-        this.spinController.config_kD(0, SmartDashboard.getNumber("D", d), 0);
-        this.spinController.config_kF(0, SmartDashboard.getNumber("F", f), 0);
-        velTicsPer100ms = podDrive * 2000.0 * 2048.0 / 600.0;
+        this.spinController.config_kP(kSlotIdx_spin, SmartDashboard.getNumber("P", p), kTimeoutMs_spin);
+        this.spinController.config_kI(kSlotIdx_spin, SmartDashboard.getNumber("I", i), kTimeoutMs_spin);
+        this.spinController.config_kD(kSlotIdx_spin, SmartDashboard.getNumber("D", d), kTimeoutMs_spin);
+        this.spinController.config_kF(kSlotIdx_spin, SmartDashboard.getNumber("F", f), kTimeoutMs_spin);
+        velTicsPer100ms = podDrive * 2000.0 * kDriveEncoderUnitsPerRevolution / 600.0;
         double encoderSetPos = calcSpinPos(podSpin);
         if (podDrive != 0) {
             spinController.set(ControlMode.Position, encoderSetPos);
@@ -142,16 +155,16 @@ public class SwervePod {
 
     private int rads2Tics(double rads) {
         //return (int) ((kEndoderUnitsPerRevolution / (PI * 2)) * rads);
-        double tics = ((rads / (2.0*Math.PI)) * kEncoderUnitsPerRevolution);
+        double tics = ((rads / (2.0*Math.PI)) * kSpinEncoderUnitsPerRevolution);
         return (int) tics;
     }
 
     private double tics2Rads(double tics) {
-        tics = tics % kEncoderUnitsPerRevolution;
+        tics = tics % kSpinEncoderUnitsPerRevolution;
         if(tics < 0) {
-            tics += kEncoderUnitsPerRevolution;
+            tics += kSpinEncoderUnitsPerRevolution;
         }
-        tics -= (kEncoderUnitsPerRevolution / 2);
-        return (tics / kEncoderUnitsPerRevolution) * (2 * PI);
+        tics -= (kSpinEncoderUnitsPerRevolution / 2);
+        return (tics / kSpinEncoderUnitsPerRevolution) * (2 * PI);
     }
 }

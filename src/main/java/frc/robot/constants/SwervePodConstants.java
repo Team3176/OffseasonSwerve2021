@@ -17,8 +17,15 @@ public final class SwervePodConstants {
     // 48 / 30
     // So 6.17... motor revolutions means 1 wheel rotation
 
-    public static final double ENCODER_UNITS = 4096;
-    
+    public static final double SPIN_ENCODER_UNITS_PER_REVOLUTION = 4096;
+    public static final double DRIVE_ENCODER_UNITS_PER_REVOLUTION = 2048;
+
+    public static final int TALON_PID_SLOT_ID = 0;
+
+    public static final int TALON_PID_LOOP_ID = 0; 
+
+    public static final int TALON_TIMEOUT_MS = 0;
+        
     public static final double[][] DRIVE_PID = {
         /* kP */    {0.15, 0.15, 0.15, 0.15},
         /* kI */    {0.0, 0.0, 0.0, 0.0},
@@ -39,4 +46,5 @@ public final class SwervePodConstants {
     public static final int[] OFFSETS = {-2667, 3514, -1329, -1191};
 
     public static final double DRIVE_SPEED_MAX_EMPIRICAL_FPS = 13.79;
+
 }
