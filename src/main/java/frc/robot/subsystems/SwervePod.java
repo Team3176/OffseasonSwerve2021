@@ -59,11 +59,12 @@ public class SwervePod {
         this.id = id;
         this.driveController = driveController;
         this.spinController = spinController;
-        this.driveController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-        this.spinController.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0);
 
         this.driveController.configFactoryDefault();
         this.spinController.configFactoryDefault();
+
+        this.driveController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+        this.spinController.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0);
 
         // TODO: May or may not need this. Figure that out then add or delete
         this.driveController.config_kP(0, SwervePodConstants.DRIVE_PID[0][2], 0);
