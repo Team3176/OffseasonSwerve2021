@@ -35,11 +35,6 @@ public class Drivetrain extends SubsystemBase {
 
   private ArrayList<SwervePod> pods;
 
-  // private SwervePod podFR;
-  private SwervePod podFL;
-  // private SwervePod podBL;
-  // private SwervePod podBR;
-
   private coordType currentCoordType;
   private driveMode currentDriveMode;
 
@@ -73,7 +68,7 @@ public class Drivetrain extends SubsystemBase {
   private double currentTIme = 0;
 
   private boolean isVisionDriving;
-
+ 
   public enum driveMode {
     DEFENSE,
     DRIVE,
@@ -87,12 +82,17 @@ public class Drivetrain extends SubsystemBase {
     ROBOT_CENTRIC
   }
 
+  private SwervePod podFR;
+  private SwervePod podFL;
+  private SwervePod podBL;
+  private SwervePod podBR;
+
   private Drivetrain() {
     // Instantiate pods
-    // podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
+    podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
     podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
-    // podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
-    // podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
+    podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
+    podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
     
 
     currentCoordType = coordType.FIELD_CENTRIC;
@@ -101,10 +101,10 @@ public class Drivetrain extends SubsystemBase {
 
     // Instantiate array list then add instantiated pods to list
     pods = new ArrayList<SwervePod>();
-    // pods.add(podFR);
+    pods.add(podFR);
     pods.add(podFL);
-    // pods.add(podBL);
-    // pods.add(podBR);
+    pods.add(podBL);
+    pods.add(podBR);
 
     // Setting constants
     length = DrivetrainConstants.LENGTH;

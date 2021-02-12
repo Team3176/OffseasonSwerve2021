@@ -119,9 +119,7 @@ public class SwervePod {
         }
         driveController.set(TalonFXControlMode.Velocity, velTicsPer100ms);
      
-        SmartDashboard.putNumber("tics", spinController.getSelectedSensorPosition());
-        SmartDashboard.putNumber("SPTics", encoderSetPos);
-        SmartDashboard.putNumber("Error", spinController.getSelectedSensorPosition() - encoderSetPos);
+        SmartDashboard.putNumber("tics P" + id, spinController.getSelectedSensorPosition());
     }
 
     /**
@@ -155,7 +153,7 @@ public class SwervePod {
     }
 
     private int rads2Tics(double rads) {
-        //return (int) ((kEndoderUnitsPerRevolution / (PI * 2)) * rads);
+        rads = rads * (2 * Math.PI);
         double tics = ((rads / (2.0*Math.PI)) * kSpinEncoderUnitsPerRevolution);
         return (int) tics;
     }

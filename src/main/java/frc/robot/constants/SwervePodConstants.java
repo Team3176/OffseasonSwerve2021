@@ -36,14 +36,13 @@ public final class SwervePodConstants {
     // BR P: 2.41, I: 0.0, D: 152.0, F: 0.0
     public static final double[][] SPIN_PID = {
         //           FR    FL    BL     BR
-        // Gave up on BL and BR - untunable
         /* kP */    {1.0, 2.0, 0.9, 1.0},
         /* kI */    {0.0, 0.0, 0.0, 0.0},
         /* kD */    {25.0, 50.0, 500.0, 100.0},
         /* kF */    {0.0, 0.0, 0.0, 0.0}    // Feed forward gain constant
     };
     // public static final int[] OFFSETS = {4846, 6575, 2456, 7081};
-    public static final int[] OFFSETS = {-2667, 3514, -1329, -1191};
+    public static final int[] OFFSETS = {-288119, -983005, -177113, 55045};
 
     public static final double DRIVE_SPEED_MAX_EMPIRICAL_FPS = 13.79;
 
