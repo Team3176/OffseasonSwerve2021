@@ -68,6 +68,10 @@ public class Drivetrain extends SubsystemBase {
   private double currentTIme = 0;
 
   private boolean isVisionDriving;
+
+  private double forwardCommand;
+  private double strafeCommand;
+  private double spinCommand;
  
   public enum driveMode {
     DEFENSE,
@@ -85,26 +89,25 @@ public class Drivetrain extends SubsystemBase {
   private SwervePod podFR;
   private SwervePod podFL;
   private SwervePod podBL;
-  private SwervePod podBR;
+  //private SwervePod podBR;
 
   private Drivetrain() {
     // Instantiate pods
     podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
     podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
     podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
-    podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
-    
-
-    currentCoordType = coordType.FIELD_CENTRIC;
-
-    autonVision = false;
+    //podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
 
     // Instantiate array list then add instantiated pods to list
     pods = new ArrayList<SwervePod>();
     pods.add(podFR);
     pods.add(podFL);
     pods.add(podBL);
-    pods.add(podBR);
+    //pods.add(podBR);
+
+    currentCoordType = coordType.FIELD_CENTRIC;
+
+    autonVision = false;
 
     // Setting constants
     length = DrivetrainConstants.LENGTH;
@@ -119,22 +122,28 @@ public class Drivetrain extends SubsystemBase {
     gyro = new AHRS(SPI.Port.kMXP);
     gyro.reset();
     updateAngle();
+    SmartDashboard.putNumber("currentAngle", currentAngle);
+
+    SmartDashboard.putNumber("forwardCommand", 0);
+    SmartDashboard.putNumber("strafeCommand", 0);
+    SmartDashboard.putNumber("spinCommand", 0);
 
     isVisionDriving = false;
 
     // TODO: We initialize to face forward but how do we make this into a command?
     // Maybe we say drive with the below parameters, but where?
     /*
-    // Start wheels in a forward facing direction
+    // Start wheels in a forward facing direction */
+    
     forwardCommand = Math.pow(10, -15); // Has to be positive to turn that direction?
     strafeCommand = 0.0;
     spinCommand = 0.0;
-    */
+    
   }
   
   // Prevents more than one instance of drivetrian
   public static Drivetrain getInstance() { return instance; }
-
+/** 
   public void drive(double forwardCommand, double strafeCommand, double spinCommand, int uselessVariable) {
     double smallNum = Math.pow(10, -15);
     //spinCommand = (spinCommand - (-1))/(1 - (-1));  //rescales spinCommand to a 0..1 range
@@ -145,6 +154,9 @@ public class Drivetrain extends SubsystemBase {
                                                        //             Fixed by new rescaling at line 140?
     pods.get(0).set(smallNum, angle);
   }
+  */
+
+
   /**
    * 
    * @param forwardCommand range of {-1,1}
@@ -152,8 +164,18 @@ public class Drivetrain extends SubsystemBase {
    * @param spinCommand range of {-1, 1}
    */
   public void drive(double forwardCommand, double strafeCommand, double spinCommand) {
+
+    forwardCommand = SmartDashboard.getNumber("forwardCommand", 0);
+    strafeCommand = SmartDashboard.getNumber("strafeCommand", 0);
+    spinCommand = SmartDashboard.getNumber("spinCommand", 0);
     // TODO: Make the gyro reset if a certain button is pushed
     updateAngle();
+    SmartDashboard.putNumber("Drive updated currentAngle", currentAngle);
+
+
+    SmartDashboard.putNumber("forwardCom 1", forwardCommand);
+    SmartDashboard.putNumber("strafeCom 1", strafeCommand);
+    SmartDashboard.putNumber("spinCom 1", spinCommand);
 
     if(currentDriveMode != driveMode.TURBO) {
       forwardCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
@@ -165,20 +187,20 @@ public class Drivetrain extends SubsystemBase {
       final double temp = forwardCommand * Math.sin(currentAngle) + strafeCommand * Math.cos(currentAngle);
       strafeCommand = (-forwardCommand * Math.cos(currentAngle) + strafeCommand * Math.sin(currentAngle));
       forwardCommand = temp;
-      SmartDashboard.putString("currentCoordType", "FIELD_CENTRIC");
     }
     // TODO: Find out why we multiply by 0.75
     if(currentCoordType == coordType.ROBOT_CENTRIC) {
       strafeCommand *= 0.75;
       forwardCommand *= 0.75;
       spinCommand *= 0.75;
-      SmartDashboard.putString("currentCoordType", "ROBOT_CENTRIC");
     }
     if(currentCoordType == coordType.BACK_ROBOT_CENTRIC) {
       strafeCommand *= -1;
       forwardCommand *= -1;
-      SmartDashboard.putString("currentCoordType", "BACK_ROBOT_CENTRIC");
     }
+    SmartDashboard.putNumber("forwardCom 2", forwardCommand);
+    SmartDashboard.putNumber("strafeCom 2", strafeCommand);
+    SmartDashboard.putNumber("spinCom 2", spinCommand);
     calculateNSetPodPositions(forwardCommand, strafeCommand, spinCommand);    
   }
 
@@ -199,6 +221,11 @@ public class Drivetrain extends SubsystemBase {
       double b = strafeCommand - spinCommand * getRadius("B");  //TODO: A & B should = klength / 2
       double c = forwardCommand - spinCommand * getRadius("C");  // TODO: C & D should = kwidth / 2
       double d = forwardCommand + spinCommand * getRadius("D");
+
+      SmartDashboard.putNumber("a",  a);
+      SmartDashboard.putNumber("b", b);
+      SmartDashboard.putNumber("c", c);
+      SmartDashboard.putNumber("d", d);
 
       // TODO: Look at use of Math.hypot() instead
       // Calculate speed and angle of each pod
@@ -224,7 +251,7 @@ public class Drivetrain extends SubsystemBase {
 
       // Set calculated drive and spins to each pod
       for(int i = 0; i < pods.size(); i++) {
-        pods.get(i).set(podDrive[i], podSpin[i]);      
+        pods.get(i).set(podDrive[i], podSpin[i]);   
       }
 
     } else { // Enter defenseive position
@@ -233,16 +260,13 @@ public class Drivetrain extends SubsystemBase {
       pods.get(1).set(smallNum, 1.0 * Math.PI / 4.0);
       pods.get(2).set(smallNum, 3.0 * Math.PI / 4.0);
       pods.get(3).set(smallNum, -3.0 * Math.PI / 4.0);
-      SmartDashboard.putBoolean("isDefending", true);
     }
-
-    SmartDashboard.putBoolean("isDefending", false);
   }
 
   private void updateAngle() {
     // -pi to pi; 0 = straight
     currentAngle = ((((gyro.getAngle() + 90) * Math.PI/180.0)) % (2*Math.PI));
-    SmartDashboard.putNumber("currentAngleViaGyro", currentAngle);
+    //currentAngle value is in radians0
   }
 
   private double getRadius(String component) {
