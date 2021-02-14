@@ -104,8 +104,8 @@ public class SwervePod {
     }
 
     /**
-     * @param podDrive -1 to 1 (I think) but isn't ether giving 0-13 ft/s?
-     * @param podSpin Angle from 0 to 2pi
+     * @param podDrive represents desired thrust of swervepod Range = -1 to 1.
+     * @param podSpin represents desired angle of swervepod.  Range = -pi to pi.
      */
     public void set(double podDrive, double podSpin) {
         this.spinController.config_kP(kSlotIdx_spin, SmartDashboard.getNumber("P", p), kTimeoutMs_spin);
