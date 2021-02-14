@@ -245,7 +245,7 @@ public class Drivetrain extends SubsystemBase {
       relMaxSpeed = Math.max(Math.max(podDrive[0], podDrive[1]), Math.max(podDrive[2], podDrive[3]));
       if(relMaxSpeed > maxSpeed) {
         for(int i = 0; i < pods.size(); i++) {
-          podDrive[i] /= (relMaxSpeed / maxSpeed);
+          podDrive[i] /= relMaxSpeed / maxSpeed;
         }
       }
 
