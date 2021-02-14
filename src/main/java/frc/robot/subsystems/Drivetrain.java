@@ -52,8 +52,9 @@ public class Drivetrain extends SubsystemBase {
                                         new TalonSRX(DrivetrainConstants.STEER_THREE_CID),
                                         new TalonSRX(DrivetrainConstants.STEER_FOUR_CID)};
 
-  private double length;
-  private double width;
+  private double length;   // robot's wheelbase
+  private double width;    // robot's trackwidth
+  private double k_etherRadius;  // radius used in A,B,C,D component calc's of ether decomposition
 
   private double maxSpeed;
   private double maxVel;
@@ -112,6 +113,7 @@ public class Drivetrain extends SubsystemBase {
     // Setting constants
     length = DrivetrainConstants.LENGTH;
     width = DrivetrainConstants.WIDTH;
+    k_etherRadius = Math.sqrt(Math.pow(length,2) / Math.pow(width,2)); 
 
     maxSpeed = DrivetrainConstants.MAX_WHEEL_SPEED;
     maxRotation = DrivetrainConstants.MAX_ROT_SPEED;
@@ -275,8 +277,8 @@ public class Drivetrain extends SubsystemBase {
     if(false /* orbiting || dosadoing */) {
       // Do special things to components based on radius and more
     } else {
-      if(component.equals("A") || component.equals("B")) { return length / 2.0 ; }
-      else { return width / 2.0; }  //TODO: place to check for forward vs back pods working vs not working
+      if(component.equals("A") || component.equals("B")) { return length / k_etherRadius ; }
+      else { return width / k_etherRadius; }  //TODO: place to check for forward vs back pods working vs not working
     }
     return 0.0;
   }
