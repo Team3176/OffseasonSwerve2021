@@ -104,7 +104,7 @@ public class SwervePod {
     }
 
     /**
-     * @param podDrive represents desired thrust of swervepod Range = -1 to 1.
+     * @param podDrive represents desired thrust of swervepod Range = -1 to 1 or ft-per-sec?
      * @param podSpin represents desired angle of swervepod.  Range = -pi to pi.
      */
     public void set(double podDrive, double podSpin) {
@@ -133,6 +133,7 @@ public class SwervePod {
 
     /**
      * @param angle desired angle of swerve pod in units of radians, range from 0 to +2PI
+     * @param angle desired angle of swerve pod in units of radians, range from -PI to +PI
      * @return
      */
     private double calcSpinPos(double angle) {
@@ -161,7 +162,7 @@ public class SwervePod {
     }
 
     private int rads2Tics(double rads) {
-        rads = rads * (2 * Math.PI);
+        //rads = rads * (2 * Math.PI);
         double tics = ((rads / (2.0*Math.PI)) * kSpinEncoderUnitsPerRevolution);
         return (int) tics;
     }

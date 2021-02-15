@@ -17,6 +17,11 @@ public final class SwervePodConstants {
     // 48 / 30
     // So 6.17... motor revolutions means 1 wheel rotation
 
+    // DEFINE FPS2UPS (Conversion factor to change Feet-per-second to encoder-tics-per-second)
+    // (12 in/sec) / (WHEEL_DIAMETER * PI) * 4096.0/10.0 * (1 / DRIVE_GEAR_REDUCTION)
+    //          TODO:  The 4096 is # of tics per rev.  But where does the # "10" come from?
+
+
     public static final double SPIN_ENCODER_UNITS_PER_REVOLUTION = 4096;
     public static final double DRIVE_ENCODER_UNITS_PER_REVOLUTION = 2048;
 
