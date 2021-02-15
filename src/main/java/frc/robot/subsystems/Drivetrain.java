@@ -220,8 +220,8 @@ public class Drivetrain extends SubsystemBase {
       double[] podSpin = new double[4];
 
       double a = strafeCommand + spinCommand * getRadius("A");  //TODO: check that output from getRadius is correct for ABC&D
-      double b = strafeCommand - spinCommand * getRadius("B");  //TODO: A & B should = klength / 2
-      double c = forwardCommand - spinCommand * getRadius("C");  // TODO: C & D should = kwidth / 2
+      double b = strafeCommand - spinCommand * getRadius("B");  //TODO: A & B should = klength / k_etherRadius
+      double c = forwardCommand - spinCommand * getRadius("C");  // TODO: C & D should = kwidth / k_etherRadius
       double d = forwardCommand + spinCommand * getRadius("D");
 
       SmartDashboard.putNumber("a",  a);
