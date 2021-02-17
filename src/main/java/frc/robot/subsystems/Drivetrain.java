@@ -52,7 +52,7 @@ public class Drivetrain extends SubsystemBase {
                                         new TalonSRX(DrivetrainConstants.STEER_THREE_CID),
                                         new TalonSRX(DrivetrainConstants.STEER_FOUR_CID)};
 
-  private double length;   // robot's wheelbase
+  private double length;   // robot's wheelbase 
   private double width;    // robot's trackwidth
   private double k_etherRadius;  // radius used in A,B,C,D component calc's of ether decomposition
 
@@ -113,11 +113,10 @@ public class Drivetrain extends SubsystemBase {
     // Setting constants
     length = DrivetrainConstants.LENGTH;
     width = DrivetrainConstants.WIDTH;
-    k_etherRadius = Math.sqrt(Math.pow(length,2) / Math.pow(width,2)); 
+    k_etherRadius = Math.sqrt(Math.pow(length,2) / Math.pow(width,2))/2; 
 
     maxSpeed = DrivetrainConstants.MAX_WHEEL_SPEED;
     maxRotation = DrivetrainConstants.MAX_ROT_SPEED;
-    maxVel = DrivetrainConstants.MAX_VEL; // Not used - don't know what it is
     maxAccel = DrivetrainConstants.MAX_ACCEL;
 
     // Instantiating the gyro
@@ -219,12 +218,12 @@ public class Drivetrain extends SubsystemBase {
       double[] podDrive = new double[4];
       double[] podSpin = new double[4];
 
-      double a = strafeCommand + spinCommand * getRadius("A");  //TODO: check that output from getRadius is correct for ABC&D
-      double b = strafeCommand - spinCommand * getRadius("B");  //TODO: A & B should = klength / k_etherRadius
-      double c = forwardCommand - spinCommand * getRadius("C");  // TODO: C & D should = kwidth / k_etherRadius
-      double d = forwardCommand + spinCommand * getRadius("D");
+      double a = strafeCommand + spinCommand * length/2;  //TODO: test switching sign of spinCommand
+      double b = strafeCommand - spinCommand * length/2;  // +--+ = postive ether's V_x means forward
+      double c = forwardCommand - spinCommand * width/2;  
+      double d = forwardCommand + spinCommand * width/2;
 
-      SmartDashboard.putNumber("a",  a);
+      SmartDashboard.putNumber("a", a);
       SmartDashboard.putNumber("b", b);
       SmartDashboard.putNumber("c", c);
       SmartDashboard.putNumber("d", d);
@@ -277,8 +276,8 @@ public class Drivetrain extends SubsystemBase {
     if(false /* orbiting || dosadoing */) {
       // Do special things to components based on radius and more
     } else {
-      if(component.equals("A") || component.equals("B")) { return length / k_etherRadius ; }
-      else { return width / k_etherRadius; }  //TODO: place to check for forward vs back pods working vs not working
+      if(component.equals("A") || component.equals("B")) { return length / 2 ; }
+      else { return width / 2; }  //TODO: place to check for forward vs back pods working vs not working
     }
     return 0.0;
   }
