@@ -171,7 +171,7 @@ public class Drivetrain extends SubsystemBase {
     spinCommand = SmartDashboard.getNumber("spinCommand", 0);
     // TODO: Make the gyro reset if a certain button is pushed
     updateAngle();
-    SmartDashboard.putNumber("Drive updated currentAngle", currentAngle);
+    SmartDashboard.putNumber("Drive updated currentAngle Degrees", (currentAngle * 180/Math.PI));
 
 
     SmartDashboard.putNumber("forwardCom 1", forwardCommand);
