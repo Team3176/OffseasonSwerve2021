@@ -56,7 +56,7 @@ public class Drivetrain extends SubsystemBase {
   private double width;    // robot's trackwidth
   private double k_etherRadius;  // radius used in A,B,C,D component calc's of ether decomposition
 
-  private double maxSpeed;
+  private double maxSpeed_InchesPerSec;
   private double maxVel;
   private double maxRotation;
   private double maxAccel;
@@ -116,7 +116,7 @@ public class Drivetrain extends SubsystemBase {
     width = DrivetrainConstants.WIDTH;
     k_etherRadius = Math.sqrt(Math.pow(length,2) / Math.pow(width,2))/2; 
 
-    maxSpeed = DrivetrainConstants.MAX_WHEEL_SPEED;
+    maxSpeed_InchesPerSec = DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND;
     maxRotation = DrivetrainConstants.MAX_ROT_SPEED;
     maxAccel = DrivetrainConstants.MAX_ACCEL;
 
@@ -169,6 +169,11 @@ public class Drivetrain extends SubsystemBase {
     this.forwardCommand = forwardCommand;
     this.strafeCommand = strafeCommand;
     this.spinCommand = spinCommand;
+
+    SmartDashboard.putNumber("drive()InputForwardCommand", forwardCommand);
+    SmartDashboard.putNumber("drive()InputStrafeCommand", strafeCommand);
+    SmartDashboard.putNumber("drive()InputSpinCommand", spinCommand);
+
     //this.forwardCommand = SmartDashboard.getNumber("forwardCommand", 0);
     //this.strafeCommand = SmartDashboard.getNumber("strafeCommand", 0);
     //this.spinCommand = SmartDashboard.getNumber("spinCommand", 0);
@@ -176,10 +181,6 @@ public class Drivetrain extends SubsystemBase {
     updateAngle();
     SmartDashboard.putNumber("Drive updated currentAngle Degrees", (currentAngle * 180/Math.PI));
 
-
-    SmartDashboard.putNumber("forwardCom 1", forwardCommand);
-    SmartDashboard.putNumber("strafeCom 1", strafeCommand);
-    SmartDashboard.putNumber("spinCom 1", spinCommand);
 
     if(currentDriveMode != driveMode.TURBO) {
       this.forwardCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
@@ -194,9 +195,9 @@ public class Drivetrain extends SubsystemBase {
     }
     // TODO: Find out why we multiply by 0.75
     if(currentCoordType == coordType.ROBOT_CENTRIC) {
-      this.strafeCommand *= 0.75;
-      this.forwardCommand *= 0.75;
-      this.spinCommand *= 0.75;
+      this.strafeCommand *= 1; //0.75;
+      this.forwardCommand *= 1; //0.75;
+      this.spinCommand *= 1; //0.75;
     }
     if(currentCoordType == coordType.BACK_ROBOT_CENTRIC) {
       this.strafeCommand *= -1;
@@ -287,13 +288,15 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber("b", b);
       SmartDashboard.putNumber("c", c);
       SmartDashboard.putNumber("d", d);
-
+      for (int idx = 0; idx < 4; idx++) {
+        SmartDashboard.putNumber("preScale P" + (idx + 1) + " podDrive", podDrive[idx]);
+      }
 
       // Find the highest pod speed then normalize if a pod is exceeding our max speed
       relMaxSpeed = Math.max(Math.max(podDrive[0], podDrive[1]), Math.max(podDrive[2], podDrive[3]));
-      if(relMaxSpeed > maxSpeed) {
+      if(relMaxSpeed > maxSpeed_InchesPerSec) {
         for(int idx = 0; idx < pods.size(); idx++) {
-          podDrive[idx] /= relMaxSpeed / maxSpeed;
+          podDrive[idx] /= relMaxSpeed / maxSpeed_InchesPerSec;
         }
       }
 

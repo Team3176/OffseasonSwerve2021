@@ -135,7 +135,7 @@ public class SwervePod {
         SmartDashboard.putNumber("P" + (id + 1) + " podDrive", podDrive);
         SmartDashboard.putNumber("P" + (id + 1) + " podSpin", podSpin);
             // TODO: need check ether output values. speed vs %-values
-        velTicsPer100ms = podDrive * 2000.0 * kDriveEncoderUnitsPerRevolution / 600.0;
+        this.velTicsPer100ms = podDrive * 2000.0 * kDriveEncoderUnitsPerRevolution / 600.0;
         double encoderSetPos = calcSpinPos(podSpin);
         double tics = rads2Tics(podSpin);
         SmartDashboard.putNumber("P" + (id + 1) + " tics", tics);
@@ -167,7 +167,7 @@ public class SwervePod {
             radianError -= Math.copySign(2 * PI, radianError);
         } else if (Math.abs(radianError) > (PI / 2)) {
             radianError -= Math.copySign(PI, radianError);
-           // velTicsPer100ms = -velTicsPer100ms;
+            this.velTicsPer100ms = -this.velTicsPer100ms;
             SmartDashboard.putNumber("radian Error", radianError);
         }
         encoderError = rads2Tics(radianError);

@@ -48,14 +48,14 @@ public class Controller {
         if (Math.abs(transStick.getX())<.06) {
             return 0.0;
         } else {
-            return Math.pow((-1 * transStick.getY()),1) * 1;}
+            return Math.pow((-1 * transStick.getX()),1) * 1;}
     }
 
     public double getSpin() { 
         if (Math.abs(rotStick.getX())<.06) {
             return 0.0;
         } else {
-            return Math.pow(rotStick.getY(),1) / 7.0;}
+            return Math.pow(rotStick.getX(),1) / 7.0;}
     }
 
     public void outputToSmartDashboard() {     
