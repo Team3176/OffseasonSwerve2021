@@ -28,14 +28,15 @@ public final class SwervePodConstants {
 
 
     public static final double SPIN_ENCODER_UNITS_PER_REVOLUTION = 4096;
+    public static final int TALON_SPIN_PID_SLOT_ID = 0; 
+    public static final int TALON_SPIN_PID_LOOP_ID = 0; 
+    public static final int TALON_SPIN_PID_TIMEOUT_MS = 0;  
+
     public static final double DRIVE_ENCODER_UNITS_PER_REVOLUTION = 2048;
-
-    public static final int TALON_PID_SLOT_ID = 0;  // TODO: Is this for Spin, Drive, or Both?
-
-    public static final int TALON_PID_LOOP_ID = 0;  // TODO: Is this for Spin, Drive, or Both?
-
-    public static final int TALON_TIMEOUT_MS = 0;   // TODO: Is this for Spin, Drive, or Both?
-        
+    public static final int TALON_DRIVE_PID_SLOT_ID = 0; 
+    public static final int TALON_DRIVE_PID_LOOP_ID = 0; 
+    public static final int TALON_DRIVE_PID_TIMEOUT_MS = 0;  
+    
     public static final double[][] DRIVE_PID = {
         /* kP */    {0.15, 0.15, 0.15, 0.15},
         /* kI */    {0.0, 0.0, 0.0, 0.0},
