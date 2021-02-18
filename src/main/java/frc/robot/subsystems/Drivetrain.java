@@ -106,7 +106,8 @@ public class Drivetrain extends SubsystemBase {
     pods.add(podBL);
     pods.add(podBR);
 
-    currentCoordType = coordType.FIELD_CENTRIC;
+    //currentCoordType = coordType.FIELD_CENTRIC;
+    currentCoordType = coordType.ROBOT_CENTRIC;
 
     autonVision = false;
 
@@ -224,26 +225,53 @@ public class Drivetrain extends SubsystemBase {
       double[] podDrive = new double[4];
       double[] podSpin = new double[4];
 
-      double a = this.forwardCommand - this.spinCommand * width/2.0;
-      double b = this.forwardCommand + this.spinCommand * width/2.0;
-      double c = this.strafeCommand - this.spinCommand * length/2.0;
-      double d = this.strafeCommand + this.spinCommand * length/2.0;
-      //double a = strafeCommand + spinCommand * length/2;  //TODO: test switching sign of spinCommand
-      //double b = strafeCommand - spinCommand * length/2;  // +--+ = postive ether's V_x means forward
-      //double c = forwardCommand - spinCommand * width/2;  
-      //double d = forwardCommand + spinCommand * width/2;
+      /*
+      // ###########################################################
+      // BEGIN:   Ether Eqns -- Ether's official derivation
+      //          +Y :=  axis of chassis forward movement
+      //          +X :=  axis of chassis strafe to starboard/right
+      // ###########################################################
+      double a = strafeCommand --spinCommand * length/2; 
+      double b = strafeCommand + spinCommand * length/2;
+      double c = forwardCommand - spinCommand * width/2;  
+      double d = forwardCommand + spinCommand * width/2;
+      
+      // Calculate speed (podDrive[idx]) and angle (podSpin[idx]) of each pod
+      podDrive[0] = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2));
+      podSpin[0] = Math.atan2(b, c);
+      
+      podDrive[1] = Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2));
+      podSpin[1] = Math.atan2(b, d);
 
-      SmartDashboard.putNumber("a", a);
-      SmartDashboard.putNumber("b", b);
-      SmartDashboard.putNumber("c", c);
-      SmartDashboard.putNumber("d", d);
+      podDrive[2] = Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2));
+      podSpin[2] = Math.atan2(a, d);
 
-      // TODO: Look at use of Math.hypot() instead
+      podDrive[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
+      podSpin[3] = Math.atan2(a, c);
+      // ###########################################################
+      // /END     Ether Eqns -- Ether's official derivation
+      // ###########################################################
+      */
+
+
+
+      // ###########################################################
+      // BEGIN:   Ether Eqns -- JonH derivation 2021-02-15
+      //          +X :=  axis of chassis forward movement ... we think
+      //          -Y :=  axis of chassis strafe to starboard/right ... we think
+      // ###########################################################
+      double a = this.forwardCommand - this.spinCommand * width/2;
+      double b = this.forwardCommand + this.spinCommand * width/2;
+      double c = this.strafeCommand - this.spinCommand * length/2;
+      double d = this.strafeCommand + this.spinCommand * length/2;
+
       // Calculate speed and angle of each pod
+      // TODO: Verify order of atan2 parameters. atan2(y,x) is formal java def, 
+      //        but past implementations and ether use atan2(x,y).
       podDrive[0] = Math.sqrt(Math.pow(b,2) + Math.pow(d,2));
       podSpin[0] = Math.atan2(d, b);
 
-      podDrive[1] = Math.sqrt(Math.pow(b,2) + Math.pow(b,2));
+      podDrive[1] = Math.sqrt(Math.pow(b,2) + Math.pow(c,2));
       podSpin[1] = Math.atan2(c, b);
       
       podDrive[2] = Math.sqrt(Math.pow(a,2) + Math.pow(c,2));
@@ -251,18 +279,15 @@ public class Drivetrain extends SubsystemBase {
       
       podDrive[3] = Math.sqrt(Math.pow(a,2) + Math.pow(d,2));
       podSpin[3] = Math.atan2(d, a);
-      
-//      podDrive[0] = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2));
-//      podSpin[0] = Math.atan2(b, c);
-//
-//      podDrive[1] = Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2));
-//      podSpin[1] = Math.atan2(b, d);
-//
-//      podDrive[2] = Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2));
-//      podSpin[2] = Math.atan2(a, d);
-//
-//      podDrive[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
-//      podSpin[3] = Math.atan2(a, c);
+      // ###########################################################
+      // END:   Ether Eqns -- JonH derivation 2021-02-15
+      // ###########################################################
+
+      SmartDashboard.putNumber("a", a);
+      SmartDashboard.putNumber("b", b);
+      SmartDashboard.putNumber("c", c);
+      SmartDashboard.putNumber("d", d);
+
 
       // Find the highest pod speed then normalize if a pod is exceeding our max speed
       relMaxSpeed = Math.max(Math.max(podDrive[0], podDrive[1]), Math.max(podDrive[2], podDrive[3]));
