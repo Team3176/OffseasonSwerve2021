@@ -215,15 +215,19 @@ public class Drivetrain extends SubsystemBase {
    */
   private void calculateNSetPodPositions(double forwardCommand, double strafeCommand, double spinCommand) {
     
+    this.forwardCommand = forwardCommand;
+    this.strafeCommand = strafeCommand; 
+    this.spinCommand = spinCommand; 
+
     if(currentDriveMode != driveMode.DEFENSE) {
       // Create arrays for the speed and angle of each pod
       double[] podDrive = new double[4];
       double[] podSpin = new double[4];
 
-      double a = forwardCommand - spinCommand * width/2.0;
-      double b = forwardCommand + spinCommand * width/2.0;
-      double c = strafeCommand - spinCommand * length/2.0;
-      double d = strafeCommand + spinCommand * length/2.0;
+      double a = this.forwardCommand - this.spinCommand * width/2.0;
+      double b = this.forwardCommand + this.spinCommand * width/2.0;
+      double c = this.strafeCommand - this.spinCommand * length/2.0;
+      double d = this.strafeCommand + this.spinCommand * length/2.0;
       //double a = strafeCommand + spinCommand * length/2;  //TODO: test switching sign of spinCommand
       //double b = strafeCommand - spinCommand * length/2;  // +--+ = postive ether's V_x means forward
       //double c = forwardCommand - spinCommand * width/2;  
