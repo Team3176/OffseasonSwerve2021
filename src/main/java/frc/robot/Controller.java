@@ -41,14 +41,14 @@ public class Controller {
         if (Math.abs(transStick.getY())<.06) {
             return 0.0;
         } else {
-            return Math.pow(transStick.getY(),1)*.7;}
+            return Math.pow((-1 * transStick.getY()),1)*0.7;}
     }
     
     public double getStrafe() { 
         if (Math.abs(transStick.getX())<.06) {
             return 0.0;
         } else {
-            return Math.pow(transStick.getY(),1) * 0.7;}
+            return Math.pow((-1 * transStick.getY()),1) * 0.7;}
     }
 
     public double getSpin() { 

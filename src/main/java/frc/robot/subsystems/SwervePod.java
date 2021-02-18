@@ -70,6 +70,7 @@ public class SwervePod {
         this.id = id;
 
         kEncoderOffset = SwervePodConstants.SPIN_OFFSET[id];
+
         kSpinEncoderUnitsPerRevolution = SwervePodConstants.SPIN_ENCODER_UNITS_PER_REVOLUTION;
         kSlotIdx_spin = SwervePodConstants.TALON_SPIN_PID_SLOT_ID;
         kPIDLoopIdx_spin = SwervePodConstants.TALON_SPIN_PID_LOOP_ID;
@@ -100,10 +101,10 @@ public class SwervePod {
         this.driveController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
         this.spinController.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 
-        this.driveController.config_kP(0, kP_Drive, 0);
-        this.driveController.config_kI(0, kI_Drive, 0);
-        this.driveController.config_kD(0, kD_Drive, 0);
-        this.driveController.config_kF(0, kF_Drive, 0);
+        this.driveController.config_kP(kPIDLoopIdx_drive, kP_Drive, kTimeoutMs_drive);
+        this.driveController.config_kI(kPIDLoopIdx_drive, kI_Drive, kTimeoutMs_drive);
+        this.driveController.config_kD(kPIDLoopIdx_drive, kD_Drive, kTimeoutMs_drive);
+        this.driveController.config_kF(kPIDLoopIdx_drive, kF_Drive, kTimeoutMs_drive);
 
         // SmartDashboard.putNumber("P", kP_Spin);
         // SmartDashboard.putNumber("I", kI_Spin);
@@ -151,7 +152,6 @@ public class SwervePod {
     }
 
     /**
-     * @param angle desired angle of swerve pod in units of radians, range from 0 to +2PI
      * @param angle desired angle of swerve pod in units of radians, range from -PI to +PI
      * @return
      */

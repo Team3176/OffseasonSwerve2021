@@ -136,9 +136,9 @@ public class Drivetrain extends SubsystemBase {
     /*
     // Start wheels in a forward facing direction */
     
-    forwardCommand = Math.pow(10, -15); // Has to be positive to turn that direction?
-    strafeCommand = 0.0;
-    spinCommand = 0.0;
+    this.forwardCommand = Math.pow(10, -15); // Has to be positive to turn that direction?
+    this.strafeCommand = 0.0;
+    this.spinCommand = 0.0;
     
   }
   
@@ -165,10 +165,12 @@ public class Drivetrain extends SubsystemBase {
    * @param spinCommand range of {-1, 1}
    */
   public void drive(double forwardCommand, double strafeCommand, double spinCommand) {
-
-    forwardCommand = SmartDashboard.getNumber("forwardCommand", 0);
-    strafeCommand = SmartDashboard.getNumber("strafeCommand", 0);
-    spinCommand = SmartDashboard.getNumber("spinCommand", 0);
+    //this.forwardCommand = forwardCommand;
+    //this.strafeCommand = strafeCommand;
+    //this.spinCommand = spinCommand;
+    this.forwardCommand = SmartDashboard.getNumber("forwardCommand", 0);
+    this.strafeCommand = SmartDashboard.getNumber("strafeCommand", 0);
+    this.spinCommand = SmartDashboard.getNumber("spinCommand", 0);
     // TODO: Make the gyro reset if a certain button is pushed
     updateAngle();
     SmartDashboard.putNumber("Drive updated currentAngle Degrees", (currentAngle * 180/Math.PI));
@@ -179,30 +181,30 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("spinCom 1", spinCommand);
 
     if(currentDriveMode != driveMode.TURBO) {
-      forwardCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
-      strafeCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
-      spinCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
+      this.forwardCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
+      this.strafeCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
+      this.spinCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
     }
 
     if(currentCoordType == coordType.FIELD_CENTRIC) {
-      final double temp = forwardCommand * Math.sin(currentAngle) + strafeCommand * Math.cos(currentAngle);
-      strafeCommand = (-forwardCommand * Math.cos(currentAngle) + strafeCommand * Math.sin(currentAngle));
-      forwardCommand = temp;
+      final double temp = (this.forwardCommand * Math.sin(currentAngle) + this.strafeCommand * Math.cos(currentAngle));
+      this.strafeCommand = (this.forwardCommand * Math.cos(currentAngle) + this.strafeCommand * Math.sin(currentAngle));
+      this.forwardCommand = temp;
     }
     // TODO: Find out why we multiply by 0.75
     if(currentCoordType == coordType.ROBOT_CENTRIC) {
-      strafeCommand *= 0.75;
-      forwardCommand *= 0.75;
-      spinCommand *= 0.75;
+      this.strafeCommand *= 0.75;
+      this.forwardCommand *= 0.75;
+      this.spinCommand *= 0.75;
     }
     if(currentCoordType == coordType.BACK_ROBOT_CENTRIC) {
-      strafeCommand *= -1;
-      forwardCommand *= -1;
+      this.strafeCommand *= -1;
+      this.forwardCommand *= -1;
     }
-    SmartDashboard.putNumber("forwardCom 2", forwardCommand);
-    SmartDashboard.putNumber("strafeCom 2", strafeCommand);
-    SmartDashboard.putNumber("spinCom 2", spinCommand);
-    calculateNSetPodPositions(forwardCommand, strafeCommand, spinCommand);    
+    SmartDashboard.putNumber("forwardCom 2", this.forwardCommand);
+    SmartDashboard.putNumber("strafeCom 2", this.strafeCommand);
+    SmartDashboard.putNumber("spinCom 2", this.spinCommand);
+    calculateNSetPodPositions(this.forwardCommand, this.strafeCommand, this.spinCommand);    
   }
 
   /**
@@ -240,11 +242,11 @@ public class Drivetrain extends SubsystemBase {
       podDrive[1] = Math.sqrt(Math.pow(b,2) + Math.pow(b,2));
       podSpin[1] = Math.atan2(c, b);
       
-      podDrive[3] = Math.sqrt(Math.pow(a,2) + Math.pow(c,2));
-      podSpin[3] = Math.atan2(c, a);
+      podDrive[2] = Math.sqrt(Math.pow(a,2) + Math.pow(c,2));
+      podSpin[2] = Math.atan2(c, a);
       
-      podDrive[2] = Math.sqrt(Math.pow(a,2) + Math.pow(d,2));
-      podSpin[2] = Math.atan2(d, a);
+      podDrive[3] = Math.sqrt(Math.pow(a,2) + Math.pow(d,2));
+      podSpin[3] = Math.atan2(d, a);
       
 //      podDrive[0] = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2));
 //      podSpin[0] = Math.atan2(b, c);
@@ -261,14 +263,14 @@ public class Drivetrain extends SubsystemBase {
       // Find the highest pod speed then normalize if a pod is exceeding our max speed
       relMaxSpeed = Math.max(Math.max(podDrive[0], podDrive[1]), Math.max(podDrive[2], podDrive[3]));
       if(relMaxSpeed > maxSpeed) {
-        for(int i = 0; i < pods.size(); i++) {
-          podDrive[i] /= relMaxSpeed / maxSpeed;
+        for(int idx = 0; idx < pods.size(); idx++) {
+          podDrive[idx] /= relMaxSpeed / maxSpeed;
         }
       }
 
       // Set calculated drive and spins to each pod
-      for(int i = 0; i < pods.size(); i++) {
-        pods.get(i).set(podDrive[i], podSpin[i]);   
+      for(int idx = 0; idx < pods.size(); idx++) {
+        pods.get(idx).set(podDrive[idx], podSpin[idx]);   
       }
 
     } else { // Enter defenseive position
