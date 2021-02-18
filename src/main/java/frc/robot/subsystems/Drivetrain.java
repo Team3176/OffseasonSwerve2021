@@ -165,12 +165,12 @@ public class Drivetrain extends SubsystemBase {
    * @param spinCommand range of {-1, 1}
    */
   public void drive(double forwardCommand, double strafeCommand, double spinCommand) {
-    //this.forwardCommand = forwardCommand;
-    //this.strafeCommand = strafeCommand;
-    //this.spinCommand = spinCommand;
-    this.forwardCommand = SmartDashboard.getNumber("forwardCommand", 0);
-    this.strafeCommand = SmartDashboard.getNumber("strafeCommand", 0);
-    this.spinCommand = SmartDashboard.getNumber("spinCommand", 0);
+    this.forwardCommand = forwardCommand;
+    this.strafeCommand = strafeCommand;
+    this.spinCommand = spinCommand;
+    //this.forwardCommand = SmartDashboard.getNumber("forwardCommand", 0);
+    //this.strafeCommand = SmartDashboard.getNumber("strafeCommand", 0);
+    //this.spinCommand = SmartDashboard.getNumber("spinCommand", 0);
     // TODO: Make the gyro reset if a certain button is pushed
     updateAngle();
     SmartDashboard.putNumber("Drive updated currentAngle Degrees", (currentAngle * 180/Math.PI));
@@ -201,9 +201,9 @@ public class Drivetrain extends SubsystemBase {
       this.strafeCommand *= -1;
       this.forwardCommand *= -1;
     }
-    SmartDashboard.putNumber("forwardCom 2", this.forwardCommand);
-    SmartDashboard.putNumber("strafeCom 2", this.strafeCommand);
-    SmartDashboard.putNumber("spinCom 2", this.spinCommand);
+    SmartDashboard.putNumber("this.forwardComDriveTrain.drive", this.forwardCommand);
+    SmartDashboard.putNumber("this.strafeComDriveTrain.drive", this.strafeCommand);
+    SmartDashboard.putNumber("this.spinComDriveTrain.drive", this.spinCommand);
     calculateNSetPodPositions(this.forwardCommand, this.strafeCommand, this.spinCommand);    
   }
 
@@ -288,7 +288,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void updateAngle() {
     // -pi to pi; 0 = straight
-    currentAngle = ((((gyro.getAngle() + 90) * Math.PI/180.0)) % (2*Math.PI));
+    currentAngle = ((((gyro.getAngle()) * Math.PI/180.0)) % (2*Math.PI));
     //currentAngle value is in radians0
   }
 
