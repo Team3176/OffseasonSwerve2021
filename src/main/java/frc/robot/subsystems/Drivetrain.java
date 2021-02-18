@@ -90,21 +90,21 @@ public class Drivetrain extends SubsystemBase {
   private SwervePod podFR;
   private SwervePod podFL;
   private SwervePod podBL;
-  //private SwervePod podBR;
+  private SwervePod podBR;
 
   private Drivetrain() {
     // Instantiate pods
     podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
     podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
     podBL = new SwervePod(2, driveControllers[2], spinControllers[2]);
-    //podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
+    podBR = new SwervePod(3, driveControllers[3], spinControllers[3]);
 
     // Instantiate array list then add instantiated pods to list
     pods = new ArrayList<SwervePod>();
     pods.add(podFR);
     pods.add(podFL);
     pods.add(podBL);
-    //pods.add(podBR);
+    pods.add(podBR);
 
     currentCoordType = coordType.FIELD_CENTRIC;
 
@@ -218,10 +218,14 @@ public class Drivetrain extends SubsystemBase {
       double[] podDrive = new double[4];
       double[] podSpin = new double[4];
 
-      double a = strafeCommand + spinCommand * length/2;  //TODO: test switching sign of spinCommand
-      double b = strafeCommand - spinCommand * length/2;  // +--+ = postive ether's V_x means forward
-      double c = forwardCommand - spinCommand * width/2;  
-      double d = forwardCommand + spinCommand * width/2;
+      double a = forwardCommand - spinCommand * width/2.0;
+      double b = forwardCommand + spinCommand * width/2.0;
+      double c = strafeCommand - spinCommand * length/2.0;
+      double d = strafeCommand + spinCommand * length/2.0;
+      //double a = strafeCommand + spinCommand * length/2;  //TODO: test switching sign of spinCommand
+      //double b = strafeCommand - spinCommand * length/2;  // +--+ = postive ether's V_x means forward
+      //double c = forwardCommand - spinCommand * width/2;  
+      //double d = forwardCommand + spinCommand * width/2;
 
       SmartDashboard.putNumber("a", a);
       SmartDashboard.putNumber("b", b);
@@ -230,17 +234,29 @@ public class Drivetrain extends SubsystemBase {
 
       // TODO: Look at use of Math.hypot() instead
       // Calculate speed and angle of each pod
-      podDrive[0] = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2));
-      podSpin[0] = Math.atan2(b, c);
+      podDrive[0] = Math.sqrt(Math.pow(b,2) + Math.pow(d,2));
+      podSpin[0] = Math.atan2(d, b);
 
-      podDrive[1] = Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2));
-      podSpin[1] = Math.atan2(b, d);
-
-      podDrive[2] = Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2));
-      podSpin[2] = Math.atan2(a, d);
-
-      podDrive[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
-      podSpin[3] = Math.atan2(a, c);
+      podDrive[1] = Math.sqrt(Math.pow(b,2) + Math.pow(b,2));
+      podSpin[1] = Math.atan2(c, b);
+      
+      podDrive[3] = Math.sqrt(Math.pow(a,2) + Math.pow(c,2));
+      podSpin[3] = Math.atan2(c, a);
+      
+      podDrive[2] = Math.sqrt(Math.pow(a,2) + Math.pow(d,2));
+      podSpin[2] = Math.atan2(d, a);
+      
+//      podDrive[0] = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2));
+//      podSpin[0] = Math.atan2(b, c);
+//
+//      podDrive[1] = Math.sqrt(Math.pow(b, 2) + Math.pow(d, 2));
+//      podSpin[1] = Math.atan2(b, d);
+//
+//      podDrive[2] = Math.sqrt(Math.pow(a, 2) + Math.pow(d, 2));
+//      podSpin[2] = Math.atan2(a, d);
+//
+//      podDrive[3] = Math.sqrt(Math.pow(a, 2) + Math.pow(c, 2));
+//      podSpin[3] = Math.atan2(a, c);
 
       // Find the highest pod speed then normalize if a pod is exceeding our max speed
       relMaxSpeed = Math.max(Math.max(podDrive[0], podDrive[1]), Math.max(podDrive[2], podDrive[3]));

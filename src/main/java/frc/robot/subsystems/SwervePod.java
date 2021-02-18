@@ -62,7 +62,7 @@ public class SwervePod {
     private double kF_drive = SwervePodConstants.DRIVE_PID[3][id];
 
     private double PI = Math.PI;
-    private double maxFps = SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FPS;
+    private double maxFps = SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FEET_PER_SECOND;
 
     private int startTics;
 
@@ -92,7 +92,7 @@ public class SwervePod {
         this.spinController.config_kD(kPIDLoopIdx_spin, d, kTimeoutMs_spin);
         this.spinController.config_kF(kPIDLoopIdx_spin, f, kTimeoutMs_spin);
 
-        encoderOffset = SwervePodConstants.OFFSETS[id];
+        encoderOffset = SwervePodConstants.SPIN_OFFSET[id];
         kSpinEncoderUnitsPerRevolution = SwervePodConstants.SPIN_ENCODER_UNITS_PER_REVOLUTION;
         kDriveEncoderUnitsPerRevolution = SwervePodConstants.DRIVE_ENCODER_UNITS_PER_REVOLUTION;
         kSlotIdx_spin = SwervePodConstants.TALON_PID_SLOT_ID;

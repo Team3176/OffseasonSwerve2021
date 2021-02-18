@@ -59,8 +59,9 @@ public final class SwervePodConstants {
     * Used solely for the Spin Encoder.
     */
     // public static final int[] OFFSETS = {4846, 6575, 2456, 7081};
-    public static final int[] SPIN_OFFSET = {-5538, 44, 3135, -2963842}; 
-
+    //public static final int[] SPIN_OFFSET = {-5538, 44, 3135, -2963842}; 
+    //public static final int[] SPIN_OFFSET = {6821, 4143, -5071, 1765};
+    public static final int[] SPIN_OFFSET = {2689, 86, 31117, 3802830};
     public static final double DRIVE_SPEED_MAX_EMPIRICAL_FEET_PER_SECOND = 13.79;
 
 }
