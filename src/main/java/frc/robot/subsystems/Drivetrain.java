@@ -193,7 +193,7 @@ public class Drivetrain extends SubsystemBase {
 
     if(currentCoordType == coordType.FIELD_CENTRIC) {
       final double temp = (this.forwardCommand * Math.sin(currentAngle) + this.strafeCommand * Math.cos(currentAngle));
-      this.strafeCommand = (this.forwardCommand * Math.cos(currentAngle) + this.strafeCommand * Math.sin(currentAngle));
+      this.strafeCommand = (-this.forwardCommand * Math.cos(currentAngle) + this.strafeCommand * Math.sin(currentAngle));
       this.forwardCommand = temp;
     }
     // TODO: Find out why we multiply by 0.75
