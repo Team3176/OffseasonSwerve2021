@@ -99,7 +99,11 @@ public class SwervePod {
         this.spinController.configFactoryDefault();
 
         this.driveController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-        this.spinController.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+        this.spinController.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);   //TODO: investigate QuadEncoder vs CTRE_MagEncoder_Absolute.  Are the two equivalent?  Why QuadEncoder instead of CTRE_MagEncoder_Absolute
+
+            //TODO: check out "Feedback Device Not Continuous"  under config tab in CTRE-tuner.  Is the available via API and set-able?  Caps encoder to range[-4096,4096], correct?
+                //this.spinController.configSelectedFeedbackSensor(FeedbackDevice.PulseWidthEncodedPosition), 0, 0);
+                //this.spinController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute), 0, 0);
 
         this.driveController.config_kP(kPIDLoopIdx_drive, kP_Drive, kTimeoutMs_drive);
         this.driveController.config_kI(kPIDLoopIdx_drive, kI_Drive, kTimeoutMs_drive);
@@ -135,17 +139,18 @@ public class SwervePod {
         SmartDashboard.putNumber("P" + (id + 1) + " podDrive", podDrive);
         SmartDashboard.putNumber("P" + (id + 1) + " podSpin", podSpin);
             // TODO: need check ether output values. speed vs %-values
-        this.velTicsPer100ms = podDrive * 2000.0 * kDriveEncoderUnitsPerRevolution / 600.0;
+        this.velTicsPer100ms = podDrive * 2000.0 * kDriveEncoderUnitsPerRevolution / 600.0;  //TODO: rework "podDrive * 2000.0"
         double encoderSetPos = calcSpinPos(podSpin);
         double tics = rads2Tics(podSpin);
         SmartDashboard.putNumber("P" + (id + 1) + " tics", tics);
         SmartDashboard.putNumber("P" + (id + 1) + " absTics", spinController.getSelectedSensorPosition());
-        if (Math.abs(podDrive) != 0) {
-            spinController.set(ControlMode.Position, tics);
+        // if (id = 3) spinController.set(ControlMode.Position, 0.0) } else {   // TODO: Try this to force pod4 to jump lastEncoderPos
+        if (Math.abs(podDrive) != 0) {      //TODO: convert this to a deadband range.  abs(podDrive) != 0 is notationally sloppy math
+            spinController.set(ControlMode.Position, tics);  
             lastEncoderPos = encoderSetPos;
         } else {
             spinController.set(ControlMode.Position, lastEncoderPos);
-        }
+        }    
         driveController.set(TalonFXControlMode.Velocity, velTicsPer100ms);
         SmartDashboard.putNumber("P" + (id + 1) + " velTicsPer100ms", velTicsPer100ms);
         SmartDashboard.putNumber("P" + (id + 1) + " encoderSetPos_end", encoderSetPos);
@@ -169,7 +174,7 @@ public class SwervePod {
         //if (Math.abs(radianError) > (5 * (PI / 2))) {
         //    System.out.println("Error: Overload");
         //} else if (Math.abs(radianError) > (3 * (PI / 2))) {
-        if (Math.abs(radianError) > (3 * (PI / 2))) {
+        if (Math.abs(radianError) > (3 * (PI / 2))) {      // TODO: See if commenting out "Thrust-vector sign-flip" fixes
             radianError -= Math.copySign(2 * PI, radianError);
         } else if (Math.abs(radianError) > (PI / 2)) {
             radianError -= Math.copySign(PI, radianError);
@@ -187,7 +192,7 @@ public class SwervePod {
         spinController.set(ControlMode.Position, homePos);
     }
 
-    private int rads2Tics(double rads) {
+    private int rads2Tics(double rads) {        //TODO: put a modulo cap limit like in tics2Rads (range[-pi,pi])  (Is it returning 0-2pi somehow?)
         //rads = rads * (2 * Math.PI);
         double tics = ((rads / (2.0*Math.PI)) * kSpinEncoderUnitsPerRevolution);
         return (int) tics;

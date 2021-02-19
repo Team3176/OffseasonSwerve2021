@@ -305,7 +305,8 @@ public class Drivetrain extends SubsystemBase {
 
       // Set calculated drive and spins to each pod
       for(int idx = 0; idx < pods.size(); idx++) {
-        pods.get(idx).set(podDrive[idx], podSpin[idx]);   
+        pods.get(idx).set(podDrive[idx], podSpin[idx]);   //TODO: try doing pods.size() - 1 in for conditional, then outside for loop
+                                                          //  do a hardcode set of pods.get(3).set(0.1, 0.0);
       }
 
     } else { // Enter defenseive position
