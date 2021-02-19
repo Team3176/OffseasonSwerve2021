@@ -128,10 +128,10 @@ public class SwervePod {
      * @param podSpin  represents desired angle of swervepod. Range = -pi to pi.
      */
     public void set(double podDrive, double podSpin) {
-        this.spinController.config_kP(kSlotIdx_spin, SmartDashboard.getNumber("P", kP_Spin), kTimeoutMs_spin);
-        this.spinController.config_kI(kSlotIdx_spin, SmartDashboard.getNumber("I", kI_Spin), kTimeoutMs_spin);
-        this.spinController.config_kD(kSlotIdx_spin, SmartDashboard.getNumber("D", kD_Spin), kTimeoutMs_spin);
-        this.spinController.config_kF(kSlotIdx_spin, SmartDashboard.getNumber("F", kF_Spin), kTimeoutMs_spin);
+        //this.spinController.config_kP(kSlotIdx_spin, SmartDashboard.getNumber("P", kP_Spin), kTimeoutMs_spin);
+        //this.spinController.config_kI(kSlotIdx_spin, SmartDashboard.getNumber("I", kI_Spin), kTimeoutMs_spin);
+        //this.spinController.config_kD(kSlotIdx_spin, SmartDashboard.getNumber("D", kD_Spin), kTimeoutMs_spin);
+        //this.spinController.config_kF(kSlotIdx_spin, SmartDashboard.getNumber("F", kF_Spin), kTimeoutMs_spin);
         SmartDashboard.putNumber("P" + (id + 1) + " podDrive", podDrive);
         SmartDashboard.putNumber("P" + (id + 1) + " podSpin", podSpin);
             // TODO: need check ether output values. speed vs %-values
@@ -140,7 +140,7 @@ public class SwervePod {
         double tics = rads2Tics(podSpin);
         SmartDashboard.putNumber("P" + (id + 1) + " tics", tics);
         SmartDashboard.putNumber("P" + (id + 1) + " absTics", spinController.getSelectedSensorPosition());
-        if (podDrive != 0) {
+        if (Math.abs(podDrive) != 0) {
             spinController.set(ControlMode.Position, tics);
             lastEncoderPos = encoderSetPos;
         } else {
@@ -148,7 +148,7 @@ public class SwervePod {
         }
         driveController.set(TalonFXControlMode.Velocity, velTicsPer100ms);
         SmartDashboard.putNumber("P" + (id + 1) + " velTicsPer100ms", velTicsPer100ms);
-        SmartDashboard.putNumber("P" + (id + 1) + " encoderSetPos", encoderSetPos);
+        SmartDashboard.putNumber("P" + (id + 1) + " encoderSetPos_end", encoderSetPos);
     }
 
     /**
@@ -156,22 +156,29 @@ public class SwervePod {
      * @return
      */
     private double calcSpinPos(double angle) {
-        encoderPos = spinController.getSelectedSensorPosition(0) - kEncoderOffset;
-        radianPos = tics2Rads(encoderPos);
+        this.encoderPos = spinController.getSelectedSensorPosition(0) - kEncoderOffset;
+        SmartDashboard.putNumber("P" + (id + 1) + " kEncoderOffset", kEncoderOffset);
+        SmartDashboard.putNumber("P" + (id + 1) + " getSelectedSensorPosition", spinController.getSelectedSensorPosition(0));
+        SmartDashboard.putNumber("P" + (id + 1) + " encoderPos_in_calcSpinPos",this.encoderPos);
+        radianPos = tics2Rads(this.encoderPos);
+        SmartDashboard.putNumber("P" + (id + 1) + " radianPos", radianPos);
         radianError = angle - radianPos;
+        SmartDashboard.putNumber("P" + (id + 1) + " radianError", radianError);
+        // FYI: Math.copySign(magnitudeVar, signVar) = magnitude value with same sign as signvar
 
-        if (Math.abs(radianError) > (5 * (PI / 2))) {
-            System.out.println("Error: Overload");
-        } else if (Math.abs(radianError) > (3 * (PI / 2))) {
-        //if (Math.abs(radianError) > (3 * (PI / 2))) {
+        //if (Math.abs(radianError) > (5 * (PI / 2))) {
+        //    System.out.println("Error: Overload");
+        //} else if (Math.abs(radianError) > (3 * (PI / 2))) {
+        if (Math.abs(radianError) > (3 * (PI / 2))) {
             radianError -= Math.copySign(2 * PI, radianError);
         } else if (Math.abs(radianError) > (PI / 2)) {
             radianError -= Math.copySign(PI, radianError);
             this.velTicsPer100ms = -this.velTicsPer100ms;
-            SmartDashboard.putNumber("radian Error", radianError);
         }
         encoderError = rads2Tics(radianError);
-        driveCommand = encoderError + encoderPos + kEncoderOffset;
+        SmartDashboard.putNumber("P" + (id + 1) + " encoderError", encoderError);
+        driveCommand = encoderError + this.encoderPos + kEncoderOffset;
+        SmartDashboard.putNumber("P" + (id + 1) + "tics2radianDrivecommand", driveCommand);
         return (driveCommand);
     }
 

@@ -47,10 +47,12 @@ public final class SwervePodConstants {
     // BR P: 2.41, I: 0.0, D: 152.0, F: 0.0
     public static final double[][] SPIN_PID = {
         //           FR    FL    BL     BR
-        /* kP */    {1.0, 2.0, 0.9, 0.1},
+    //    /* kP */    {1.0, 2.0, 0.9, 0.1},
+        /* kP */    {1.0, 2.0, 0.9, 2.0},
         /* kI */    {0.0, 0.0, 0.0, 0.0},
-        /* kD */    {25.0, 50.0, 500.0, 100.0},
-        /* kF */    {0.0, 0.0, 0.0, 0.0}    // Feed forward gain constant
+        /* kD */    {25.0, 50.0, 500.0, 50.0},
+    //    /* kD */    {25.0, 50.0, 500.0, 100.0},
+    /* kF */    {0.0, 0.0, 0.0, 0.0}    // Feed forward gain constant
     };
 
 
@@ -62,7 +64,8 @@ public final class SwervePodConstants {
     // public static final int[] OFFSETS = {4846, 6575, 2456, 7081};
     //public static final int[] SPIN_OFFSET = {-5538, 44, 3135, -2963842}; 
     //public static final int[] SPIN_OFFSET = {6821, 4143, -5071, 1765};
-    public static final int[] SPIN_OFFSET = {2689, 86, 31117, 3802830};
+    //public static final int[] SPIN_OFFSET = {2689, 86, 31117, 3802830};
+    public static final int[] SPIN_OFFSET = {-1381, 63, -1019, 1740};
     public static final double DRIVE_SPEED_MAX_EMPIRICAL_FEET_PER_SECOND = 13.79;
 
 }

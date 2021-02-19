@@ -170,13 +170,16 @@ public class Drivetrain extends SubsystemBase {
     this.strafeCommand = strafeCommand;
     this.spinCommand = spinCommand;
 
+    this.forwardCommand = SmartDashboard.getNumber("forwardCommand", 0);
+    this.strafeCommand = SmartDashboard.getNumber("strafeCommand", 0);
+    this.spinCommand = SmartDashboard.getNumber("spinCommand", 0);
+
     SmartDashboard.putNumber("drive()InputForwardCommand", forwardCommand);
     SmartDashboard.putNumber("drive()InputStrafeCommand", strafeCommand);
     SmartDashboard.putNumber("drive()InputSpinCommand", spinCommand);
 
-    //this.forwardCommand = SmartDashboard.getNumber("forwardCommand", 0);
-    //this.strafeCommand = SmartDashboard.getNumber("strafeCommand", 0);
-    //this.spinCommand = SmartDashboard.getNumber("spinCommand", 0);
+    
+
     // TODO: Make the gyro reset if a certain button is pushed
     updateAngle();
     SmartDashboard.putNumber("Drive updated currentAngle Degrees", (currentAngle * 180/Math.PI));
