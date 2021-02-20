@@ -124,7 +124,7 @@ public class Drivetrain extends SubsystemBase {
     gyro = new AHRS(SPI.Port.kMXP);
     gyro.reset();
     updateAngle();
-    SmartDashboard.putNumber("currentAngle", currentAngle);
+    SmartDashboard.putNumber("currentAngle", this.currentAngle);
 
     SmartDashboard.putNumber("forwardCommand", 0);
     SmartDashboard.putNumber("strafeCommand", 0);
@@ -182,7 +182,8 @@ public class Drivetrain extends SubsystemBase {
 
     // TODO: Make the gyro reset if a certain button is pushed
     updateAngle();
-    SmartDashboard.putNumber("Drive updated currentAngle Degrees", (currentAngle * 180/Math.PI));
+    SmartDashboard.putNumber("Drive updated currentAngle Degrees", (this.currentAngle * 180/Math.PI));
+    SmartDashboard.putString("Drive currentCoordType", currentCoordType.toString());
 
 
     if(currentDriveMode != driveMode.TURBO) {
@@ -192,8 +193,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     if(currentCoordType == coordType.FIELD_CENTRIC) {
-      final double temp = (this.forwardCommand * Math.sin(currentAngle) + this.strafeCommand * Math.cos(currentAngle));
-      this.strafeCommand = (-this.forwardCommand * Math.cos(currentAngle) + this.strafeCommand * Math.sin(currentAngle));
+      final double temp = (this.forwardCommand * Math.sin(this.currentAngle) + this.strafeCommand * Math.cos(this.currentAngle));
+      this.strafeCommand = (-this.forwardCommand * Math.cos(this.currentAngle) + this.strafeCommand * Math.sin(this.currentAngle));
       this.forwardCommand = temp;
     }
     // TODO: Find out why we multiply by 0.75
@@ -304,23 +305,25 @@ public class Drivetrain extends SubsystemBase {
       }
 
       // Set calculated drive and spins to each pod
-      for(int idx = 0; idx < pods.size(); idx++) {
+      //for(int idx = 0; idx < pods.size(); idx++) {
+        for(int idx = 0; idx < (pods.size()); idx++) {
         pods.get(idx).set(podDrive[idx], podSpin[idx]);   //TODO: try doing pods.size() - 1 in for conditional, then outside for loop
                                                           //  do a hardcode set of pods.get(3).set(0.1, 0.0);
-      }
+        //pods.get(3).set(0.1,0.0);
+        }
 
-    } else { // Enter defenseive position
-      double smallNum = Math.pow(10, -15);
-      pods.get(0).set(smallNum, -1.0 * Math.PI / 4.0);
-      pods.get(1).set(smallNum, 1.0 * Math.PI / 4.0);
-      pods.get(2).set(smallNum, 3.0 * Math.PI / 4.0);
-      pods.get(3).set(smallNum, -3.0 * Math.PI / 4.0);
+    //} else { // Enter defenseive position
+    //  double smallNum = Math.pow(10, -15);
+    //  pods.get(0).set(smallNum, -1.0 * Math.PI / 4.0);
+    //  pods.get(1).set(smallNum, 1.0 * Math.PI / 4.0);
+    //  pods.get(2).set(smallNum, 3.0 * Math.PI / 4.0);
+    //  pods.get(3).set(smallNum, -3.0 * Math.PI / 4.0);
     }
   }
 
   private void updateAngle() {
     // -pi to pi; 0 = straight
-    currentAngle = ((((gyro.getAngle()) * Math.PI/180.0)) % (2*Math.PI));
+    this.currentAngle = ((((gyro.getAngle()) * Math.PI/180.0)) % (2*Math.PI));
     //currentAngle value is in radians0
   }
 

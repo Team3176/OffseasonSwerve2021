@@ -50,6 +50,7 @@ public class SwervePod {
 
     public int kSlotIdx_spin, kPIDLoopIdx_spin, kTimeoutMs_spin,kSlotIdx_drive, kPIDLoopIdx_drive, kTimeoutMs_drive;
 
+    private double podDrive, podSpin;
 
     private double kP_Spin;
     private double kI_Spin;
@@ -99,7 +100,7 @@ public class SwervePod {
         this.spinController.configFactoryDefault();
 
         this.driveController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-        this.spinController.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);   //TODO: investigate QuadEncoder vs CTRE_MagEncoder_Absolute.  Are the two equivalent?  Why QuadEncoder instead of CTRE_MagEncoder_Absolute
+        this.spinController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);   //TODO: investigate QuadEncoder vs CTRE_MagEncoder_Absolute.  Are the two equivalent?  Why QuadEncoder instead of CTRE_MagEncoder_Absolute
 
             //TODO: check out "Feedback Device Not Continuous"  under config tab in CTRE-tuner.  Is the available via API and set-able?  Caps encoder to range[-4096,4096], correct?
                 //this.spinController.configSelectedFeedbackSensor(FeedbackDevice.PulseWidthEncodedPosition), 0, 0);
@@ -132,28 +133,34 @@ public class SwervePod {
      * @param podSpin  represents desired angle of swervepod. Range = -pi to pi.
      */
     public void set(double podDrive, double podSpin) {
+        this.podDrive = podDrive;
+        this.podSpin = podSpin; 
         //this.spinController.config_kP(kSlotIdx_spin, SmartDashboard.getNumber("P", kP_Spin), kTimeoutMs_spin);
         //this.spinController.config_kI(kSlotIdx_spin, SmartDashboard.getNumber("I", kI_Spin), kTimeoutMs_spin);
         //this.spinController.config_kD(kSlotIdx_spin, SmartDashboard.getNumber("D", kD_Spin), kTimeoutMs_spin);
         //this.spinController.config_kF(kSlotIdx_spin, SmartDashboard.getNumber("F", kF_Spin), kTimeoutMs_spin);
-        SmartDashboard.putNumber("P" + (id + 1) + " podDrive", podDrive);
-        SmartDashboard.putNumber("P" + (id + 1) + " podSpin", podSpin);
+        SmartDashboard.putNumber("P" + (id + 1) + " podDrive", this.podDrive);
+        SmartDashboard.putNumber("P" + (id + 1) + " podSpin", this.podSpin);
             // TODO: need check ether output values. speed vs %-values
-        this.velTicsPer100ms = podDrive * 2000.0 * kDriveEncoderUnitsPerRevolution / 600.0;  //TODO: rework "podDrive * 2000.0"
-        double encoderSetPos = calcSpinPos(podSpin);
-        double tics = rads2Tics(podSpin);
+        this.velTicsPer100ms = this.podDrive * 2000.0 * kDriveEncoderUnitsPerRevolution / 600.0;  //TODO: rework "podDrive * 2000.0"
+        double encoderSetPos = calcSpinPos(this.podSpin);
+        double tics = rads2Tics(this.podSpin);
         SmartDashboard.putNumber("P" + (id + 1) + " tics", tics);
         SmartDashboard.putNumber("P" + (id + 1) + " absTics", spinController.getSelectedSensorPosition());
-        // if (id = 3) spinController.set(ControlMode.Position, 0.0) } else {   // TODO: Try this to force pod4 to jump lastEncoderPos
-        if (Math.abs(podDrive) != 0) {      //TODO: convert this to a deadband range.  abs(podDrive) != 0 is notationally sloppy math
-            spinController.set(ControlMode.Position, tics);  
-            lastEncoderPos = encoderSetPos;
+        //if (this.id == 3) {spinController.set(ControlMode.Position, 0.0); } else {   // TODO: Try this to force pod4 to jump lastEncoderPos
+        if (this.podDrive < (-Math.pow(10,-10)) && this.podDrive > (Math.pow(10,-10))) {      //TODO: convert this to a deadband range.  abs(podDrive) != 0 is notationally sloppy math
+            //spinController.set(ControlMode.Position, tics);  
+            this.lastEncoderPos = encoderSetPos;
+            SmartDashboard.putNumber("P" + (id + 1) + " lastEncoderPos", this.lastEncoderPos);
         } else {
-            spinController.set(ControlMode.Position, lastEncoderPos);
+            //spinController.set(ControlMode.Position, this.lastEncoderPos);
+            SmartDashboard.putNumber("P" + (id + 1) + " lastEncoderPos", this.lastEncoderPos);
+
         }    
         driveController.set(TalonFXControlMode.Velocity, velTicsPer100ms);
         SmartDashboard.putNumber("P" + (id + 1) + " velTicsPer100ms", velTicsPer100ms);
         SmartDashboard.putNumber("P" + (id + 1) + " encoderSetPos_end", encoderSetPos);
+        //}
     }
 
     /**
@@ -161,6 +168,7 @@ public class SwervePod {
      * @return
      */
     private double calcSpinPos(double angle) {
+        SmartDashboard.putNumber("P" + (id + 1) + " calcSpinPos_angle", angle);
         this.encoderPos = spinController.getSelectedSensorPosition(0) - kEncoderOffset;
         SmartDashboard.putNumber("P" + (id + 1) + " kEncoderOffset", kEncoderOffset);
         SmartDashboard.putNumber("P" + (id + 1) + " getSelectedSensorPosition", spinController.getSelectedSensorPosition(0));
@@ -175,10 +183,10 @@ public class SwervePod {
         //    System.out.println("Error: Overload");
         //} else if (Math.abs(radianError) > (3 * (PI / 2))) {
         if (Math.abs(radianError) > (3 * (PI / 2))) {      // TODO: See if commenting out "Thrust-vector sign-flip" fixes
-            radianError -= Math.copySign(2 * PI, radianError);
+            //radianError -= Math.copySign(2 * PI, radianError);
         } else if (Math.abs(radianError) > (PI / 2)) {
-            radianError -= Math.copySign(PI, radianError);
-            this.velTicsPer100ms = -this.velTicsPer100ms;
+            //radianError -= Math.copySign(PI, radianError);
+            //this.velTicsPer100ms = -this.velTicsPer100ms;
         }
         encoderError = rads2Tics(radianError);
         SmartDashboard.putNumber("P" + (id + 1) + " encoderError", encoderError);
