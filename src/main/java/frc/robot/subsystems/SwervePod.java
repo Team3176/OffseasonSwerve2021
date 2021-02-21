@@ -62,6 +62,8 @@ public class SwervePod {
     private double kD_Drive;
     private double kF_Drive;
 
+    private double maxVelTicsPer100ms;
+
     private double PI = Math.PI;
     private double maxFps = SwervePodConstants.DRIVE_SPEED_MAX_EMPIRICAL_FEET_PER_SECOND;
 
@@ -70,12 +72,21 @@ public class SwervePod {
     public SwervePod(int id, TalonFX driveController, TalonSRX spinController) {
         this.id = id;
 
-        kEncoderOffset = SwervePodConstants.SPIN_OFFSET[id];
+        this.kEncoderOffset = SwervePodConstants.SPIN_OFFSET[this.id];
+        ///System.out.println("P"+(this.id+1)+" kEncoderOffset: "+this.kEncoderOffset);
 
         kSpinEncoderUnitsPerRevolution = SwervePodConstants.SPIN_ENCODER_UNITS_PER_REVOLUTION;
         kSlotIdx_spin = SwervePodConstants.TALON_SPIN_PID_SLOT_ID;
         kPIDLoopIdx_spin = SwervePodConstants.TALON_SPIN_PID_LOOP_ID;
         kTimeoutMs_spin = SwervePodConstants.TALON_SPIN_PID_TIMEOUT_MS;
+        
+        
+        /**
+		 * Config the allowable closed-loop error, Closed-Loop output will be
+		 * neutral within this range. See Table in Section 17.2.1 for native
+		 * units per rotation.
+		 */
+	    //spinController.configAllowableClosedloopError(0, SwervePodConstants.kPIDLoopIdx, SwervePodConstants.kTimeoutMs);
 
         kDriveEncoderUnitsPerRevolution = SwervePodConstants.DRIVE_ENCODER_UNITS_PER_REVOLUTION;
         kSlotIdx_drive = SwervePodConstants.TALON_DRIVE_PID_SLOT_ID;
@@ -101,6 +112,15 @@ public class SwervePod {
 
         this.driveController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
         this.spinController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);   //TODO: investigate QuadEncoder vs CTRE_MagEncoder_Absolute.  Are the two equivalent?  Why QuadEncoder instead of CTRE_MagEncoder_Absolute
+
+        if (this.id < 3) {
+            this.spinController.setSensorPhase(SwervePodConstants.kSensorPhase);
+            this.spinController.setInverted(SwervePodConstants.kMotorInverted);
+        }
+        if (this.id == 3) {
+            this.spinController.setSensorPhase(true);
+            this.spinController.setInverted(false);
+        }
 
             //TODO: check out "Feedback Device Not Continuous"  under config tab in CTRE-tuner.  Is the available via API and set-able?  Caps encoder to range[-4096,4096], correct?
                 //this.spinController.configSelectedFeedbackSensor(FeedbackDevice.PulseWidthEncodedPosition), 0, 0);
@@ -142,18 +162,19 @@ public class SwervePod {
         SmartDashboard.putNumber("P" + (id + 1) + " podDrive", this.podDrive);
         SmartDashboard.putNumber("P" + (id + 1) + " podSpin", this.podSpin);
             // TODO: need check ether output values. speed vs %-values
+        this.maxVelTicsPer100ms = 1 * 987.2503 * kDriveEncoderUnitsPerRevolution / 600.0;
         this.velTicsPer100ms = this.podDrive * 2000.0 * kDriveEncoderUnitsPerRevolution / 600.0;  //TODO: rework "podDrive * 2000.0"
         double encoderSetPos = calcSpinPos(this.podSpin);
         double tics = rads2Tics(this.podSpin);
         SmartDashboard.putNumber("P" + (id + 1) + " tics", tics);
         SmartDashboard.putNumber("P" + (id + 1) + " absTics", spinController.getSelectedSensorPosition());
         //if (this.id == 3) {spinController.set(ControlMode.Position, 0.0); } else {   // TODO: Try this to force pod4 to jump lastEncoderPos
-        if (this.podDrive < (-Math.pow(10,-10)) && this.podDrive > (Math.pow(10,-10))) {      //TODO: convert this to a deadband range.  abs(podDrive) != 0 is notationally sloppy math
-            //spinController.set(ControlMode.Position, tics);  
-            this.lastEncoderPos = encoderSetPos;
+        if (this.podDrive > (-Math.pow(10,-10)) && this.podDrive < (Math.pow(10,-10))) {      //TODO: convert this to a deadband range.  abs(podDrive) != 0 is notationally sloppy math
+            spinController.set(ControlMode.Position, this.lastEncoderPos);  
             SmartDashboard.putNumber("P" + (id + 1) + " lastEncoderPos", this.lastEncoderPos);
         } else {
-            //spinController.set(ControlMode.Position, this.lastEncoderPos);
+            spinController.set(ControlMode.Position, encoderSetPos);  
+            this.lastEncoderPos = encoderSetPos;
             SmartDashboard.putNumber("P" + (id + 1) + " lastEncoderPos", this.lastEncoderPos);
 
         }    
@@ -169,9 +190,11 @@ public class SwervePod {
      */
     private double calcSpinPos(double angle) {
         SmartDashboard.putNumber("P" + (id + 1) + " calcSpinPos_angle", angle);
-        this.encoderPos = spinController.getSelectedSensorPosition(0) - kEncoderOffset;
-        SmartDashboard.putNumber("P" + (id + 1) + " kEncoderOffset", kEncoderOffset);
-        SmartDashboard.putNumber("P" + (id + 1) + " getSelectedSensorPosition", spinController.getSelectedSensorPosition(0));
+        //System.out.println("calcSpinPos - P"+(this.id+1)+" kEncoderOffset: "+this.kEncoderOffset);
+
+        this.encoderPos = spinController.getSelectedSensorPosition() - this.kEncoderOffset;
+        SmartDashboard.putNumber("P" + (id + 1) + " kEncoderOffset", this.kEncoderOffset);
+        SmartDashboard.putNumber("P" + (id + 1) + " getSelectedSensorPosition", spinController.getSelectedSensorPosition());
         SmartDashboard.putNumber("P" + (id + 1) + " encoderPos_in_calcSpinPos",this.encoderPos);
         radianPos = tics2Rads(this.encoderPos);
         SmartDashboard.putNumber("P" + (id + 1) + " radianPos", radianPos);
@@ -190,19 +213,20 @@ public class SwervePod {
         }
         encoderError = rads2Tics(radianError);
         SmartDashboard.putNumber("P" + (id + 1) + " encoderError", encoderError);
-        driveCommand = encoderError + this.encoderPos + kEncoderOffset;
+        driveCommand = encoderError + this.encoderPos + this.kEncoderOffset;
         SmartDashboard.putNumber("P" + (id + 1) + "tics2radianDrivecommand", driveCommand);
         return (driveCommand);
     }
 
     public void goHome() {
-        double homePos = 0 + kEncoderOffset;
-        spinController.set(ControlMode.Position, homePos);
+        double homePos = 0 + this.kEncoderOffset;
+        this.spinController.set(ControlMode.Position, homePos);
     }
 
     private int rads2Tics(double rads) {        //TODO: put a modulo cap limit like in tics2Rads (range[-pi,pi])  (Is it returning 0-2pi somehow?)
         //rads = rads * (2 * Math.PI);
-        double tics = ((rads / (2.0*Math.PI)) * kSpinEncoderUnitsPerRevolution);
+        double rads_clamped = (Math.min((Math.max(rads,(-Math.PI))), (Math.PI)));        
+        double tics = ((rads_clamped / (2.0*Math.PI)) * kSpinEncoderUnitsPerRevolution);
         return (int) tics;
     }
 

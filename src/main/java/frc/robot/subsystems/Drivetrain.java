@@ -170,9 +170,9 @@ public class Drivetrain extends SubsystemBase {
     this.strafeCommand = strafeCommand;
     this.spinCommand = spinCommand;
 
-    this.forwardCommand = SmartDashboard.getNumber("forwardCommand", 0);
-    this.strafeCommand = SmartDashboard.getNumber("strafeCommand", 0);
-    this.spinCommand = SmartDashboard.getNumber("spinCommand", 0);
+    //this.forwardCommand = SmartDashboard.getNumber("forwardCommand", 0);
+    //this.strafeCommand = SmartDashboard.getNumber("strafeCommand", 0);
+    //this.spinCommand = SmartDashboard.getNumber("spinCommand", 0);
 
     SmartDashboard.putNumber("drive()InputForwardCommand", forwardCommand);
     SmartDashboard.putNumber("drive()InputStrafeCommand", strafeCommand);
@@ -230,13 +230,13 @@ public class Drivetrain extends SubsystemBase {
       double[] podDrive = new double[4];
       double[] podSpin = new double[4];
 
-      /*
+      
       // ###########################################################
       // BEGIN:   Ether Eqns -- Ether's official derivation
       //          +Y :=  axis of chassis forward movement
       //          +X :=  axis of chassis strafe to starboard/right
       // ###########################################################
-      double a = strafeCommand --spinCommand * length/2; 
+      double a = strafeCommand - spinCommand * length/2; 
       double b = strafeCommand + spinCommand * length/2;
       double c = forwardCommand - spinCommand * width/2;  
       double d = forwardCommand + spinCommand * width/2;
@@ -256,10 +256,10 @@ public class Drivetrain extends SubsystemBase {
       // ###########################################################
       // /END     Ether Eqns -- Ether's official derivation
       // ###########################################################
-      */
+      
 
 
-
+      /*
       // ###########################################################
       // BEGIN:   Ether Eqns -- JonH derivation 2021-02-15
       //          +X :=  axis of chassis forward movement ... we think
@@ -287,6 +287,7 @@ public class Drivetrain extends SubsystemBase {
       // ###########################################################
       // END:   Ether Eqns -- JonH derivation 2021-02-15
       // ###########################################################
+      */
 
       SmartDashboard.putNumber("a", a);
       SmartDashboard.putNumber("b", b);
@@ -309,8 +310,9 @@ public class Drivetrain extends SubsystemBase {
         for(int idx = 0; idx < (pods.size()); idx++) {
         pods.get(idx).set(podDrive[idx], podSpin[idx]);   //TODO: try doing pods.size() - 1 in for conditional, then outside for loop
                                                           //  do a hardcode set of pods.get(3).set(0.1, 0.0);
-        //pods.get(3).set(0.1,0.0);
         }
+        //pods.get(3).set(0.1,1.57);
+        
 
     //} else { // Enter defenseive position
     //  double smallNum = Math.pow(10, -15);
