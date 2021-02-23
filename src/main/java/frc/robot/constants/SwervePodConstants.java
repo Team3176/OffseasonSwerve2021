@@ -97,7 +97,8 @@ public final class SwervePodConstants {
     //public static final int[] SPIN_OFFSET = {6821, 4143, -5071, 1765};
     //public static final int[] SPIN_OFFSET = {2689, 86, 31117, 3802830};
     //public static final int[] SPIN_OFFSET = {-1381, 63, -1019, 1740};
-    public static final int[] SPIN_OFFSET = {47762, 4189, 388129, -50897};
+    // public static final int[] SPIN_OFFSET = {47762, 4189, 388129, -50897};
+    public static final int[] SPIN_OFFSET = {49844, 55384, 58418, 73442};
     public static final double DRIVE_SPEED_MAX_EMPIRICAL_FEET_PER_SECOND = 13.79;
 
 }

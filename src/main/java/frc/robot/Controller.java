@@ -38,17 +38,17 @@ public class Controller {
     }
 
     public double getForward() { 
-        if (Math.abs(transStick.getY())<.06) {
+        if (Math.abs(-transStick.getY())<.06) {
             return 0.0;
         } else {
-            return Math.pow((-1 * transStick.getY()),1)*1;}
+            return -1 * (Math.pow((transStick.getY()),1)*1);}
     }
     
     public double getStrafe() { 
         if (Math.abs(transStick.getX())<.06) {
             return 0.0;
         } else {
-            return Math.pow((-1 * transStick.getX()),1) * 1;}
+            return -1 * (Math.pow((-1 * transStick.getX()),1) * 1);}
     }
 
     public double getSpin() { 

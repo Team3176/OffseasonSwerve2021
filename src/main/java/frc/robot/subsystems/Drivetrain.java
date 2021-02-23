@@ -174,9 +174,9 @@ public class Drivetrain extends SubsystemBase {
     //this.strafeCommand = SmartDashboard.getNumber("strafeCommand", 0);
     //this.spinCommand = SmartDashboard.getNumber("spinCommand", 0);
 
-    SmartDashboard.putNumber("drive()InputForwardCommand", forwardCommand);
-    SmartDashboard.putNumber("drive()InputStrafeCommand", strafeCommand);
-    SmartDashboard.putNumber("drive()InputSpinCommand", spinCommand);
+    // SmartDashboard.putNumber("drive()InputForwardCommand", forwardCommand);
+    // SmartDashboard.putNumber("drive()InputStrafeCommand", strafeCommand);
+    // SmartDashboard.putNumber("drive()InputSpinCommand", spinCommand);
 
     
 
@@ -207,9 +207,9 @@ public class Drivetrain extends SubsystemBase {
       this.strafeCommand *= -1;
       this.forwardCommand *= -1;
     }
-    SmartDashboard.putNumber("this.forwardComDriveTrain.drive", this.forwardCommand);
-    SmartDashboard.putNumber("this.strafeComDriveTrain.drive", this.strafeCommand);
-    SmartDashboard.putNumber("this.spinComDriveTrain.drive", this.spinCommand);
+    // SmartDashboard.putNumber("this.forwardComDriveTrain.drive", this.forwardCommand);
+    // SmartDashboard.putNumber("this.strafeComDriveTrain.drive", this.strafeCommand);
+    // SmartDashboard.putNumber("this.spinComDriveTrain.drive", this.spinCommand);
     calculateNSetPodPositions(this.forwardCommand, this.strafeCommand, this.spinCommand);    
   }
 
@@ -289,10 +289,10 @@ public class Drivetrain extends SubsystemBase {
       // ###########################################################
       */
 
-      SmartDashboard.putNumber("a", a);
-      SmartDashboard.putNumber("b", b);
-      SmartDashboard.putNumber("c", c);
-      SmartDashboard.putNumber("d", d);
+      // SmartDashboard.putNumber("a", a);
+      // SmartDashboard.putNumber("b", b);
+      // SmartDashboard.putNumber("c", c);
+      // SmartDashboard.putNumber("d", d);
       for (int idx = 0; idx < 4; idx++) {
         SmartDashboard.putNumber("preScale P" + (idx + 1) + " podDrive", podDrive[idx]);
       }

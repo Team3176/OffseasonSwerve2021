@@ -119,7 +119,7 @@ public class SwervePod {
         }
         if (this.id == 3) {
             this.spinController.setSensorPhase(true);
-            this.spinController.setInverted(false);
+            this.spinController.setInverted(true);
         }
 
             //TODO: check out "Feedback Device Not Continuous"  under config tab in CTRE-tuner.  Is the available via API and set-able?  Caps encoder to range[-4096,4096], correct?
@@ -145,6 +145,8 @@ public class SwervePod {
 
         startTics = spinController.getSelectedSensorPosition();
         SmartDashboard.putNumber("startTics", startTics);
+
+        SmartDashboard.putBoolean("pod" + (id + 1) + " inversion", isInverted());
     }
 
     /**
@@ -206,10 +208,10 @@ public class SwervePod {
         //    System.out.println("Error: Overload");
         //} else if (Math.abs(radianError) > (3 * (PI / 2))) {
         if (Math.abs(radianError) > (3 * (PI / 2))) {      // TODO: See if commenting out "Thrust-vector sign-flip" fixes
-            //radianError -= Math.copySign(2 * PI, radianError);
+            radianError -= Math.copySign(2 * PI, radianError);
         } else if (Math.abs(radianError) > (PI / 2)) {
-            //radianError -= Math.copySign(PI, radianError);
-            //this.velTicsPer100ms = -this.velTicsPer100ms;
+            radianError -= Math.copySign(PI, radianError);
+            this.velTicsPer100ms = -this.velTicsPer100ms;
         }
         encoderError = rads2Tics(radianError);
         SmartDashboard.putNumber("P" + (id + 1) + " encoderError", encoderError);
@@ -238,4 +240,7 @@ public class SwervePod {
         tics -= (kSpinEncoderUnitsPerRevolution / 2);
         return (tics / kSpinEncoderUnitsPerRevolution) * (2 * PI);
     }
+
+    public boolean isInverted() { return spinController.getInverted(); }
+    public void setInverted() { spinController.setInverted(!isInverted()); }
 }
