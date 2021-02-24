@@ -20,6 +20,7 @@ public class Controller {
     private final JoystickButton fieldCentricButton;
     private final JoystickButton robotCentricButton;
     private final JoystickButton backRobotCentricButton;
+    private final JoystickButton resetGyroButton;
 
     public static Controller getInstance() { return instance; }
 
@@ -35,6 +36,7 @@ public class Controller {
         fieldCentricButton = new JoystickButton(transStick, 4);
         robotCentricButton = new JoystickButton(transStick, 5);
         backRobotCentricButton = new JoystickButton(transStick, 6);
+        resetGyroButton = new JoystickButton(rotStick, 4);
     }
 
     public double getForward() { 
@@ -71,6 +73,8 @@ public class Controller {
     public JoystickButton getVisionButton() { return visionButton; }
 
     public JoystickButton getDefenseButton() { return defenseButton; }
+
+    public JoystickButton getResetGyroButton() { return resetGyroButton; }
 
     public boolean isFieldCentricButtonPressed() { return fieldCentricButton.get(); }
 

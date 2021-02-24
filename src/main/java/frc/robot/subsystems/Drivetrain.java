@@ -124,11 +124,11 @@ public class Drivetrain extends SubsystemBase {
     gyro = new AHRS(SPI.Port.kMXP);
     gyro.reset();
     updateAngle();
-    SmartDashboard.putNumber("currentAngle", this.currentAngle);
+    // SmartDashboard.putNumber("currentAngle", this.currentAngle);
 
-    SmartDashboard.putNumber("forwardCommand", 0);
-    SmartDashboard.putNumber("strafeCommand", 0);
-    SmartDashboard.putNumber("spinCommand", 0);
+    // SmartDashboard.putNumber("forwardCommand", 0);
+    // SmartDashboard.putNumber("strafeCommand", 0);
+    // SmartDashboard.putNumber("spinCommand", 0);
 
     isVisionDriving = false;
 
@@ -182,8 +182,8 @@ public class Drivetrain extends SubsystemBase {
 
     // TODO: Make the gyro reset if a certain button is pushed
     updateAngle();
-    SmartDashboard.putNumber("Drive updated currentAngle Degrees", (this.currentAngle * 180/Math.PI));
-    SmartDashboard.putString("Drive currentCoordType", currentCoordType.toString());
+    // SmartDashboard.putNumber("Drive updated currentAngle Degrees", (this.currentAngle * 180/Math.PI));
+    // SmartDashboard.putString("Drive currentCoordType", currentCoordType.toString());
 
 
     if(currentDriveMode != driveMode.TURBO) {
@@ -193,8 +193,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     if(currentCoordType == coordType.FIELD_CENTRIC) {
-      final double temp = (this.forwardCommand * Math.sin(this.currentAngle) + this.strafeCommand * Math.cos(this.currentAngle));
-      this.strafeCommand = (-this.forwardCommand * Math.cos(this.currentAngle) + this.strafeCommand * Math.sin(this.currentAngle));
+      final double temp = (this.forwardCommand * Math.cos(this.currentAngle) + this.strafeCommand * Math.sin(this.currentAngle));
+      this.strafeCommand = (this.forwardCommand * Math.sin(this.currentAngle) + this.strafeCommand * Math.cos(this.currentAngle));
       this.forwardCommand = temp;
     }
     // TODO: Find out why we multiply by 0.75
@@ -210,7 +210,13 @@ public class Drivetrain extends SubsystemBase {
     // SmartDashboard.putNumber("this.forwardComDriveTrain.drive", this.forwardCommand);
     // SmartDashboard.putNumber("this.strafeComDriveTrain.drive", this.strafeCommand);
     // SmartDashboard.putNumber("this.spinComDriveTrain.drive", this.spinCommand);
-    calculateNSetPodPositions(this.forwardCommand, this.strafeCommand, this.spinCommand);    
+    calculateNSetPodPositions(this.forwardCommand, this.strafeCommand, this.spinCommand);  
+    
+    SmartDashboard.putBoolean("fieldCentric", isFieldCentric());
+
+    SmartDashboard.putNumber("forCommand", forwardCommand);
+    SmartDashboard.putNumber("spinCommand", spinCommand);
+    SmartDashboard.putNumber("strCommand", strafeCommand);
   }
 
   /**
@@ -294,7 +300,7 @@ public class Drivetrain extends SubsystemBase {
       // SmartDashboard.putNumber("c", c);
       // SmartDashboard.putNumber("d", d);
       for (int idx = 0; idx < 4; idx++) {
-        SmartDashboard.putNumber("preScale P" + (idx + 1) + " podDrive", podDrive[idx]);
+        // SmartDashboard.putNumber("preScale P" + (idx + 1) + " podDrive", podDrive[idx]);
       }
 
       // Find the highest pod speed then normalize if a pod is exceeding our max speed
@@ -347,6 +353,16 @@ public class Drivetrain extends SubsystemBase {
 
   public void setCoordType(coordType wantedType) {
     currentCoordType = wantedType;
+  }
+
+  public boolean isFieldCentric() {
+    if(currentCoordType == coordType.FIELD_CENTRIC) { return true; }
+    return false;
+  }
+
+  public void resetGyro() {
+    gyro.reset();
+    System.out.println("Reset");
   }
 
 
