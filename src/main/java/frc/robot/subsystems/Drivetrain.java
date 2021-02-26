@@ -32,6 +32,7 @@ public class Drivetrain extends SubsystemBase {
 
   private PowerDistributionPanel PDP = new PowerDistributionPanel(0);
   private AHRS gyro;
+  private double gyroOffset = 0;
 
   private ArrayList<SwervePod> pods;
 
@@ -123,6 +124,7 @@ public class Drivetrain extends SubsystemBase {
     // Instantiating the gyro
     gyro = new AHRS(SPI.Port.kMXP);
     gyro.reset();
+    gyroUpdateOffset();
     updateAngle();
     SmartDashboard.putNumber("currentAngle", this.currentAngle);
 
@@ -325,8 +327,15 @@ public class Drivetrain extends SubsystemBase {
 
   private void updateAngle() {
     // -pi to pi; 0 = straight
-    this.currentAngle = ((((gyro.getAngle()) * Math.PI/180.0)) % (2*Math.PI));
-    //currentAngle value is in radians0
+    this.currentAngle = ((((gyro.getAngle() - this.gyroOffset) * Math.PI/180.0)) % (2*Math.PI));
+    // gyro.getAngle is returned in degrees.
+    // 
+    // Then converted to radians via "* pi/180".
+    // And finally, it's modulus against 2pi is taken and returned as currentAngle.
+  }
+
+  public void gyroUpdateOffset() {
+    this.gyroOffset = (gyro.getAngle());
   }
 
   private double getRadius(String component) {
@@ -349,7 +358,7 @@ public class Drivetrain extends SubsystemBase {
     currentCoordType = wantedType;
   }
 
-
+ 
   /*
   public void drive(double drivePercent, double spinPercent) {
     SmartDashboard.putBoolean("Are we calling drive", true);
