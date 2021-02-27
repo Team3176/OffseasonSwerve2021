@@ -1,18 +1,22 @@
 package frc.robot;
 
+import frc.robot.commands.auton.Slalom;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
 
   private RobotContainer robotContainer;
+  private Slalom slalom;
 
   private Controller controller = Controller.getInstance();
 
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
+    SmartDashboard.putNumber("runTime", 0.5);
   }
 
   @Override
@@ -27,7 +31,9 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() { }
 
   @Override
-  public void autonomousInit() { }
+  public void autonomousInit() { 
+    //slalom = new Slalom();
+  }
 
   @Override
   public void autonomousPeriodic() { }

@@ -21,6 +21,7 @@ public class Controller {
     private final JoystickButton robotCentricButton;
     private final JoystickButton backRobotCentricButton;
     private final JoystickButton reZeroGyroButton;
+    private final JoystickButton slalomButton;
 
     public static Controller getInstance() { return instance; }
 
@@ -37,6 +38,7 @@ public class Controller {
         robotCentricButton = new JoystickButton(transStick, 5);
         backRobotCentricButton = new JoystickButton(transStick, 6);
         reZeroGyroButton = new JoystickButton(rotStick, 4);
+        slalomButton = new JoystickButton(transStick, 7);
     }
 
     public double getForward() { 
@@ -61,7 +63,7 @@ public class Controller {
     }
 
     public void outputToSmartDashboard() {     
-
+        
     }
 
     /* Buttons */
@@ -75,6 +77,8 @@ public class Controller {
     public JoystickButton getDefenseButton() { return defenseButton; }
 
     public JoystickButton getReZeroGyroButton() {return reZeroGyroButton; }
+
+    public JoystickButton getSlalomButton() {return slalomButton; }
 
     public boolean isFieldCentricButtonPressed() { return fieldCentricButton.get(); }
 

@@ -212,7 +212,9 @@ public class Drivetrain extends SubsystemBase {
     // SmartDashboard.putNumber("this.forwardComDriveTrain.drive", this.forwardCommand);
     // SmartDashboard.putNumber("this.strafeComDriveTrain.drive", this.strafeCommand);
     // SmartDashboard.putNumber("this.spinComDriveTrain.drive", this.spinCommand);
-    calculateNSetPodPositions(this.forwardCommand, this.strafeCommand, this.spinCommand);    
+    calculateNSetPodPositions(this.forwardCommand, this.strafeCommand, this.spinCommand);  
+
+    SmartDashboard.putNumber("angle", this.currentAngle * (180 / Math.PI));
   }
 
   /**

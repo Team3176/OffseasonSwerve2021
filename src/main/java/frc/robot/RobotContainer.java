@@ -1,10 +1,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.teleop.SwerveDefense;
 import frc.robot.commands.teleop.SwerveDrive;
 import frc.robot.commands.teleop.SwerveReZeroGyro;
 import frc.robot.commands.teleop.SwerveVision;
+import frc.robot.commands.auton.Slalom;
 import frc.robot.constants.ControllerConstants;
 
 import frc.robot.subsystems.Drivetrain;
@@ -27,7 +29,7 @@ public class RobotContainer {
       () -> controller.isFieldCentricButtonPressed(),
       () -> controller.isRobotCentricButtonPressed(),
       () -> controller.isBackRobotCentricButtonPressed()));
-
+      
     configureButtonBindings();
   }
 
@@ -38,5 +40,6 @@ public class RobotContainer {
       () -> controller.getForward(), 
       () -> controller.getStrafe()));
     controller.getReZeroGyroButton().whenHeld(new SwerveReZeroGyro());
+    controller.getSlalomButton().whenPressed(new Slalom());
   }
 }
