@@ -73,6 +73,7 @@ public final class SwervePodConstants {
         /* kF */    {0.0, 0.0, 0.0, 0.0},    // Feed forward gain constant
         /* I-Zne */ {0.0, 0.0, 0.0, 0.0}     // The range of error for kI to take affect (like a reverse deadband)
     };
+    
     // BR P: 2.41, I: 0.0, D: 152.0, F: 0.0
     public static final double[][] SPIN_PID = {
         //           FR    FL    BL     BR
