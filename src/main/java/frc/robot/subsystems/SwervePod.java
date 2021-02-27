@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.*; 
+import com.ctre.phoenix.motorcontrol.can.*;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
 import com.revrobotics.CANEncoder;
@@ -19,6 +19,8 @@ import com.revrobotics.ControlType;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -248,4 +250,11 @@ public class SwervePod {
 
     public boolean isInverted() { return spinController.getInverted(); }
     public void setInverted() { spinController.setInverted(!isInverted()); }
+
+
+    public void setDesiredState(SwerveModuleState desiredState) {
+        // Optimize the reference state to avoid spinning further than 90 degrees
+        SwerveModuleState state =
+            SwerveModuleState.optimize(desiredState, new Rotation2d(m_turningEncoder.get()));//Encoder?
+}
 }

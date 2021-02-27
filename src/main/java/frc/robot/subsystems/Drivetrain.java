@@ -10,7 +10,9 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
-
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -391,11 +393,24 @@ public class Drivetrain extends SubsystemBase {
   public Rotation2d getAngle() {
     return Rotation2d.fromDegrees(-gyro.getAngle());
   }
+*/
+
+SwerveDriveOdometry odometry =
+new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d());
 
   public Pose2d getCurrentPose() {
-    return odometry.getPoseMeters();
+    return odometry.getPoseMeters(); //Does this work?
   }
 
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    SwerveDriveKinematics.normalizeWheelSpeeds(
+        desiredStates, DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND);
+    podFL.setDesiredState(desiredStates[0]);
+    podFR.setDesiredState(desiredStates[1]);
+    podBL.setDesiredState(desiredStates[2]);
+    podBR.setDesiredState(desiredStates[3]);
+  }
+/*
   public DifferentialDriveKinematics getKinematics() {
     return kinematics;
   }

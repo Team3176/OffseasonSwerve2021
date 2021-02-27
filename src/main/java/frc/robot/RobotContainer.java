@@ -62,13 +62,13 @@ public class RobotContainer {
             var thetaController =
         new ProfiledPIDController(
             DrivetrainConstants.P_THETA_CONTROLLER, 0, 0, DrivetrainConstants.THETA_CONTROLLER_CONSTRAINTS);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI); //Do I even need this if using pathweaver?
 
 
     SwerveControllerCommand swerveControllerCommand =
     new SwerveControllerCommand(
         trajectory,
-        drivetrain::getPose, // Functional interface to feed supplier
+        drivetrain::getCurrentPose, // Functional interface to feed supplier
         DrivetrainConstants.DRIVE_KINEMATICS,
 
         // Position controllers
@@ -79,7 +79,7 @@ public class RobotContainer {
         drivetrain);
 
 // Reset odometry to the starting pose of the trajectory.
-drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
+drivetrain.resetOdometry(trajectory.getInitialPose());
 
 // Run path following command, then stop at the end.
 return swerveControllerCommand.andThen(() -> drivetrain.drive(0, 0, 0));
