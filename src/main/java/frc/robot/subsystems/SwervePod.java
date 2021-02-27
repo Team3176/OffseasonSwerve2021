@@ -117,6 +117,7 @@ public class SwervePod {
             this.spinController.setSensorPhase(SwervePodConstants.kSensorPhase);
             this.spinController.setInverted(SwervePodConstants.kMotorInverted);
         }
+        // MUst be uncommented or recommented depending on the bot
         if (this.id == 3) {
             this.spinController.setSensorPhase(true);
             this.spinController.setInverted(true);

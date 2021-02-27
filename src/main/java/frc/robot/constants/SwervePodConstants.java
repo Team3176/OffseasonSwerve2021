@@ -66,11 +66,12 @@ public final class SwervePodConstants {
     public static final int TALON_DRIVE_PID_LOOP_ID = kPIDLoopIdx; 
     public static final int TALON_DRIVE_PID_TIMEOUT_MS = kTimeoutMs;  
     
+
     public static final double[][] DRIVE_PID = {
-        /* kP */    {0.15, 0.15, 0.15, 0.15},
+        /* kP */    {0.1, 0.11, 0.15, 0.23},
         /* kI */    {0.0, 0.0, 0.0, 0.0},
-        /* kD */    {0.0, 0.0, 0.0, 0.0},
-        /* kF */    {0.0, 0.0, 0.0, 0.0},    // Feed forward gain constant
+        /* kD */    {4.0, 7.0, 3.5, 6.0},
+        /* kF */    {0.0435, 0.0446, 0.044, 0.0445},    // Feed forward gain constant
         /* I-Zne */ {0.0, 0.0, 0.0, 0.0}     // The range of error for kI to take affect (like a reverse deadband)
     };
     // BR P: 2.41, I: 0.0, D: 152.0, F: 0.0
@@ -99,7 +100,9 @@ public final class SwervePodConstants {
     //public static final int[] SPIN_OFFSET = {-1381, 63, -1019, 1740};
     // public static final int[] SPIN_OFFSET = {47762, 4189, 388129, -50897};
     // public static final int[] SPIN_OFFSET = {49844, 55384, 58418, 73442};
-    public static final int[] SPIN_OFFSET = {-7492, -6034, -6649, -8475};
+    public static final int[] SPIN_OFFSET_OLD_BOT = {-7492, -6034, -6649, -8475}; // 2019 Bot
+    public static final int[] SPIN_OFFSET_NEW_BOT = {460, 4118, 6927, 2894}; // 2021 Bot
+    public static final int[] SPIN_OFFSET = SPIN_OFFSET_OLD_BOT; // Must be manual changed
     public static final double DRIVE_SPEED_MAX_EMPIRICAL_FEET_PER_SECOND = 13.79;
 
 }
