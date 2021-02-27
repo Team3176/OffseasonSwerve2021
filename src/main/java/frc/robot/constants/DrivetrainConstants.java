@@ -1,5 +1,10 @@
 package frc.robot.constants;
 
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstraint;
+
 public class DrivetrainConstants {
     // IDs for Drivetrain motors and solenoids
 
@@ -33,7 +38,25 @@ public class DrivetrainConstants {
 
     public static final double MAX_ROT_SPEED_RADIANS_PER_SECOND = 5.0; // rad/s
     public static final double MAX_ROT_SPEED = 5.0; // rad/s
-
+    
+    public static final double MAX_ROT_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 1; // rad/s*s
 
     public static final double NON_TURBO_PERCENT_OUT_CAP = 0.5;
+
+    public static final SwerveDriveKinematics DRIVE_KINEMATICS = 
+    new SwerveDriveKinematics(
+    new Translation2d(LENGTH / 2, WIDTH / 2),
+    new Translation2d(LENGTH / 2, -WIDTH / 2),
+    new Translation2d(-LENGTH / 2, WIDTH / 2),
+    new Translation2d(-LENGTH / 2, -WIDTH / 2));
+
+    public static final double P_THETA_CONTROLLER = 1;
+
+    public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS =
+    new TrapezoidProfile.Constraints(
+        MAX_ROT_SPEED_RADIANS_PER_SECOND, MAX_ROT_ACCELERATION_RADIANS_PER_SECOND_SQUARED);
+
+    public static final double P_X_Controller = 1;
+    public static final double P_Y_Controller = 1;
+    public static final double P_Theta_Controller = 1;
 }
