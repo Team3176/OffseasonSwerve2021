@@ -69,6 +69,7 @@ public final class SwervePodConstants {
 
     public static final double[][] DRIVE_PID = {
         /* kP */    {0.1, 0.11, 0.15, 0.23},
+        // /* kI */    {0.001, 0.0015, 0.0015, 0.005}, // using these don't work
         /* kI */    {0.0, 0.0, 0.0, 0.0},
         /* kD */    {4.0, 7.0, 3.5, 6.0},
         /* kF */    {0.0435, 0.0446, 0.044, 0.0445},    // Feed forward gain constant
