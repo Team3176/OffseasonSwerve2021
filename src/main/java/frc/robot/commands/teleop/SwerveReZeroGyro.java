@@ -24,7 +24,7 @@ public class SwerveReZeroGyro extends CommandBase {
 
   @Override
   public void execute() {
-    drivetrain.gyroUpdateOffset();
+    drivetrain.resetGyro();
     isreset = true;
   }
 

@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.teleop.SwerveDefense;
 import frc.robot.commands.teleop.SwerveDrive;
+import frc.robot.commands.teleop.SwerveReZeroGyro;
 import frc.robot.commands.teleop.SwerveVision;
 import frc.robot.constants.ControllerConstants;
 
@@ -36,5 +37,6 @@ public class RobotContainer {
     controller.getVisionButton().whenHeld(new SwerveVision(
       () -> controller.getForward(), 
       () -> controller.getStrafe()));
+    controller.getReZeroGyroButton().whenHeld(new SwerveReZeroGyro());
   }
 }
