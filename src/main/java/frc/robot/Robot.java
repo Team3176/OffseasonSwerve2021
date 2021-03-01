@@ -21,14 +21,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    String slalomJSON = "paths/Slalom.wpilib.json";
-    Trajectory slalomTrajectory = new Trajectory();
-    try {
-      Path slalomPath = Filesystem.getDeployDirectory().toPath().resolve(slalomJSON);
-      slalomTrajectory = TrajectoryUtil.fromPathweaverJson(slalomPath);
-    } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + slalomJSON, ex.getStackTrace());
-    }
+    createTrajectory("slalom");
     robotContainer = new RobotContainer();
   }
 public Trajectory getTrajectory(){
@@ -66,4 +59,16 @@ public Trajectory getTrajectory(){
 
   @Override
   public void testPeriodic() { }
+
+
+  public void createTrajectory(String path){
+    String trajectoryJSON = "paths/" + path + ".wpilib.json";
+    Trajectory trajectory = new Trajectory();
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      slalomTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }
+  }
 }

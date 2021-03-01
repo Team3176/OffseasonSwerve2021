@@ -3,11 +3,14 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import frc.robot.commands.auton.FollowSlalomPath;
 import frc.robot.commands.teleop.SwerveDefense;
 import frc.robot.commands.teleop.SwerveDrive;
 import frc.robot.commands.teleop.SwerveReZeroGyro;
@@ -21,8 +24,16 @@ public class RobotContainer {
 
   private Controller controller;
   private Drivetrain drivetrain;
+
   private Robot robot;
   private Trajectory trajectory;
+
+  private SendableChooser<String> m_autonChooser;
+  private static final String slalom = "slalom";
+  private static final String barrelRacing = "barrelRacong";
+  private static final String bouncePath = "bouncePath";
+
+  public ProfiledPIDController thetaController;
 
   public RobotContainer() {
     controller = Controller.getInstance();
@@ -39,6 +50,12 @@ public class RobotContainer {
       () -> controller.isBackRobotCentricButtonPressed()));
 
     configureButtonBindings();
+
+    m_autonChooser = new SendableChooser<>();
+    m_autonChooser.addOption("Slalom", slalom);
+    //m_autonChooser.addOption("Barrel Racing", barrelRacing);
+  //  m_autonChooser.addOption("Bounce Path", bouncePath);
+    SmartDashboard.putData("Auton Chooser", m_autonChooser);
   }
 
   private void configureButtonBindings() {
@@ -53,38 +70,33 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // Create config for trajectory
     TrajectoryConfig config =
-        new TrajectoryConfig(
-                DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND,
-                DrivetrainConstants.MAX_ACCEL_INCHES_PER_SECOND)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DrivetrainConstants.DRIVE_KINEMATICS);
+    new TrajectoryConfig(
+            DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND,
+            DrivetrainConstants.MAX_ACCEL_INCHES_PER_SECOND)
+        // Add kinematics to ensure max speed is actually obeyed
+        .setKinematics(DrivetrainConstants.DRIVE_KINEMATICS);
 
-            var thetaController =
-        new ProfiledPIDController(
-            DrivetrainConstants.P_THETA_CONTROLLER, 0, 0, DrivetrainConstants.THETA_CONTROLLER_CONSTRAINTS);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI); //Do I even need this if using pathweaver?
+       thetaController =
+    new ProfiledPIDController(
+        DrivetrainConstants.P_THETA_CONTROLLER, 0, 0, DrivetrainConstants.THETA_CONTROLLER_CONSTRAINTS);
+thetaController.enableContinuousInput(-Math.PI, Math.PI);           //Do I even need this if using pathweaver?
 
 
-    SwerveControllerCommand swerveControllerCommand =
-    new SwerveControllerCommand(
-        trajectory,
-        drivetrain::getCurrentPose, // Functional interface to feed supplier
-        DrivetrainConstants.DRIVE_KINEMATICS,
+    if(m_autonChooser.getSelected().equals("slalom")) {
+      return new FollowSlalomPath();
+    }
+    /* else if(m_autonChooser.getSelected().equals("barrelRacing")) {
+      return new ThreeSecondDriveAndShoot();
+    } else if(m_autonChooser.getSelected().equals("bouncePath")) {
+      return new FarShootAndDrive();
+    }*/
+    else{
+      return null;
+    }
+  }
 
-        // Position controllers
-        new PIDController(DrivetrainConstants.P_X_Controller, 0,0),
-        new PIDController(DrivetrainConstants.P_Y_Controller, 0, 0),
-        thetaController,
-        drivetrain::setModuleStates,
-        drivetrain);
-
-// Reset odometry to the starting pose of the trajectory.
-drivetrain.resetOdometry(trajectory.getInitialPose());
-
-// Run path following command, then stop at the end.
-return swerveControllerCommand.andThen(() -> drivetrain.drive(0, 0, 0));
-}
-}
+  }
+  
 
 
 

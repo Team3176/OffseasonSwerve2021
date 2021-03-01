@@ -251,10 +251,9 @@ public class SwervePod {
     public boolean isInverted() { return spinController.getInverted(); }
     public void setInverted() { spinController.setInverted(!isInverted()); }
 
-
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState state =
-            SwerveModuleState.optimize(desiredState, new Rotation2d(m_turningEncoder.get()));//Encoder?
-}
+            SwerveModuleState.optimize(desiredState, new Rotation2d(m_turningEncoder.get())); //Why does optimize not work and what is the encoder?
+    
 }

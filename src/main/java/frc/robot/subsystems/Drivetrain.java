@@ -410,6 +410,10 @@ new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d
     podBL.setDesiredState(desiredStates[2]);
     podBR.setDesiredState(desiredStates[3]);
   }
+
+  public void resetOdometry(Pose2d pose) {
+    odometry.resetPosition(pose, gyro.getRotation2d());
+  }
 /*
   public DifferentialDriveKinematics getKinematics() {
     return kinematics;
