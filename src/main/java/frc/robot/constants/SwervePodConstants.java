@@ -68,22 +68,25 @@ public final class SwervePodConstants {
     
 
     public static final double[][] DRIVE_PID = {
-        /* kP */    {0.1, 0.11, 0.15, 0.23},
+        /* kP */    {0.12, 0.12, 0.12, 0.1},
         // /* kI */    {0.001, 0.0015, 0.0015, 0.005}, // using these don't work
         /* kI */    {0.0, 0.0, 0.0, 0.0},
-        /* kD */    {4.0, 7.0, 3.5, 6.0},
-        /* kF */    {0.0435, 0.0446, 0.044, 0.0445},    // Feed forward gain constant
+        // /* kI */    {0.001, 0.001, 0.001, 0.001},
+        /* kD */    {5.0, 7.0, 6.0, 6.0},
+        /* kF */    {0.04472, 0.049516, 0.049516, 0.049516},    // Feed forward gain constant
         /* I-Zne */ {0.0, 0.0, 0.0, 0.0}     // The range of error for kI to take affect (like a reverse deadband)
     };
     // BR P: 2.41, I: 0.0, D: 152.0, F: 0.0
+
+    // P=2 and D=50 for 2021 bot
     public static final double[][] SPIN_PID = {
         //           FR    FL    BL     BR
     //    /* kP */    {1.0, 2.0, 0.9, 0.1},
 //        /* kP */    {1.0, 2.0, 0.9, 2.0},
-                    {1.0, 1.0, 1.0, 1.0},
+                    {2.0, 2.0, 2.0, 2.0},
         /* kI */    {0.0, 0.0, 0.0, 0.0},
         ///* kD */    {25.0, 50.0, 500.0, 50.0},
-                    {20.0, 20.0, 20.0, 20.0},
+                    {50.0, 50.0, 50.0, 50.0},
     //    /* kD */    {25.0, 50.0, 500.0, 100.0},
     /* kF */    {0.0, 0.0, 0.0, 0.0}    // Feed forward gain constant
     };
@@ -102,8 +105,8 @@ public final class SwervePodConstants {
     // public static final int[] SPIN_OFFSET = {47762, 4189, 388129, -50897};
     // public static final int[] SPIN_OFFSET = {49844, 55384, 58418, 73442};
     public static final int[] SPIN_OFFSET_OLD_BOT = {-7492, -6034, -6649, -8475}; // 2019 Bot
-    public static final int[] SPIN_OFFSET_NEW_BOT = {460, 4118, 6927, 2894}; // 2021 Bot
-    public static final int[] SPIN_OFFSET = SPIN_OFFSET_OLD_BOT; // Must be manual changed
+    public static final int[] SPIN_OFFSET_NEW_BOT = {453, 307, 187183, -1191}; // 2021 Bot
+    public static final int[] SPIN_OFFSET = SPIN_OFFSET_NEW_BOT; // Must be manual changed
     public static final double DRIVE_SPEED_MAX_EMPIRICAL_FEET_PER_SECOND = 13.79;
 
 }

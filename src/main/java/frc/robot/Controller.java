@@ -43,14 +43,16 @@ public class Controller {
         if (Math.abs(-transStick.getY())<.06) {
             return 0.0;
         } else {
-            return -1 * (Math.pow((transStick.getY()),1)*1);}
+            // return -1 * (Math.pow((transStick.getY()),1)*1);} // 2019 bot
+            return 1 * (Math.pow((transStick.getY()),1)*1);} // 2021 bot
     }
     
     public double getStrafe() { 
         if (Math.abs(transStick.getX())<.06) {
             return 0.0;
         } else {
-            return -1 * (Math.pow((-1 * transStick.getX()),1) * 1);}
+            // return -1 * (Math.pow((-1 * transStick.getX()),1) * 1);} // 2019 bot
+            return 1 * (Math.pow((-1 * transStick.getX()),1) * 1);} // 2021 bot
     }
 
     public double getSpin() { 
