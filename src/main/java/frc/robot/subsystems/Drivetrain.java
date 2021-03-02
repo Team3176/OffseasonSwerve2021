@@ -26,6 +26,15 @@ import frc.robot.Controller;
 // import frc.robot.VisionClient;
 
 import java.util.ArrayList;
+
+
+/* ##################################################################################
+ *  BEGIN: Temporary Code for PIDController of rotation to stop drift in AutonCrude
+ * ################################################################################## */
+    import frc.robot.util.PIDLoop;
+/* ##################################################################################
+ *  END: Temporary Code for PIDController of rotation to stop drift in AutonCrude
+ * ################################################################################## */
 public class Drivetrain extends SubsystemBase {
   private static Drivetrain instance = new Drivetrain();
   private Controller controller = Controller.getInstance();
@@ -74,8 +83,18 @@ public class Drivetrain extends SubsystemBase {
   private double forwardCommand;
   private double strafeCommand;
   private double spinCommand;
- 
-  public enum driveMode {
+
+  /* ##################################################################################
+   *  BEGIN: Temporary Code for PIDController of rotation to stop drift in AutonCrude
+   * ################################################################################## */
+    private int arraytrack;
+    double[] AngleHist = {0.0, 0.0, 0.0, 0.0};
+    double autonCrudeGyroAngleAvg;
+  /* ##################################################################################
+   *  END: Temporary Code for PIDController of rotation to stop drift in AutonCrude
+   * ################################################################################## */
+
+   public enum driveMode {
     DEFENSE,
     DRIVE,
     TURBO,
@@ -134,6 +153,15 @@ public class Drivetrain extends SubsystemBase {
 
     isVisionDriving = false;
 
+  /* ##################################################################################
+   *  BEGIN: Temporary Code for PIDController of rotation to stop drift in AutonCrude
+   * ################################################################################## */
+    arraytrack = 0;
+    autonCrudeGyroAngleAvg = 0;
+  /* ##################################################################################
+   *  END: Temporary Code for PIDController of rotation to stop drift in AutonCrude
+   * ################################################################################## */
+
     // TODO: We initialize to face forward but how do we make this into a command?
     // Maybe we say drive with the below parameters, but where?
     /*
@@ -186,7 +214,6 @@ public class Drivetrain extends SubsystemBase {
     updateAngle();
     // board.putNumber("Drive updated currentAngle Degrees", (this.currentAngle * 180/Math.PI));
     // SmartDashboard.putString("Drive currentCoordType", currentCoordType.toString());
-
 
     if(currentDriveMode != driveMode.TURBO) {
       this.forwardCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
@@ -333,7 +360,6 @@ public class Drivetrain extends SubsystemBase {
     // -pi to pi; 0 = straight
     this.currentAngle = ((((gyro.getAngle() - this.gyroOffset) * Math.PI/180.0)) % (2*Math.PI));
     // gyro.getAngle is returned in degrees.
-    // 
     // Then converted to radians via "* pi/180".
     // And finally, it's modulus against 2pi is taken and returned as currentAngle.
   }
@@ -402,4 +428,33 @@ public class Drivetrain extends SubsystemBase {
     return kinematics;
   }
   */
+
+/* ##################################################################################
+ *  BEGIN: Temporary Code for PIDController of rotation to stop drift in AutonCrude
+ * ################################################################################## */
+  private void calcAutonCrudeGyroAngleAvg() {
+    this.AngleHist[this.arraytrack] = this.currentAngle;
+    autonCrudeGyroAngleAvg = ( this.AngleHist[0] + this.AngleHist[1] + this.AngleHist[2] + this.AngleHist[3] + this.AngleHist[4] ) / 5;
+  }
+
+  public double getAutonCrudeGyroAngleAvg() {
+    return this.autonCrudeGyroAngleAvg;
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    
+    calcAutonCrudeGyroAngleAvg();
+    this.arraytrack++;
+    if (this.arraytrack > 3) {
+      this.arraytrack = 0;
+    } 
+/* ##################################################################################
+ *  END: Temporary Code for PIDController of rotation to stop drift in AutonCrude
+ * ################################################################################## */
+
+
+  }
+
 }
