@@ -40,7 +40,7 @@ public class FollowSlalomPath extends CommandBase {
   public void execute() {
 
 
-    SwerveControllerCommand swerveControllerCommand =
+     container.swerveControllerCommand =
     new SwerveControllerCommand(
         trajectory,
         drivetrain::getCurrentPose, // Functional interface to feed supplier
@@ -50,14 +50,13 @@ public class FollowSlalomPath extends CommandBase {
         new PIDController(DrivetrainConstants.P_X_Controller, 0,0),
         new PIDController(DrivetrainConstants.P_Y_Controller, 0, 0),
         container.thetaController,
-        drivetrain::setModuleStates,
+        drivetrain::setModuleStates, //Not sure about setModuleStates
         drivetrain);
 
 // Reset odometry to the starting pose of the trajectory.
 drivetrain.resetOdometry(trajectory.getInitialPose());
 
-// Run path following command, then stop at the end.
-swerveControllerCommand.andThen(() -> drivetrain.drive(0, 0, 0));
+
 }
   @Override
   public void end(boolean interrupted) {}

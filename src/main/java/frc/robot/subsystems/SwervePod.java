@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.constants.SwervePodConstants;
 
 public class SwervePod {
@@ -71,6 +71,8 @@ public class SwervePod {
 
     private int startTics;
 
+
+    private Drivetrain drivetrain = Drivetrain.getInstance();
     public SwervePod(int id, TalonFX driveController, TalonSRX spinController) {
         this.id = id;
 
@@ -251,9 +253,18 @@ public class SwervePod {
     public boolean isInverted() { return spinController.getInverted(); }
     public void setInverted() { spinController.setInverted(!isInverted()); }
 
+   
+  
+
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState state =
-            SwerveModuleState.optimize(desiredState, new Rotation2d(m_turningEncoder.get())); //Why does optimize not work and what is the encoder?
-    
+        SwerveModuleState.optimize(desiredState, drivetrain.gyro.getRotation2d()); 
+        
+}
+
+/*public SwerveModuleState getState() {
+    return new SwerveModuleState(encoder.getRate(), new Rotation2d(m_turningEncoder.get()));
+  }*/
+
 }

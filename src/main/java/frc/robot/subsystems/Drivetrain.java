@@ -9,6 +9,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
@@ -33,7 +34,7 @@ public class Drivetrain extends SubsystemBase {
   private Controller controller = Controller.getInstance();
 
   private PowerDistributionPanel PDP = new PowerDistributionPanel(0);
-  private AHRS gyro;
+  public AHRS gyro;
   private double gyroOffset = 0;
 
   private ArrayList<SwervePod> pods;
@@ -125,6 +126,8 @@ public class Drivetrain extends SubsystemBase {
 
     // Instantiating the gyro
     gyro = new AHRS(SPI.Port.kMXP);
+
+   
     gyro.reset();
     // gyroUpdateOffset();
     updateAngle();
@@ -419,4 +422,14 @@ new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d
     return kinematics;
   }
   */
+  /*public void periodic() {
+    
+    odometry.update(
+        new Rotation2d(getHeading()),
+        podFL.getState(),
+        podBL.getState(),     //I don't know if this works
+        podFR.getState(),
+        podBR.getState());
+  }*/
+
 }

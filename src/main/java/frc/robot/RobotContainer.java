@@ -35,6 +35,9 @@ public class RobotContainer {
 
   public ProfiledPIDController thetaController;
 
+
+  public SwerveControllerCommand swerveControllerCommand;
+
   public RobotContainer() {
     controller = Controller.getInstance();
     drivetrain = Drivetrain.getInstance();
@@ -68,31 +71,28 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // Create config for trajectory
     TrajectoryConfig config =
     new TrajectoryConfig(
             DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND,
             DrivetrainConstants.MAX_ACCEL_INCHES_PER_SECOND)
         // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DrivetrainConstants.DRIVE_KINEMATICS);
+        .setKinematics(DrivetrainConstants.DRIVE_KINEMATICS); 
 
        thetaController =
     new ProfiledPIDController(
         DrivetrainConstants.P_THETA_CONTROLLER, 0, 0, DrivetrainConstants.THETA_CONTROLLER_CONSTRAINTS);
-thetaController.enableContinuousInput(-Math.PI, Math.PI);           //Do I even need this if using pathweaver?
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);           
 
 
     if(m_autonChooser.getSelected().equals("slalom")) {
-      return new FollowSlalomPath();
+      new FollowSlalomPath();
     }
     /* else if(m_autonChooser.getSelected().equals("barrelRacing")) {
       return new ThreeSecondDriveAndShoot();
     } else if(m_autonChooser.getSelected().equals("bouncePath")) {
       return new FarShootAndDrive();
     }*/
-    else{
-      return null;
-    }
+    return swerveControllerCommand.andThen(() -> drivetrain.drive(0, 0, 0));
   }
 
   }
