@@ -4,6 +4,7 @@ import java.util.function.DoubleSupplier;
 
 //TODO: Recognize the red dependecys because seeing red is annoying
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -110,6 +111,9 @@ public class SwervePod {
         this.driveController.configFactoryDefault();
         this.spinController.configFactoryDefault();
 
+       // this.driveController.setNeutralMode(NeutralMode.Brake);
+       // this.driveController.setNeutralMode(NeutralMode.Brake);
+
         this.driveController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
         this.spinController.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);   //TODO: investigate QuadEncoder vs CTRE_MagEncoder_Absolute.  Are the two equivalent?  Why QuadEncoder instead of CTRE_MagEncoder_Absolute
 
@@ -140,8 +144,6 @@ public class SwervePod {
         this.spinController.config_kI(kPIDLoopIdx_spin, kI_Spin, kTimeoutMs_spin);
         this.spinController.config_kD(kPIDLoopIdx_spin, kD_Spin, kTimeoutMs_spin);
         this.spinController.config_kF(kPIDLoopIdx_spin, kF_Spin, kTimeoutMs_spin);
-
-        
 
         startTics = spinController.getSelectedSensorPosition();
         // SmartDashboard.putNumber("startTics", startTics);

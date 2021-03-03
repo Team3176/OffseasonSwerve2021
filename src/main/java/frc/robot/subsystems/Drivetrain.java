@@ -88,7 +88,7 @@ public class Drivetrain extends SubsystemBase {
    *  BEGIN: Temporary Code for PIDController of rotation to stop drift in AutonCrude
    * ################################################################################## */
     private int arraytrack;
-    double[] AngleHist = {0.0, 0.0, 0.0, 0.0};
+    double[] AngleHist = {0.0, 0.0, 0.0, 0.0, 0.0};
     double autonCrudeGyroAngleAvg;
   /* ##################################################################################
    *  END: Temporary Code for PIDController of rotation to stop drift in AutonCrude

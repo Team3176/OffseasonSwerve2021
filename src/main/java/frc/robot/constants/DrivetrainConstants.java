@@ -16,8 +16,8 @@ public class DrivetrainConstants {
     public static final int STEER_FOUR_CID = 44;
 
     // Drivetrain dimensions for kinematics and odometry
-    public static final double LENGTH = 30.5; // Inches
-    public static final double WIDTH = 29.5; // Inches
+    public static final double LENGTH = 58.1 * (1.0/2.54); // Inches but measured in cm
+    public static final double WIDTH = 64.0 * (1.0/2.54); // Inches but measured in cm
 
     public static final double WHEEL_DIAMETER_INCHES = 3.25; // Inches
     public static final double WHEEL_DIAMETER_FEET = WHEEL_DIAMETER_INCHES / 12.0 ; // Inches
