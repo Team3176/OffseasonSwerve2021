@@ -19,7 +19,9 @@ public class Slalom extends CommandBase {
     double runTimeInput;
     double time1 = 1.15;
     double time2 = 1.43;
-    double time3 = 3.5; // It's about that but still need to est
+    double time3 = 4.25;
+    double time4 = 1.4;
+    double time5 = 1.6;
 
     /* ##################################################################################
     *  BEGIN: Temporary Code for PIDController of rotation to stop drift in AutonCrude
@@ -47,33 +49,44 @@ public class Slalom extends CommandBase {
     @Override
     public void initialize() {
         startTime = Timer.getFPGATimestamp();
-        drivetrain.setCoordType(coordType.FIELD_CENTRIC);
-        drivetrain.resetGyro();  
+        drivetrain.resetGyro();
+        drivetrain.setCoordType(coordType.FIELD_CENTRIC);          
     };
 
     @Override
     public void execute() {
+        //Forward
         if((startTime + time1) > Timer.getFPGATimestamp()) {
-            // BEGIN: Temporary Code for PIDController of rotation to stop drift in AutonCrude
             podSpin = pidRotate.returnOutput(drivetrain.getAutonCrudeGyroAngleAvg(), 0);
-            // END: Temporary Code for PIDController of rotation to stop drift in AutonCrude
-            drivetrain.drive(0.5, 0.0, podSpin);
+            drivetrain.drive(-0.5, 0.0, podSpin);
+        // Left
         } else if((startTime + time1 + time2) > Timer.getFPGATimestamp()) {
-            // BEGIN: Temporary Code for PIDController of rotation to stop drift in AutonCrude
             podSpin = pidRotate.returnOutput(drivetrain.getAutonCrudeGyroAngleAvg(), 0);
-            // END: Temporary Code for PIDController of rotation to stop drift in AutonCrude
+            drivetrain.drive(0.0, 0.5, podSpin);
+        // Big forward
+        } else if((startTime + time1 + time2 + time3) > Timer.getFPGATimestamp()) {
+            podSpin = pidRotate.returnOutput(drivetrain.getAutonCrudeGyroAngleAvg(), 0);
+            drivetrain.drive(-0.5, 0.0, podSpin);
+        // Right
+        } else if((startTime + time1 + time2 + time3 + time4) > Timer.getFPGATimestamp()) {
+            podSpin = pidRotate.returnOutput(drivetrain.getAutonCrudeGyroAngleAvg(), 0);
             drivetrain.drive(0.0, -0.5, podSpin);
-        } else if((startTime + time1 + time2 + SmartDashboard.getNumber("runTime", runTimeInput)) > Timer.getFPGATimestamp()) {
-            // BEGIN: Temporary Code for PIDController of rotation to stop drift in AutonCrude
+        // Forward
+        } else if((startTime + time1 + time2 + time3 + time4 + time5) > Timer.getFPGATimestamp()) {
             podSpin = pidRotate.returnOutput(drivetrain.getAutonCrudeGyroAngleAvg(), 0);
-            // END: Temporary Code for PIDController of rotation to stop drift in AutonCrude
-            drivetrain.drive(0.5, 0.0, podSpin);
+            drivetrain.drive(-0.5, 0.0, podSpin);
+        // Left
+        } else if((startTime + time1 + time2 + time3 + time4 + time5 + SmartDashboard.getNumber("runTime", runTimeInput)) > Timer.getFPGATimestamp()) {
+            podSpin = pidRotate.returnOutput(drivetrain.getAutonCrudeGyroAngleAvg(), 0);
+            drivetrain.drive(0.0, 0.5, podSpin);
+        } else {
+            drivetrain.drive(0.0, 0.0, 0.0);
         }
     }
 
     @Override
     public boolean isFinished() {
-        return (startTime + time1 + time2 + SmartDashboard.getNumber("runTime", runTimeInput)) < Timer.getFPGATimestamp();
+        return (startTime + time1 + time2 + time3 + time4 + time5 + SmartDashboard.getNumber("runTime", runTimeInput)) < Timer.getFPGATimestamp();
     }
 
     @Override

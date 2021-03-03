@@ -68,11 +68,11 @@ public final class SwervePodConstants {
     
 
     public static final double[][] DRIVE_PID = {
-        /* kP */    {0.1, 0.1, 0.1, 0.1},
+        /* kP */     {0.15, 0.15, 0.15, 0.15},
         // /* kI */    {0.001, 0.0015, 0.0015, 0.005}, // using these don't work
         /* kI */    {0.0, 0.0, 0.0, 0.0},
-        /* kD */    {4.0, 7.0, 3.5, 6.0},
-        /* kF */    {0.045, 0.045, 0.045, 0.045},    // Feed forward gain constant
+        /* kD */   {0.0, 0.0, 0.0, 0.0},
+        /* kF */    {0.0, 0.0, 0.0, 0.0},    // Feed forward gain constant
         /* I-Zne */ {0.0, 0.0, 0.0, 0.0}     // The range of error for kI to take affect (like a reverse deadband)
     };
     // public static final double[][] DRIVE_PID = {
