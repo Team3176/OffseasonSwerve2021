@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import edu.wpi.first.wpilibj.Timer;
+
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -150,6 +152,17 @@ public class Drivetrain extends SubsystemBase {
     
   }
   
+private Timer matchTimerChrisAskedFor = new Timer();
+
+public void startTimer(){
+  matchTimerChrisAskedFor.start();
+}
+
+public double getTimer(){
+  matchTimerChrisAskedFor.stop();
+  return matchTimerChrisAskedFor.get();
+}
+
   // Prevents more than one instance of drivetrian
   public static Drivetrain getInstance() { return instance; }
 /** 
@@ -176,6 +189,8 @@ public class Drivetrain extends SubsystemBase {
     this.forwardCommand = forwardCommand;
     this.strafeCommand = strafeCommand;
     this.spinCommand = spinCommand;
+
+  
 
     //this.forwardCommand = SmartDashboard.getNumber("forwardCommand", 0);
     //this.strafeCommand = SmartDashboard.getNumber("strafeCommand", 0);

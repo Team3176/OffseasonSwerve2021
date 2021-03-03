@@ -32,6 +32,7 @@ public class FollowSlalomPath extends CommandBase {
 
     drivetrain = Drivetrain.getInstance();
     trajectory = robot.getTrajectory();
+    drivetrain.startTimer();
 
   }
 
@@ -59,7 +60,9 @@ drivetrain.resetOdometry(trajectory.getInitialPose());
 
 }
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drivetrain.getTimer();
+  }
 
   // Returns true when the command should end.
   @Override
