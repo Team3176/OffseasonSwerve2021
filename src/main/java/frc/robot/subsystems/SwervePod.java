@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.SwervePodConstants;
+import edu.wpi.first.wpilibj.SpeedController;;
 
 public class SwervePod {
 
@@ -282,21 +283,21 @@ public class SwervePod {
         SwerveModuleState.optimize(desiredState, drivetrain.gyro.getRotation2d()); 
 
         final double driveOutput =
-        m_drivePIDController.calculate(drivetrain.gyro.getRate(), state.speedMetersPerSecond);
+        m_drivePIDController.calculate(drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL, state.speedMetersPerSecond); //Not sure what measurement this should be in
 
-    // Calculate the turning motor output from the turning PID controller.
-    final var turnOutput =
-        m_turningPIDController.calculate(m_turningEncoder.get(), state.angle.getRadians());
+        
+        final var turnOutput =
+        m_turningPIDController.calculate(drivetrain.gyro.getAngle(), state.angle.getRadians()); //Not sure if this is the right measurement as well
 
-    // Calculate the turning motor output from the turning PID controller.
-    m_driveMotor.set(driveOutput);
-    m_turningMotor.set(turnOutput);
+      
+        driveController.set(driveOutput);       //These should be a different set() from SpeedController
+        spinController.set(turnOutput);
         
 }
 
 public SwerveModuleState getState() {
     return new SwerveModuleState(drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL,
-     drivetrain.gyro.getRotation2d()); //Not sure if this works
+     drivetrain.gyro.getRotation2d());                                                        //Not sure if this works
   }                                                                                           //Converting from degrees/sec to m/s
 
   
