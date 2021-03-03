@@ -43,7 +43,7 @@ public class FollowSlalomPath extends CommandBase {
      container.swerveControllerCommand =
     new SwerveControllerCommand(
         trajectory,
-        drivetrain::getCurrentPose, // Functional interface to feed supplier
+        drivetrain::getCurrentPose, 
         DrivetrainConstants.DRIVE_KINEMATICS,
 
         // Position controllers

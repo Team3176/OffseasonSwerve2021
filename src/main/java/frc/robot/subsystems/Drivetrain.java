@@ -422,7 +422,7 @@ new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d
     return kinematics;
   }
   */
-  /*public void periodic() {
+  public void periodic() {
     
     odometry.update(
         new Rotation2d(getHeading()),
@@ -430,6 +430,9 @@ new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d
         podBL.getState(),     //I don't know if this works
         podFR.getState(),
         podBR.getState());
-  }*/
+  }
+  public double getHeading() {
+    return gyro.getRotation2d().getDegrees();
+  }
 
 }

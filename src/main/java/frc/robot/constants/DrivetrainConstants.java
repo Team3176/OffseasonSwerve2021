@@ -59,4 +59,11 @@ public class DrivetrainConstants {
     public static final double P_X_Controller = 1;
     public static final double P_Y_Controller = 1;
     public static final double P_Theta_Controller = 1;
+    
+    public static final double DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL = (3.25*Math.PI)/360;
+
+    public static final double P_MODULE_DRIVE_CONTROLLER = 1;
+    public static final double P_MODULE_TURNING_CONTROLLER = 1;
+    public static final double MAX_MODULE_ANGULAR_SPEED_RADIANS_PER_SECOND = 2 * Math.PI;
+    public static final double MAX_MODULE_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2* Math.PI;
 }

@@ -19,6 +19,7 @@ import com.revrobotics.ControlType;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -27,7 +28,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.SwervePodConstants;
 
 public class SwervePod {
@@ -71,8 +74,13 @@ public class SwervePod {
 
     private int startTics;
 
+    private final PIDController m_drivePIDController;
+    private final ProfiledPIDController m_turningPIDController;
 
     private Drivetrain drivetrain = Drivetrain.getInstance();
+
+    
+
     public SwervePod(int id, TalonFX driveController, TalonSRX spinController) {
         this.id = id;
 
@@ -84,6 +92,15 @@ public class SwervePod {
         kPIDLoopIdx_spin = SwervePodConstants.TALON_SPIN_PID_LOOP_ID;
         kTimeoutMs_spin = SwervePodConstants.TALON_SPIN_PID_TIMEOUT_MS;
         
+        m_drivePIDController =
+        new PIDController(DrivetrainConstants.P_MODULE_DRIVE_CONTROLLER, 0, 0);
+
+        m_turningPIDController =
+         new ProfiledPIDController(
+        DrivetrainConstants.P_MODULE_TURNING_CONTROLLER,0,0,
+        new TrapezoidProfile.Constraints(
+            DrivetrainConstants.MAX_MODULE_ANGULAR_SPEED_RADIANS_PER_SECOND,
+            DrivetrainConstants.MAX_MODULE_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED));
         
         /**
 		 * Config the allowable closed-loop error, Closed-Loop output will be
@@ -107,6 +124,8 @@ public class SwervePod {
         kI_Drive = SwervePodConstants.DRIVE_PID[1][id];
         kD_Drive = SwervePodConstants.DRIVE_PID[2][id];
         kF_Drive = SwervePodConstants.DRIVE_PID[3][id];
+
+        
 
         this.driveController = driveController;
         this.spinController = spinController;
@@ -158,6 +177,7 @@ public class SwervePod {
      *                 ft-per-sec?
      * @param podSpin  represents desired angle of swervepod. Range = -pi to pi.
      */
+    
     public void set(double podDrive, double podSpin) {
         this.podDrive = podDrive;
         this.podSpin = podSpin; 
@@ -260,11 +280,24 @@ public class SwervePod {
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState state =
         SwerveModuleState.optimize(desiredState, drivetrain.gyro.getRotation2d()); 
+
+        final double driveOutput =
+        m_drivePIDController.calculate(drivetrain.gyro.getRate(), state.speedMetersPerSecond);
+
+    // Calculate the turning motor output from the turning PID controller.
+    final var turnOutput =
+        m_turningPIDController.calculate(m_turningEncoder.get(), state.angle.getRadians());
+
+    // Calculate the turning motor output from the turning PID controller.
+    m_driveMotor.set(driveOutput);
+    m_turningMotor.set(turnOutput);
         
 }
 
-/*public SwerveModuleState getState() {
-    return new SwerveModuleState(encoder.getRate(), new Rotation2d(m_turningEncoder.get()));
-  }*/
+public SwerveModuleState getState() {
+    return new SwerveModuleState(drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL,
+     drivetrain.gyro.getRotation2d()); //Not sure if this works
+  }                                                                                           //Converting from degrees/sec to m/s
 
+  
 }
