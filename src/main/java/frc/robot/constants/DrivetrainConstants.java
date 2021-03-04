@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstraint;
+import frc.robot.constants.MasterConstants;
 
 public class DrivetrainConstants {
     // IDs for Drivetrain motors and solenoids
@@ -21,11 +22,14 @@ public class DrivetrainConstants {
     public static final int STEER_FOUR_CID = 44;
 
     // Drivetrain dimensions for kinematics and odometry
-    public static final double LENGTH = 30.5; // Inches
-    public static final double WIDTH = 29.5; // Inches
+    public static final double LENGTH_2019 = 30.5; // Inches
+    public static final double LENGTH_2021 = 58.1 * (1.0/2.54); // Inches but measured in cm
 
-    public static final double LENGTH = 58.1 * (1.0/2.54); // Inches but measured in cm
-    public static final double WIDTH = 64.0 * (1.0/2.54); // Inches but measured in cm
+    public static final double WIDTH_2019 = 29.5; // Inches
+    public static final double WIDTH_2021 = 64.0 * (1.0/2.54); // Inches but measured in cm
+
+    public static double LENGTH = (MasterConstants.is2021Bot) ?  LENGTH_2021 : LENGTH_2019;
+    public static double WIDTH = (MasterConstants.is2021Bot) ?  WIDTH_2021 : WIDTH_2019;
 
     public static final double WHEEL_DIAMETER_INCHES = 3.25; // Inches
     public static final double WHEEL_DIAMETER_FEET = WHEEL_DIAMETER_INCHES / 12.0 ; // Inches

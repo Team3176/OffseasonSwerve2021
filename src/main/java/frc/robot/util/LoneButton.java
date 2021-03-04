@@ -1,12 +1,13 @@
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class LoneButton extends Trigger {
   private final Joystick m_joystick;
-  private final int m_button1;
-  private final int m_button2;
+  private final int m_include;
+  private final int m_exclude1;
+  private final int m_exclude2;
 
   /**
    * Class to create Double button trigger.
