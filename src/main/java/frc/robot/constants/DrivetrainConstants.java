@@ -4,11 +4,9 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstraint;
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj.util.Units;
-=======
-import frc.robot.constants.MasterConstants;
->>>>>>> 873d8443151ccbe45b539c25b362e5e7bdb24dc6
+
+
 
 public class DrivetrainConstants {
     // IDs for Drivetrain motors and solenoids
