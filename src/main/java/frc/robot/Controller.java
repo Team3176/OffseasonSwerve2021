@@ -45,21 +45,21 @@ public class Controller {
         if (Math.abs(-transStick.getY())<.06) {
             return 0.0;
         } else {
-            return 1 * (Math.pow((transStick.getY()),1)*1);}
+            return -1 * (Math.pow((transStick.getY()),1)*1);} // 1 for 2021, -1 for 2019
     }
     
     public double getStrafe() { 
         if (Math.abs(transStick.getX())<.06) {
             return 0.0;
         } else {
-            return 1 * (Math.pow((-1 * transStick.getX()),1) * 1);}
+            return -1 * (Math.pow((-1 * transStick.getX()),1) * 1);} // 1 for 2021, -1 for 2019
     }
 
     public double getSpin() { 
         if (Math.abs(rotStick.getX())<.06) {
             return 0.0;
         } else {
-            return Math.pow(rotStick.getX(),1) / 7.0;}
+            return 1 * Math.pow(rotStick.getX(),1) / 7.0;} // -1 for 2021, 1 for 2019
     }
 
     public void outputToSmartDashboard() {     

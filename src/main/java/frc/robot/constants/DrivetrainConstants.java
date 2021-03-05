@@ -1,5 +1,11 @@
 package frc.robot.constants;
 
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstraint;
+import frc.robot.constants.MasterConstants;
+
 public class DrivetrainConstants {
     // IDs for Drivetrain motors and solenoids
 
@@ -16,8 +22,14 @@ public class DrivetrainConstants {
     public static final int STEER_FOUR_CID = 44;
 
     // Drivetrain dimensions for kinematics and odometry
-    public static final double LENGTH = 58.1 * (1.0/2.54); // Inches but measured in cm
-    public static final double WIDTH = 64.0 * (1.0/2.54); // Inches but measured in cm
+    public static final double LENGTH_2019 = 30.5; // Inches
+    public static final double LENGTH_2021 = 58.1 * (1.0/2.54); // Inches but measured in cm
+
+    public static final double WIDTH_2019 = 29.5; // Inches
+    public static final double WIDTH_2021 = 64.0 * (1.0/2.54); // Inches but measured in cm
+
+    public static double LENGTH = (MasterConstants.is2021Bot) ?  LENGTH_2021 : LENGTH_2019;
+    public static double WIDTH = (MasterConstants.is2021Bot) ?  WIDTH_2021 : WIDTH_2019;
 
     public static final double WHEEL_DIAMETER_INCHES = 3.25; // Inches
     public static final double WHEEL_DIAMETER_FEET = WHEEL_DIAMETER_INCHES / 12.0 ; // Inches
@@ -33,7 +45,32 @@ public class DrivetrainConstants {
 
     public static final double MAX_ROT_SPEED_RADIANS_PER_SECOND = 5.0; // rad/s
     public static final double MAX_ROT_SPEED = 5.0; // rad/s
-
+    
+    public static final double MAX_ROT_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 1; // rad/s*s
 
     public static final double NON_TURBO_PERCENT_OUT_CAP = 0.5;
+
+    public static final SwerveDriveKinematics DRIVE_KINEMATICS = 
+    new SwerveDriveKinematics(
+    new Translation2d(LENGTH / 2, WIDTH / 2),
+    new Translation2d(LENGTH / 2, -WIDTH / 2),
+    new Translation2d(-LENGTH / 2, WIDTH / 2),
+    new Translation2d(-LENGTH / 2, -WIDTH / 2));
+
+    public static final double P_THETA_CONTROLLER = 1;
+
+    public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS =
+    new TrapezoidProfile.Constraints(
+        MAX_ROT_SPEED_RADIANS_PER_SECOND, MAX_ROT_ACCELERATION_RADIANS_PER_SECOND_SQUARED);
+
+    public static final double P_X_Controller = 1;
+    public static final double P_Y_Controller = 1;
+    public static final double P_Theta_Controller = 1;
+    
+    public static final double DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL = (3.25*Math.PI)/360;
+
+    public static final double P_MODULE_DRIVE_CONTROLLER = 1;
+    public static final double P_MODULE_TURNING_CONTROLLER = 1;
+    public static final double MAX_MODULE_ANGULAR_SPEED_RADIANS_PER_SECOND = 2 * Math.PI;
+    public static final double MAX_MODULE_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2* Math.PI;
 }

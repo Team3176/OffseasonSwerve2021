@@ -79,6 +79,10 @@ public class Slalom extends CommandBase {
         } else if((startTime + time1 + time2 + time3 + time4 + time5 + SmartDashboard.getNumber("runTime", runTimeInput)) > Timer.getFPGATimestamp()) {
             podSpin = pidRotate.returnOutput(drivetrain.getAutonCrudeGyroAngleAvg(), 0);
             drivetrain.drive(0.0, 0.5, podSpin);
+        // Backwards
+        } else if((startTime + time1 + time2 + time3 + (2 * time4) + time5 + SmartDashboard.getNumber("runTime", runTimeInput)) > Timer.getFPGATimestamp()) {
+            podSpin = pidRotate.returnOutput(drivetrain.getAutonCrudeGyroAngleAvg(), 0);
+            drivetrain.drive(0.0, 0.5, podSpin);
         } else {
             drivetrain.drive(0.0, 0.0, 0.0);
         }
@@ -86,7 +90,7 @@ public class Slalom extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return (startTime + time1 + time2 + time3 + time4 + time5 + SmartDashboard.getNumber("runTime", runTimeInput)) < Timer.getFPGATimestamp();
+        return (startTime + time1 + time2 + time3 + (2 * time4) + time5 + SmartDashboard.getNumber("runTime", runTimeInput)) < Timer.getFPGATimestamp();
     }
 
     @Override

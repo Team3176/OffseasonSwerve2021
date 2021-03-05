@@ -87,7 +87,7 @@ public class SwervePod {
 		 * neutral within this range. See Table in Section 17.2.1 for native
 		 * units per rotation.
 		 */
-	    //spinController.configAllowableClosedloopError(0, SwervePodConstants.kPIDLoopIdx, SwervePodConstants.kTimeoutMs);
+        //spinController.configAllowableClosedloopError(0, SwervePodConstants.kPIDLoopIdx, SwervePodConstants.kTimeoutMs);
 
         kDriveEncoderUnitsPerRevolution = SwervePodConstants.DRIVE_ENCODER_UNITS_PER_REVOLUTION;
         kSlotIdx_drive = SwervePodConstants.TALON_DRIVE_PID_SLOT_ID;
@@ -111,6 +111,8 @@ public class SwervePod {
         this.driveController.configFactoryDefault();
         this.spinController.configFactoryDefault();
 
+        this.driveController.configClosedloopRamp(1.0);
+
        // this.driveController.setNeutralMode(NeutralMode.Brake);
        // this.driveController.setNeutralMode(NeutralMode.Brake);
 
@@ -121,7 +123,14 @@ public class SwervePod {
             this.spinController.setSensorPhase(SwervePodConstants.kSensorPhase);
             this.spinController.setInverted(SwervePodConstants.kMotorInverted);
         }
+        /* 2021 Code
         if (this.id == 3 || this.id == 2) {
+            this.spinController.setSensorPhase(true);
+            this.spinController.setInverted(true);
+        }
+        */
+        // 2019 Code
+        if (this.id == 3) {
             this.spinController.setSensorPhase(true);
             this.spinController.setInverted(true);
         }
