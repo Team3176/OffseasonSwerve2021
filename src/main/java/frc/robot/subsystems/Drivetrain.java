@@ -18,7 +18,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -402,12 +402,12 @@ SwerveDriveOdometry odometry =
 new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d());
 
   public Pose2d getCurrentPose() {
-    return odometry.getPoseMeters(); //Does this work?
+    return odometry.getPoseMeters() ; //Does this work?
   }
 
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.normalizeWheelSpeeds(
-        desiredStates, DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND);
+        desiredStates,Units.feetToMeters(Units.inchesToMeters(DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND)));
     podFL.setDesiredState(desiredStates[0]);
     podFR.setDesiredState(desiredStates[1]);
     podBL.setDesiredState(desiredStates[2]);
@@ -421,7 +421,7 @@ new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d
   public DifferentialDriveKinematics getKinematics() {
     return kinematics;
   }
-  */
+  
   public void periodic() {
     
     odometry.update(
@@ -432,7 +432,7 @@ new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d
         podBR.getState());
   }
   public double getHeading() {
-    return gyro.getRotation2d().getDegrees();
+    return Units.degreesToRadians(gyro.getRotation2d().getDegrees());
   }
-
+*/
 }

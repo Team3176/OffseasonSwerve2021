@@ -4,6 +4,11 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstraint;
+<<<<<<< HEAD
+import edu.wpi.first.wpilibj.util.Units;
+=======
+import frc.robot.constants.MasterConstants;
+>>>>>>> 873d8443151ccbe45b539c25b362e5e7bdb24dc6
 
 public class DrivetrainConstants {
     // IDs for Drivetrain motors and solenoids
@@ -21,8 +26,14 @@ public class DrivetrainConstants {
     public static final int STEER_FOUR_CID = 44;
 
     // Drivetrain dimensions for kinematics and odometry
-    public static final double LENGTH = 30.5; // Inches
-    public static final double WIDTH = 29.5; // Inches
+    public static final double LENGTH_2019 = 30.5; // Inches
+    public static final double LENGTH_2021 = 58.1 * (1.0/2.54); // Inches but measured in cm
+
+    public static final double WIDTH_2019 = 29.5; // Inches
+    public static final double WIDTH_2021 = 64.0 * (1.0/2.54); // Inches but measured in cm
+
+    public static double LENGTH = (MasterConstants.is2021Bot) ?  LENGTH_2021 : LENGTH_2019;
+    public static double WIDTH = (MasterConstants.is2021Bot) ?  WIDTH_2021 : WIDTH_2019;
 
     public static final double WHEEL_DIAMETER_INCHES = 3.25; // Inches
     public static final double WHEEL_DIAMETER_FEET = WHEEL_DIAMETER_INCHES / 12.0 ; // Inches
@@ -45,10 +56,10 @@ public class DrivetrainConstants {
 
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = 
     new SwerveDriveKinematics(
-    new Translation2d(LENGTH / 2, WIDTH / 2),
-    new Translation2d(LENGTH / 2, -WIDTH / 2),
-    new Translation2d(-LENGTH / 2, WIDTH / 2),
-    new Translation2d(-LENGTH / 2, -WIDTH / 2));
+    new Translation2d(Units.feetToMeters(LENGTH) / 2, Units.feetToMeters(WIDTH) / 2),
+    new Translation2d(Units.feetToMeters(LENGTH) / 2, -Units.feetToMeters(WIDTH) / 2),
+    new Translation2d(-Units.feetToMeters(LENGTH) / 2, Units.feetToMeters(WIDTH) / 2),
+    new Translation2d(-Units.feetToMeters(LENGTH) / 2, -Units.feetToMeters(WIDTH) / 2));
 
     public static final double P_THETA_CONTROLLER = 1;
 
@@ -60,7 +71,7 @@ public class DrivetrainConstants {
     public static final double P_Y_Controller = 1;
     public static final double P_Theta_Controller = 1;
     
-    public static final double DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL = (3.25*Math.PI)/360;
+    public static final double DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL = (Units.feetToMeters(WHEEL_DIAMETER_FEET)*Math.PI)/360;
 
     public static final double P_MODULE_DRIVE_CONTROLLER = 1;
     public static final double P_MODULE_TURNING_CONTROLLER = 1;

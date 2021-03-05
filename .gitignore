@@ -137,6 +137,7 @@ $RECYCLE.BIN/
 ### Gradle ###
 .gradle
 /build/
+*/build/
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
 
 # Ignore Gradle GUI config
@@ -156,6 +157,7 @@ gradle-app.setting
 .project
 .settings/
 bin/
+*/bin/
 imgui.ini
 
 

@@ -31,7 +31,7 @@ public class FollowSlalomPath extends CommandBase {
   public void initialize() {
 
     drivetrain = Drivetrain.getInstance();
-    trajectory = robot.getTrajectory();
+    trajectory = container.trajectory;
 
   }
 
@@ -47,7 +47,7 @@ public class FollowSlalomPath extends CommandBase {
         DrivetrainConstants.DRIVE_KINEMATICS,
 
         // Position controllers
-        new PIDController(DrivetrainConstants.P_X_Controller, 0,0),
+        new PIDController(DrivetrainConstants.P_X_Controller, 0, 0),
         new PIDController(DrivetrainConstants.P_Y_Controller, 0, 0),
         container.thetaController,
         drivetrain::setModuleStates, //Not sure about setModuleStates

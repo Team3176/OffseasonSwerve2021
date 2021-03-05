@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.SwervePodConstants;
@@ -287,11 +288,9 @@ public class SwervePod {
 
         
         final var turnOutput =
-        m_turningPIDController.calculate(drivetrain.gyro.getAngle(), state.angle.getRadians()); //Not sure if this is the right measurement as well
-
+        m_turningPIDController.calculate(Units.degreesToRadians(drivetrain.gyro.getAngle()), state.angle.getRadians()); 
       
-        driveController.set(driveOutput);       //These should be a different set() from SpeedController
-        spinController.set(turnOutput);
+        set(Units.metersToFeet(driveOutput),turnOutput);     
         
 }
 

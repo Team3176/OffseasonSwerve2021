@@ -1,5 +1,10 @@
 package frc.robot;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
@@ -8,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.commands.auton.FollowSlalomPath;
@@ -26,7 +32,7 @@ public class RobotContainer {
   private Drivetrain drivetrain;
 
   private Robot robot;
-  private Trajectory trajectory;
+  public Trajectory trajectory;
 
   private SendableChooser<String> m_autonChooser;
   private static final String slalom = "slalom";
@@ -41,7 +47,6 @@ public class RobotContainer {
   public RobotContainer() {
     controller = Controller.getInstance();
     drivetrain = Drivetrain.getInstance();
-    trajectory = robot.getTrajectory();
 
     // TODO: Is there a way to not have 6 inputs and check driveModes another way?
     drivetrain.setDefaultCommand(new SwerveDrive(
@@ -85,6 +90,7 @@ public class RobotContainer {
 
 
     if(m_autonChooser.getSelected().equals("slalom")) {
+      createTrajectory("slalom");
       new FollowSlalomPath();
     }
     /* else if(m_autonChooser.getSelected().equals("barrelRacing")) {
@@ -94,9 +100,17 @@ public class RobotContainer {
     }*/
     return swerveControllerCommand.andThen(() -> drivetrain.drive(0, 0, 0));
   }
-
+  public void createTrajectory(String path){
+    String trajectoryJSON = "paths/" + path + ".wpilib.json";
+   
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }
   }
-  
+}
 
 
 

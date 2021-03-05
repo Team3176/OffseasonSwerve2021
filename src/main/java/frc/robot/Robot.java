@@ -17,16 +17,13 @@ public class Robot extends TimedRobot {
 
   private Controller controller = Controller.getInstance();
 
-  public Trajectory slalomTrajectory;
+ 
 
   @Override
   public void robotInit() {
-    createTrajectory("slalom");
     robotContainer = new RobotContainer();
   }
-public Trajectory getTrajectory(){
-  return slalomTrajectory;
-}
+
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
@@ -61,14 +58,6 @@ public Trajectory getTrajectory(){
   public void testPeriodic() { }
 
 
-  public void createTrajectory(String path){
-    String trajectoryJSON = "paths/" + path + ".wpilib.json";
-    Trajectory trajectory = new Trajectory();
-    try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-      slalomTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-    } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-    }
-  }
+  
+  
 }
