@@ -6,7 +6,9 @@ import frc.robot.commands.teleop.SwerveDefense;
 import frc.robot.commands.teleop.SwerveDrive;
 import frc.robot.commands.teleop.SwerveReZeroGyro;
 import frc.robot.commands.teleop.SwerveVision;
+import frc.robot.commands.teleop.SwerveOrbit;
 import frc.robot.commands.auton.Slalom;
+
 import frc.robot.constants.ControllerConstants;
 
 import frc.robot.subsystems.Drivetrain;
@@ -39,7 +41,9 @@ public class RobotContainer {
     controller.getVisionButton().whenHeld(new SwerveVision(
       () -> controller.getForward(), 
       () -> controller.getStrafe()));
-    controller.getReZeroGyroButton().whenHeld(new SwerveReZeroGyro());
+    controller.getReZeroGyroButton().whenPressed(new SwerveReZeroGyro());
     controller.getSlalomButton().whenPressed(new Slalom());
+    controller.getOrbitButton().whenHeld(new SwerveOrbit(
+      () -> controller.getSpin()));
   }
 }

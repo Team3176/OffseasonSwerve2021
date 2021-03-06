@@ -98,7 +98,8 @@ public class Drivetrain extends SubsystemBase {
     DEFENSE,
     DRIVE,
     TURBO,
-    VISION
+    VISION,
+    ORBIT
   }
 
   public enum coordType {
@@ -267,10 +268,10 @@ public class Drivetrain extends SubsystemBase {
       //          +Y :=  axis of chassis forward movement
       //          +X :=  axis of chassis strafe to starboard/right
       // ###########################################################
-      double a = strafeCommand - spinCommand * length/2; 
-      double b = strafeCommand + spinCommand * length/2;
-      double c = forwardCommand - spinCommand * width/2;  
-      double d = forwardCommand + spinCommand * width/2;
+      double a = strafeCommand - spinCommand * getRadius("A");
+      double b = strafeCommand + spinCommand * getRadius("B");;
+      double c = forwardCommand - spinCommand * getRadius("C");  
+      double d = forwardCommand + spinCommand * getRadius("D");
       
       // Calculate speed (podDrive[idx]) and angle (podSpin[idx]) of each pod
       podDrive[0] = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2));
@@ -341,6 +342,8 @@ public class Drivetrain extends SubsystemBase {
         for(int idx = 0; idx < (pods.size()); idx++) {
         pods.get(idx).set(podDrive[idx], podSpin[idx]);   //TODO: try doing pods.size() - 1 in for conditional, then outside for loop
                                                           //  do a hardcode set of pods.get(3).set(0.1, 0.0);
+        SmartDashboard.putNumber("pod" + idx + " drive", podDrive[idx]);    
+        SmartDashboard.putNumber("pod" + idx + " spin", podSpin[idx]);
         }
         //pods.get(3).set(0.1,1.57);
         
@@ -352,7 +355,7 @@ public class Drivetrain extends SubsystemBase {
     //  pods.get(2).set(smallNum, 3.0 * Math.PI / 4.0);
     //  pods.get(3).set(smallNum, -3.0 * Math.PI / 4.0);
 
-    SmartDashboard.putBoolean("isFieldCentric", isFieldCentric());
+    SmartDashboard.putBoolean("orbiting", isOrbiting());
     }
   }
 
@@ -371,13 +374,14 @@ public class Drivetrain extends SubsystemBase {
   private double getRadius(String component) {
     // Omitted if driveStatements where we pivoted around a pod
     // This'll be orbit and dosado in the future
-    if(false /* orbiting || dosadoing */) {
-      // Do special things to components based on radius and more
-    } else {
-      if(component.equals("A") || component.equals("B")) { return length / 2 ; }
-      else { return width / 2; }  //TODO: place to check for forward vs back pods working vs not working
-    }
-    return 0.0;
+    // if(currentDriveMode == driveMode.ORBIT) {
+      // if(component.equals("A") || component.equals("B")) { return length / 2.0; }
+      // else if(component.equals("C")) { return width; }
+      // else /* component D */ { return 2 * width; } // Puts radius to the right of bot at distance w
+    // } else {
+      if(component.equals("A") || component.equals("B")) { return length / 2.0 ; }
+      else { return width / 2.0; }  //TODO: place to check for forward vs back pods working vs not working
+    // }
   }
 
   public void setDriveMode(driveMode wantedDriveMode) {
@@ -388,8 +392,8 @@ public class Drivetrain extends SubsystemBase {
     currentCoordType = wantedType;
   }
 
-  public boolean isFieldCentric() {
-    if(currentCoordType == coordType.FIELD_CENTRIC) { return true; }
+  public boolean isOrbiting() {
+    if(currentDriveMode == driveMode.ORBIT) { return true; }
     return false;
   }
 
