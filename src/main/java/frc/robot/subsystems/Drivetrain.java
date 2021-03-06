@@ -421,7 +421,7 @@ new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d
   public DifferentialDriveKinematics getKinematics() {
     return kinematics;
   }
-  
+  */
   public void periodic() {
     
     odometry.update(
@@ -434,5 +434,5 @@ new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d
   public double getHeading() {
     return Units.degreesToRadians(gyro.getRotation2d().getDegrees());
   }
-*/
+
 }

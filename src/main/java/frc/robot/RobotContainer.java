@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import frc.robot.commands.auton.FollowEasyPath;
 import frc.robot.commands.auton.FollowSlalomPath;
 import frc.robot.commands.teleop.SwerveDefense;
 import frc.robot.commands.teleop.SwerveDrive;
@@ -36,7 +37,7 @@ public class RobotContainer {
 
   private SendableChooser<String> m_autonChooser;
   private static final String slalom = "slalom";
-  private static final String barrelRacing = "barrelRacong";
+  private static final String easy = "easy";
   private static final String bouncePath = "bouncePath";
 
   public ProfiledPIDController thetaController;
@@ -60,8 +61,8 @@ public class RobotContainer {
     configureButtonBindings();
 
     m_autonChooser = new SendableChooser<>();
-    m_autonChooser.addOption("Slalom", slalom);
-    //m_autonChooser.addOption("Barrel Racing", barrelRacing);
+    m_autonChooser.addOption("slalom", slalom);
+    m_autonChooser.addOption("easy", easy);
   //  m_autonChooser.addOption("Bounce Path", bouncePath);
     SmartDashboard.putData("Auton Chooser", m_autonChooser);
   }
@@ -93,13 +94,16 @@ public class RobotContainer {
       createTrajectory("slalom");
       new FollowSlalomPath();
     }
-    /* else if(m_autonChooser.getSelected().equals("barrelRacing")) {
-      return new ThreeSecondDriveAndShoot();
-    } else if(m_autonChooser.getSelected().equals("bouncePath")) {
+     else if(m_autonChooser.getSelected().equals("easy")) {
+      createTrajectory("easy");
+      return new FollowEasyPath();
+    } /*
+    else if(m_autonChooser.getSelected().equals("bouncePath")) {
       return new FarShootAndDrive();
     }*/
     return swerveControllerCommand.andThen(() -> drivetrain.drive(0, 0, 0));
   }
+  
   public void createTrajectory(String path){
     String trajectoryJSON = "paths/" + path + ".wpilib.json";
    
