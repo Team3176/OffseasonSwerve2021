@@ -55,9 +55,9 @@ import java.util.ArrayList;
 
 public class Robot extends TimedRobot {
 
-  static private double ENCODER_EDGES_PER_REV = 2048 / 4.;
+  static private double ENCODER_EDGES_PER_REV = 8192 / 4.;
   static private int PIDIDX = 0;
-  static private int ENCODER_EPR = 2048;
+  static private int ENCODER_EPR = 8192;
   static private double GEARING = 6.17;
   
   private double encoderConstant = (1 / GEARING) * (1 / ENCODER_EDGES_PER_REV);
@@ -162,14 +162,14 @@ public class Robot extends TimedRobot {
     stick = new Joystick(0);
     
     // create left motor
-    WPI_TalonFX leftMotor = setupWPI_TalonFX(1, Sides.LEFT, false);
+    WPI_TalonFX leftMotor = setupWPI_TalonFX(2, Sides.LEFT, false);
 
-    WPI_TalonFX leftFollowerID4 = setupWPI_TalonFX(4, Sides.FOLLOWER, false);
-    leftFollowerID4.follow(leftMotor);
+    WPI_TalonFX leftFollowerID3 = setupWPI_TalonFX(3, Sides.FOLLOWER, false);
+    leftFollowerID3.follow(leftMotor);
 
-    WPI_TalonFX rightMotor = setupWPI_TalonFX(2, Sides.RIGHT, false);
-    WPI_TalonFX rightFollowerID3 = setupWPI_TalonFX(3, Sides.FOLLOWER, false);    
-    rightFollowerID3.follow(rightMotor);
+    WPI_TalonFX rightMotor = setupWPI_TalonFX(1, Sides.RIGHT, true);
+    WPI_TalonFX rightFollowerID4 = setupWPI_TalonFX(4, Sides.FOLLOWER, true);    
+    rightFollowerID4.follow(rightMotor);
     drive = new DifferentialDrive(leftMotor, rightMotor);
     drive.setDeadband(0);
 

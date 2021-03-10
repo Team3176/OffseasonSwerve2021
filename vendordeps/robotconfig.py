@@ -14,9 +14,9 @@
     "rightControllerTypes": ["WPI_TalonFX","WPI_TalonFX"],
     # Set motors to inverted or not
     # If doing drive test, treat this as the left side of the drivetrain
-    "motorsInverted": [False, False],
+    "motorsInverted": [True,True],
     # Only if you are doing drive (leave empty "[]" if not)
-    "rightMotorsInverted": [True, True],
+    "rightMotorsInverted": [False,False],
     # Encoder edges-per-revolution (*NOT* cycles per revolution!)
     # For the CTRE Mag Encoder, use 4096 (4 * 1024 = 4096)
     "encoderEPR": 2048,
@@ -35,7 +35,7 @@
     "rightEncoderInverted": False,
     # ** The following is only if you are using a gyro for the DriveTrain test**
     # Gyro type (one of "NavX", "Pigeon", "ADXRS450", "AnalogGyro", or "None")
-    "gyroType": "None",
+    "gyroType": "",
     # Whatever you put into the constructor of your gyro
     # Could be:
     # "SPI.Port.kMXP" (MXP SPI port for NavX or ADXRS450),
@@ -46,7 +46,5 @@
     # "" (NavX using default SPI, ADXRS450 using onboard CS0, or no gyro)
     "gyroPort": "",
 }
-
-
 
 
