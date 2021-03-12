@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 // WPI_Talon* imports are needed in case a user has a Pigeon on a Talon
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -55,16 +56,18 @@ import java.util.ArrayList;
 
 public class Robot extends TimedRobot {
 
-  static private double ENCODER_EDGES_PER_REV = 8192 / 4.;
+  static private double ENCODER_EDGES_PER_REV = 8192 / 4.0;
   static private int PIDIDX = 0;
   static private int ENCODER_EPR = 8192;
   static private double GEARING = 6.17;
   
   private double encoderConstant = (1 / GEARING) * (1 / ENCODER_EDGES_PER_REV);
 
+  private int[] initEncoderPos = new int[4];
+  private WPI_TalonSRX[] spinMotors = new WPI_TalonSRX[4];
+
   Joystick stick;
   DifferentialDrive drive;
-
 
   Supplier<Double> leftEncoderPosition;
   Supplier<Double> leftEncoderRate;
@@ -85,7 +88,7 @@ public class Robot extends TimedRobot {
   double[] numberArray = new double[10];
   ArrayList<Double> entries = new ArrayList<Double>();
   public Robot() {
-    super(.005);
+    super(0.005);
     LiveWindow.disableAllTelemetry();
   }
 
@@ -95,7 +98,7 @@ public class Robot extends TimedRobot {
     FOLLOWER
   }
 
-  // methods to create and setup motors (reduce redundancy)
+  // methods to create and setup drive motors (reduce redundancy)
   public WPI_TalonFX setupWPI_TalonFX(int port, Sides side, boolean inverted) {
     // create new motor and set neutral modes (if needed)
     WPI_TalonFX motor = new WPI_TalonFX(port);
@@ -106,30 +109,20 @@ public class Robot extends TimedRobot {
     
     // setup encoder if motor isn't a follower
     if (side != Sides.FOLLOWER) {
-    
-      
       motor.configSelectedFeedbackSensor(
             FeedbackDevice.IntegratedSensor,
             PIDIDX, 10
       );    
-
-
-
     switch (side) {
       // setup encoder and data collecting methods
-
       case RIGHT:
-        // set right side methods = encoder methods
-
-          
+        // set right side methods = encoder methods          
         motor.setSensorPhase(false);
         rightEncoderPosition = ()
           -> motor.getSelectedSensorPosition(PIDIDX) * encoderConstant;
         rightEncoderRate = ()
           -> motor.getSelectedSensorVelocity(PIDIDX) * encoderConstant *
                10;
-
-
         break;
       case LEFT:
         motor.setSensorPhase(false);
@@ -139,20 +132,34 @@ public class Robot extends TimedRobot {
         leftEncoderRate = ()
           -> motor.getSelectedSensorVelocity(PIDIDX) * encoderConstant *
                10;
-        
-
         break;
       default:
         // probably do nothing
         break;
-
       }
     
     }
-    
-
     return motor;
+  }
 
+  // methods to create and setup spin motors (reduce redundancy)
+  public WPI_TalonSRX setupWPI_TalonSRX(int port, boolean inverted) {
+    // create new motor and set neutral modes (if needed)
+    WPI_TalonSRX spinMotor = new WPI_TalonSRX(port);
+    // setup talon
+    spinMotor.configFactoryDefault();
+    spinMotor.setNeutralMode(NeutralMode.Brake); // Might be wrong
+    spinMotor.setSensorPhase(false);
+    spinMotor.setInverted(inverted);
+    spinMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+    spinMotor.configNeutralDeadband(999);
+
+    spinMotor.config_kP(0, 0.0, 0);
+    spinMotor.config_kI(0, 0.0, 0);
+    spinMotor.config_kD(0, 0.0, 0);
+    spinMotor.config_kF(0, 0.0, 0);
+
+    return spinMotor;
   }
 
   @Override
@@ -172,10 +179,9 @@ public class Robot extends TimedRobot {
     rightFollowerID4.follow(rightMotor);
     drive = new DifferentialDrive(leftMotor, rightMotor);
     drive.setDeadband(0);
+    
 
-    //
     // Configure gyro
-    //
 
     // Note that the angle from the NavX and all implementors of WPILib Gyro
     // must be negated because getAngle returns a clockwise positive angle
@@ -230,6 +236,15 @@ public class Robot extends TimedRobot {
     System.out.println("Robot in autonomous mode");
     startTime = Timer.getFPGATimestamp();
     counter = 0;
+
+    for(int id = 0; id <= 3; id++) {
+      boolean inverted = false;
+     /* if(id == 1 || id == 0 || id == 3) { // P laceholder number right now
+        inverted = !inverted;
+      }*/
+      spinMotors[id] = setupWPI_TalonSRX(id, inverted);
+      initEncoderPos[id] = spinMotors[id].getSelectedSensorPosition();
+    }
   }
 
   /**
@@ -257,6 +272,10 @@ public class Robot extends TimedRobot {
 
     double leftMotorVolts = motorVolts;
     double rightMotorVolts = motorVolts;
+
+    for(int id = 0; id <= 3; id++) {
+      spinMotors[id].set(ControlMode.Position, initEncoderPos[id]);  
+    }
 
     // Retrieve the commanded speed from NetworkTables
     double autospeed = autoSpeedEntry.getDouble(0);
