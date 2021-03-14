@@ -14,7 +14,7 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
 
-public class FollowEasyPath extends CommandBase {
+public class FollowGivenPath extends CommandBase {
   
   private Drivetrain drivetrain;
   private Trajectory trajectory;
@@ -22,7 +22,7 @@ public class FollowEasyPath extends CommandBase {
   private RobotContainer container;
   
   /** Creates a new FollowSlalomPath. */
-  public FollowEasyPath() {
+  public FollowGivenPath(Trajectory trajectory) {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -31,8 +31,6 @@ public class FollowEasyPath extends CommandBase {
   public void initialize() {
 
     drivetrain = Drivetrain.getInstance();
-    trajectory = container.trajectory;
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.

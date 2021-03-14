@@ -286,7 +286,6 @@ public class SwervePod {
         final double driveOutput =
         m_drivePIDController.calculate(drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL, state.speedMetersPerSecond); //Not sure what measurement this should be in
 
-        
         final var turnOutput =
         m_turningPIDController.calculate(Units.degreesToRadians(drivetrain.gyro.getAngle()), state.angle.getRadians()); 
       

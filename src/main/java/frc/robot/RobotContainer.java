@@ -16,8 +16,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import frc.robot.commands.auton.FollowEasyPath;
-import frc.robot.commands.auton.FollowSlalomPath;
+import frc.robot.commands.auton.FollowGivenPath;
 import frc.robot.commands.teleop.SwerveDefense;
 import frc.robot.commands.teleop.SwerveDrive;
 import frc.robot.commands.teleop.SwerveReZeroGyro;
@@ -32,13 +31,15 @@ public class RobotContainer {
   private Controller controller;
   private Drivetrain drivetrain;
 
-  private Robot robot;
   public Trajectory trajectory;
 
   private SendableChooser<String> m_autonChooser;
   private static final String slalom = "slalom";
   private static final String easy = "easy";
-  private static final String bouncePath = "bouncePath";
+  private static final String forward = "forward";
+  private static final String forward_and_back = "forward_and_back";
+  private static final String L_shape = "L_shape";
+  
 
   public ProfiledPIDController thetaController;
 
@@ -64,6 +65,9 @@ public class RobotContainer {
     m_autonChooser.addOption("slalom", slalom);
     m_autonChooser.addOption("easy", easy);
   //  m_autonChooser.addOption("Bounce Path", bouncePath);
+    m_autonChooser.addOption("forward", forward);
+    m_autonChooser.addOption("forward_and_back", forward_and_back);
+    m_autonChooser.addOption("L_shape", L_shape);
     SmartDashboard.putData("Auton Chooser", m_autonChooser);
   }
 
@@ -77,13 +81,13 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    TrajectoryConfig config =
+    /*TrajectoryConfig config =
     new TrajectoryConfig(
             DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND,
             DrivetrainConstants.MAX_ACCEL_INCHES_PER_SECOND)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DrivetrainConstants.DRIVE_KINEMATICS); 
-
+*/
        thetaController =
     new ProfiledPIDController(
         DrivetrainConstants.P_THETA_CONTROLLER, 0, 0, DrivetrainConstants.THETA_CONTROLLER_CONSTRAINTS);
@@ -92,21 +96,39 @@ public class RobotContainer {
 
     if(m_autonChooser.getSelected().equals("slalom")) {
       createTrajectory("slalom");
-      new FollowSlalomPath();
+      new FollowGivenPath(trajectory);
     }
-     else if(m_autonChooser.getSelected().equals("easy")) {
+
+    else if(m_autonChooser.getSelected().equals("easy")) {
       createTrajectory("easy");
-      return new FollowEasyPath();
-    } /*
+      return new FollowGivenPath(trajectory);
+    } 
+    /*
     else if(m_autonChooser.getSelected().equals("bouncePath")) {
       return new FarShootAndDrive();
-    }*/
+    }
+    */
+    else if(m_autonChooser.getSelected().equals("forward")) {
+      createTrajectory("forward");
+      return new FollowGivenPath(trajectory);
+    }
+    
+    else if(m_autonChooser.getSelected().equals("forward_and_back")) {
+      createTrajectory("forward_and_back");
+      return new FollowGivenPath(trajectory);
+    }
+
+    else if(m_autonChooser.getSelected().equals("L_shape")) {
+      createTrajectory("L_shape");
+      return new FollowGivenPath(trajectory);
+    }
+
     return swerveControllerCommand.andThen(() -> drivetrain.drive(0, 0, 0));
   }
   
   public void createTrajectory(String path){
     String trajectoryJSON = "paths/" + path + ".wpilib.json";
-   
+   trajectory = null;
     try {
       Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
