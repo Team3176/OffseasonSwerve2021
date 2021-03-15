@@ -407,7 +407,7 @@ new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d
 
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.normalizeWheelSpeeds(
-        desiredStates,Units.feetToMeters(Units.inchesToMeters(DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND)));
+        desiredStates,Units.inchesToMeters(DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND));
     podFL.setDesiredState(desiredStates[0]);
     podFR.setDesiredState(desiredStates[1]);
     podBL.setDesiredState(desiredStates[2]);
@@ -432,7 +432,7 @@ new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d
         podBR.getState());
   }
   public double getHeading() {
-    return Units.degreesToRadians(gyro.getRotation2d().getDegrees());
+    return gyro.getRotation2d().getDegrees();
   }
 
 }
