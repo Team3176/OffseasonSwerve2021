@@ -277,12 +277,12 @@ public class SwervePod {
     public void setInverted() { spinController.setInverted(!isInverted()); }
 
    
-  
+
 
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
         state =
-        SwerveModuleState.optimize(desiredState, drivetrain.rotation2d); 
+        SwerveModuleState.optimize(desiredState, drivetrain.getRotation2d()); 
 
         final double driveOutput =
         m_drivePIDController.calculate(drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL, state.speedMetersPerSecond); //Not sure what measurement this should be in
@@ -294,11 +294,15 @@ public class SwervePod {
         
 }
 
+
+
     public SwerveModuleState getState() {
-        state = new SwerveModuleState(drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL,
-        drivetrain.rotation2d);       
-        return state;                                                 //Not sure if this works
+        state = new SwerveModuleState(3,  new Rotation2d());/*drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL,
+        drivetrain.getRotation2d())*/;       
+        return state;                                                                         //Not sure if this works
   }                                                                                           //Converting from degrees/sec to m/s
 
-  
+ // public double getRate(){
+      
+ // }
 }

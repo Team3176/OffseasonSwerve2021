@@ -131,14 +131,15 @@ public class Drivetrain extends SubsystemBase {
 
     // Instantiating the gyro
     gyro = new AHRS(SPI.Port.kMXP);
-    rotation2d = new Rotation2d(gyro.getAngle());
+    odometry =
+    new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, getRotation2d());
 
-    SwerveDriveOdometry odometry =
-  new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, rotation2d);
+    
    
     gyro.reset();
     // gyroUpdateOffset();
     updateAngle();
+    
     // SmartDashboard.putNumber("currentAngle", this.currentAngle);
 
     // SmartDashboard.putNumber("forwardCommand", 0);
@@ -429,7 +430,7 @@ public class Drivetrain extends SubsystemBase {
     return kinematics;
   }
   */
-  public void periodic() {
+ public void periodic() {
     
     odometry.update(
         new Rotation2d(getHeading()),
@@ -437,10 +438,16 @@ public class Drivetrain extends SubsystemBase {
         podBL.getState(),     //I don't know if this works
         podFR.getState(),
         podBR.getState());
-        rotation2d = new Rotation2d(getHeading());
+       
   }
   public double getHeading() {
-    return rotation2d.getDegrees();
+    return getRotation2d().getDegrees();
+  }
+
+  public Rotation2d getRotation2d(){
+    Rotation2d rotation = new Rotation2d(-gyro.getAngle());
+    rotation.times(180/Math.PI);
+     return rotation;
   }
 
 }
