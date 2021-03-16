@@ -80,6 +80,7 @@ public class SwervePod {
     private final ProfiledPIDController m_turningPIDController;
 
     private Drivetrain drivetrain = Drivetrain.getInstance();
+    private SwerveModuleState state;
 
     
 
@@ -280,8 +281,8 @@ public class SwervePod {
 
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
-        SwerveModuleState state =
-        SwerveModuleState.optimize(desiredState, drivetrain.gyro.getRotation2d()); 
+        state =
+        SwerveModuleState.optimize(desiredState, drivetrain.rotation2d); 
 
         final double driveOutput =
         m_drivePIDController.calculate(drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL, state.speedMetersPerSecond); //Not sure what measurement this should be in
@@ -293,9 +294,10 @@ public class SwervePod {
         
 }
 
-public SwerveModuleState getState() {
-    return new SwerveModuleState(drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL,
-     drivetrain.gyro.getRotation2d());                                                        //Not sure if this works
+    public SwerveModuleState getState() {
+        state = new SwerveModuleState(drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL,
+        drivetrain.rotation2d);       
+        return state;                                                 //Not sure if this works
   }                                                                                           //Converting from degrees/sec to m/s
 
   

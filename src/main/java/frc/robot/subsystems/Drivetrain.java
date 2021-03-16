@@ -33,6 +33,8 @@ public class Drivetrain extends SubsystemBase {
   private static Drivetrain instance = new Drivetrain();
   private Controller controller = Controller.getInstance();
 
+  private SwerveDriveOdometry odometry;
+  
   private PowerDistributionPanel PDP = new PowerDistributionPanel(0);
   public AHRS gyro;
   private double gyroOffset = 0;
@@ -77,6 +79,7 @@ public class Drivetrain extends SubsystemBase {
   private double forwardCommand;
   private double strafeCommand;
   private double spinCommand;
+  
  
   public enum driveMode {
     DEFENSE,
@@ -95,6 +98,8 @@ public class Drivetrain extends SubsystemBase {
   private SwervePod podFL;
   private SwervePod podBL;
   private SwervePod podBR;
+
+  public Rotation2d rotation2d;
 
   private Drivetrain() {
     // Instantiate pods
@@ -126,7 +131,10 @@ public class Drivetrain extends SubsystemBase {
 
     // Instantiating the gyro
     gyro = new AHRS(SPI.Port.kMXP);
+    rotation2d = new Rotation2d(gyro.getAngle());
 
+    SwerveDriveOdometry odometry =
+  new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, rotation2d);
    
     gyro.reset();
     // gyroUpdateOffset();
@@ -398,8 +406,7 @@ public class Drivetrain extends SubsystemBase {
   }
 */
 
-SwerveDriveOdometry odometry =
-new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d());
+  
 
   public Pose2d getCurrentPose() {
     return odometry.getPoseMeters() ; //Does this work?
@@ -415,7 +422,7 @@ new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d
   }
 
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(pose, gyro.getRotation2d());
+    odometry.resetPosition(pose, new Rotation2d(getHeading()));
   }
 /*
   public DifferentialDriveKinematics getKinematics() {
@@ -430,9 +437,10 @@ new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d
         podBL.getState(),     //I don't know if this works
         podFR.getState(),
         podBR.getState());
+        rotation2d = new Rotation2d(getHeading());
   }
   public double getHeading() {
-    return gyro.getRotation2d().getDegrees();
+    return rotation2d.getDegrees();
   }
 
 }
