@@ -44,6 +44,7 @@ public class RobotContainer {
     controller.getReZeroGyroButton().whenPressed(new SwerveReZeroGyro());
     controller.getSlalomButton().whenPressed(new Slalom());
     controller.getOrbitButton().whenHeld(new SwerveOrbit(
-      () -> controller.getSpin()));
+      () -> controller.getForward(),
+      () -> controller.getPOVTransStick()));
   }
 }

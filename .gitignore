@@ -139,6 +139,11 @@ $RECYCLE.BIN/
 /build/
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
 
+### FRC Characterization files
+characterization-project/bin/
+characterization-project/build
+characterization-project/.gradle
+
 # Ignore Gradle GUI config
 gradle-app.setting
 

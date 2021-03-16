@@ -46,6 +46,7 @@ public class Drivetrain extends SubsystemBase {
   private ArrayList<SwervePod> pods;
 
   private coordType currentCoordType;
+  private coordType lastCoordType;
   private driveMode currentDriveMode;
 
   private boolean autonVision;
@@ -241,8 +242,10 @@ public class Drivetrain extends SubsystemBase {
     // SmartDashboard.putNumber("this.strafeComDriveTrain.drive", this.strafeCommand);
     // SmartDashboard.putNumber("this.spinComDriveTrain.drive", this.spinCommand);
     calculateNSetPodPositions(this.forwardCommand, this.strafeCommand, this.spinCommand);  
-
-    SmartDashboard.putNumber("angle", this.currentAngle * (180 / Math.PI));
+    
+    SmartDashboard.putBoolean("isOrbiting", currentDriveMode == driveMode.ORBIT);
+    SmartDashboard.putBoolean("isRobotCentric", currentCoordType == coordType.ROBOT_CENTRIC);
+    SmartDashboard.putBoolean("isFieldCentric", currentCoordType == coordType.FIELD_CENTRIC);
   }
 
   /**
@@ -399,6 +402,10 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetGyro() {
     gyro.reset();
+  }
+
+  public coordType getCurrentCoordType() {
+    return currentCoordType;
   }
 
  

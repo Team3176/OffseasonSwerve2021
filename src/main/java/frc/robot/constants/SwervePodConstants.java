@@ -135,7 +135,7 @@ public final class SwervePodConstants {
     //public static final int[] SPIN_OFFSET = {-1381, 63, -1019, 1740};
     // public static final int[] SPIN_OFFSET = {47762, 4189, 388129, -50897};
     // public static final int[] SPIN_OFFSET = {49844, 55384, 58418, 73442};
-    public static final int[] SPIN_OFFSET_2019 = {-7492, -6034, -6649, -8475}; // 2019 Bot
+    public static final int[] SPIN_OFFSET_2019 = {-7492, -6034, -6649, 1305}; // 2019 Bot
     public static final int[] SPIN_OFFSET_2021 = {453, 307, 187183, -1191}; // 2021 Bot
     public static final int[] SPIN_OFFSET = (MasterConstants.is2021Bot) ? SPIN_OFFSET_2021 : SPIN_OFFSET_2019;
 

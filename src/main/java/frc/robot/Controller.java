@@ -30,7 +30,7 @@ public class Controller {
         rotStick = new Joystick(ControllerConstants.ROTATION_STICK_ID);
 
         // All buttons numbers subject to change
-        orbitButton = new JoystickButton(rotStick, 1);
+        orbitButton = new JoystickButton(transStick, 1);
         dosadoButton = new JoystickButton(rotStick, 3);
         defenseButton = new JoystickButton(transStick, 2);
         visionButton = new JoystickButton(transStick, 3); //Should be part of the xbox controller later
@@ -60,6 +60,10 @@ public class Controller {
             return 0.0;
         } else {
             return 1 * Math.pow(rotStick.getX(),1) / 7.0;} // -1 for 2021, 1 for 2019
+    }
+
+    public int getPOVTransStick() {
+        return transStick.getPOV();
     }
 
     public void outputToSmartDashboard() {     
