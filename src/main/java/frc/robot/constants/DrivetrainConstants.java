@@ -31,6 +31,7 @@ public class DrivetrainConstants {
 
     public static double LENGTH = (MasterConstants.is2021Bot) ?  LENGTH_2021 : LENGTH_2019;
     public static double WIDTH = (MasterConstants.is2021Bot) ?  WIDTH_2021 : WIDTH_2019;
+	public static double DRIVE_ENCODER_UNITS_PER_REVOLUTION;
 
     public static final double WHEEL_DIAMETER_INCHES = 3.25; // Inches
     public static final double WHEEL_DIAMETER_FEET = WHEEL_DIAMETER_INCHES / 12.0 ; // Inches

@@ -33,7 +33,7 @@ public class RobotContainer {
   private Joystick xboxController = new Joystick(ControllerConstants.XBOX_CONTROLLER_ID);
 
   private Controller controller;
-  private Drivetrain drivetrain;
+  public static Drivetrain drivetrain;
 
   public Trajectory trajectory;
 
@@ -102,6 +102,7 @@ public class RobotContainer {
             // End 3 meters straight ahead of where we started, facing forward
             new Pose2d(3, 0, new Rotation2d(0)),
             config);*/
+            System.out.println("Works");
        thetaController =
     new ProfiledPIDController(
         DrivetrainConstants.P_THETA_CONTROLLER, 0, 0, DrivetrainConstants.THETA_CONTROLLER_CONSTRAINTS);

@@ -30,6 +30,7 @@ import frc.robot.Controller;
 
 import java.util.ArrayList;
 public class Drivetrain extends SubsystemBase {
+
   private static Drivetrain instance = new Drivetrain();
   private Controller controller = Controller.getInstance();
 
@@ -80,6 +81,7 @@ public class Drivetrain extends SubsystemBase {
   private double strafeCommand;
   private double spinCommand;
   
+  public Rotation2d rotation = new Rotation2d();
  
   public enum driveMode {
     DEFENSE,
@@ -131,15 +133,14 @@ public class Drivetrain extends SubsystemBase {
 
     // Instantiating the gyro
     gyro = new AHRS(SPI.Port.kMXP);
-    odometry =
-    new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, getRotation2d());
+    
 
     
    
     gyro.reset();
     // gyroUpdateOffset();
     updateAngle();
-    
+    odometry = new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d());
     // SmartDashboard.putNumber("currentAngle", this.currentAngle);
 
     // SmartDashboard.putNumber("forwardCommand", 0);
@@ -157,10 +158,14 @@ public class Drivetrain extends SubsystemBase {
     this.strafeCommand = 0.0;
     this.spinCommand = 0.0;
     
+    
   }
   
   // Prevents more than one instance of drivetrian
-  public static Drivetrain getInstance() { return instance; }
+  public static Drivetrain getInstance() { 
+    
+  return instance;
+  }
 /** 
   public void drive(double forwardCommand, double strafeCommand, double spinCommand, int uselessVariable) {
     double smallNum = Math.pow(10, -15);
@@ -423,7 +428,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(pose, new Rotation2d(getHeading()));
+    odometry.resetPosition(pose, gyro.getRotation2d());
   }
 /*
   public DifferentialDriveKinematics getKinematics() {
@@ -440,14 +445,20 @@ public class Drivetrain extends SubsystemBase {
         podBR.getState());
        
   }
-  public double getHeading() {
-    return getRotation2d().getDegrees();
+ public double getHeading() {
+    return gyro.getRotation2d().getRadians();
   }
 
+/*
+public double getGyroYaw(){
+  return gyro.getYaw();
+}
+  
+
   public Rotation2d getRotation2d(){
-    Rotation2d rotation = new Rotation2d(-gyro.getAngle());
+    Rotation2d rotation = new Rotation2d(getGyroYaw());
     rotation.times(180/Math.PI);
      return rotation;
-  }
+  }*/
 
 }

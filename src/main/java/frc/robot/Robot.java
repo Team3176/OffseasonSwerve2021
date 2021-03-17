@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Drivetrain;
 
 public class Robot extends TimedRobot {
 
@@ -21,12 +22,16 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    
     robotContainer = new RobotContainer();
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    if(robotContainer.drivetrain == null){
+      System.out.println("YEs it is null");
+    }
   }
 
   @Override

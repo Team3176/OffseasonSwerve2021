@@ -31,6 +31,8 @@ public class FollowGivenPath extends CommandBase {
   public void initialize() {
 
     drivetrain = Drivetrain.getInstance();
+    System.out.println("Done");
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.

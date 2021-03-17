@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import frc.robot.RobotContainer;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.SwervePodConstants;
 import edu.wpi.first.wpilibj.SpeedController;;
@@ -79,7 +80,9 @@ public class SwervePod {
     private final PIDController m_drivePIDController;
     private final ProfiledPIDController m_turningPIDController;
 
-    private Drivetrain drivetrain = Drivetrain.getInstance();
+    
+
+
     private SwerveModuleState state;
 
     
@@ -282,25 +285,32 @@ public class SwervePod {
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
         state =
-        SwerveModuleState.optimize(desiredState, drivetrain.getRotation2d()); 
+        SwerveModuleState.optimize(desiredState, new Rotation2d(tics2Rads(encoderPos))); //I do not know if this is the angle of the encoder 
 
         final double driveOutput =
-        m_drivePIDController.calculate(drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL, state.speedMetersPerSecond); //Not sure what measurement this should be in
+        m_drivePIDController.calculate(getVelocity(), state.speedMetersPerSecond); 
 
         final var turnOutput =
-        m_turningPIDController.calculate(Units.degreesToRadians(drivetrain.gyro.getAngle()), state.angle.getRadians()); 
+        m_turningPIDController.calculate(tics2Rads(encoderPos), state.angle.getRadians());
       
         set(Units.metersToFeet(driveOutput),turnOutput);     
         
 }
+    public double getVelocity(){
+        double speed = driveController.getSelectedSensorVelocity();
+        speed = speed*10* Units.inchesToMeters(3.25*PI)/SwervePodConstants.DRIVE_ENCODER_UNITS_PER_REVOLUTION;
+        return speed;
+    }
 
-
-
+   
     public SwerveModuleState getState() {
-        state = new SwerveModuleState(3,  new Rotation2d());/*drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL,
+        
+        state = new SwerveModuleState(getVelocity(), new Rotation2d(tics2Rads(encoderPos)));
+        /*drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL,
         drivetrain.getRotation2d())*/;       
         return state;                                                                         //Not sure if this works
-  }                                                                                           //Converting from degrees/sec to m/s
+  }                   
+                                                                    //Converting from degrees/sec to m/s
 
  // public double getRate(){
       
