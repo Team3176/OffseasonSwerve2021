@@ -54,10 +54,10 @@ public class DrivetrainConstants {
 
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = 
     new SwerveDriveKinematics(
-    new Translation2d(Units.feetToMeters(LENGTH) / 2, Units.feetToMeters(WIDTH) / 2),
-    new Translation2d(Units.feetToMeters(LENGTH) / 2, -Units.feetToMeters(WIDTH) / 2),
-    new Translation2d(-Units.feetToMeters(LENGTH) / 2, Units.feetToMeters(WIDTH) / 2),
-    new Translation2d(-Units.feetToMeters(LENGTH) / 2, -Units.feetToMeters(WIDTH) / 2));
+    new Translation2d(Units.inchesToMeters(LENGTH) / 2, Units.inchesToMeters(WIDTH) / 2),
+    new Translation2d(Units.inchesToMeters(LENGTH) / 2, -Units.inchesToMeters(WIDTH) / 2),
+    new Translation2d(-Units.inchesToMeters(LENGTH) / 2, -Units.inchesToMeters(WIDTH) / 2),
+    new Translation2d(-Units.inchesToMeters(LENGTH) / 2, Units.inchesToMeters(WIDTH) / 2));
 
     public static final double P_THETA_CONTROLLER = 1;
 

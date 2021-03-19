@@ -141,6 +141,7 @@ public class Drivetrain extends SubsystemBase {
     // gyroUpdateOffset();
     updateAngle();
     odometry = new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d());
+    
     // SmartDashboard.putNumber("currentAngle", this.currentAngle);
 
     // SmartDashboard.putNumber("forwardCommand", 0);
@@ -420,15 +421,20 @@ public class Drivetrain extends SubsystemBase {
 
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.normalizeWheelSpeeds(
-        desiredStates,Units.inchesToMeters(DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND));
-    podFL.setDesiredState(desiredStates[0]);
-    podFR.setDesiredState(desiredStates[1]);
+        desiredStates,DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND);//Units.inchesToMeters(DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND));
+    podFR.setDesiredState(desiredStates[0]);
+    podFL.setDesiredState(desiredStates[1]);
     podBL.setDesiredState(desiredStates[2]);
     podBR.setDesiredState(desiredStates[3]);
   }
 
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(pose, gyro.getRotation2d());
+    odometry.resetPosition(pose, gyro.getRotation2d().times(Math.PI/180)); //Not sure
+
+    podFR.goHome();
+    podFL.goHome();
+    podBL.goHome();
+    podBR.goHome();
   }
 /*
   public DifferentialDriveKinematics getKinematics() {
@@ -439,9 +445,9 @@ public class Drivetrain extends SubsystemBase {
     
     odometry.update(
         new Rotation2d(getHeading()),
-        podFL.getState(),
-        podBL.getState(),     //I don't know if this works
         podFR.getState(),
+        podFL.getState(),     //I don't know if this works
+        podBL.getState(),
         podBR.getState());
        
   }

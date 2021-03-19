@@ -105,8 +105,8 @@ public class SwervePod {
          new ProfiledPIDController(
         DrivetrainConstants.P_MODULE_TURNING_CONTROLLER,0,0,
         new TrapezoidProfile.Constraints(
-            DrivetrainConstants.MAX_MODULE_ANGULAR_SPEED_RADIANS_PER_SECOND,
-            DrivetrainConstants.MAX_MODULE_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED));
+            DrivetrainConstants.MAX_ROT_SPEED_RADIANS_PER_SECOND,
+            DrivetrainConstants.MAX_ROT_ACCELERATION_RADIANS_PER_SECOND_SQUARED));
         
         /**
 		 * Config the allowable closed-loop error, Closed-Loop output will be
@@ -285,15 +285,17 @@ public class SwervePod {
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
         state =
-        SwerveModuleState.optimize(desiredState, new Rotation2d(tics2Rads(encoderPos))); //I do not know if this is the angle of the encoder 
+        SwerveModuleState.optimize(desiredState, new Rotation2d(tics2Rads(spinController.getSelectedSensorPosition()))); //I do not know if this is the angle of the encoder 
 
-        final double driveOutput =
-        m_drivePIDController.calculate(getVelocity(), state.speedMetersPerSecond); 
+        double driveOutput =
+        m_drivePIDController.calculate(getVelocity(), state.speedMetersPerSecond);
+        driveOutput = Units.metersToInches(driveOutput)/DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND;
 
         final var turnOutput =
-        m_turningPIDController.calculate(tics2Rads(encoderPos), state.angle.getRadians());
-      
-        set(Units.metersToFeet(driveOutput),turnOutput);     
+        m_turningPIDController.calculate(tics2Rads(spinController.getSelectedSensorPosition()), state.angle.getRadians());
+      System.out.println(driveOutput);
+      System.out.println(turnOutput);
+        set(driveOutput,turnOutput);//Units.metersToFeet(driveOutput),turnOutput);     
         
 }
     public double getVelocity(){
@@ -305,7 +307,7 @@ public class SwervePod {
    
     public SwerveModuleState getState() {
         
-        state = new SwerveModuleState(getVelocity(), new Rotation2d(tics2Rads(encoderPos)));
+        state = new SwerveModuleState(getVelocity(), new Rotation2d(tics2Rads(spinController.getSelectedSensorPosition())));
         /*drivetrain.gyro.getRate() * DrivetrainConstants.DEGREES_PER_SECOND_TO_METERS_PER_SECOND_OF_WHEEL,
         drivetrain.getRotation2d())*/;       
         return state;                                                                         //Not sure if this works

@@ -73,6 +73,7 @@ public class RobotContainer {
     m_autonChooser.addOption("forward_and_back", forward_and_back);
     m_autonChooser.addOption("L_shape", L_shape);
     SmartDashboard.putData("Auton Chooser", m_autonChooser);
+    
   }
 
   private void configureButtonBindings() {
@@ -124,8 +125,49 @@ public class RobotContainer {
     }
     */
     else if(m_autonChooser.getSelected().equals("forward")) {
-      createTrajectory("forward");
-      return new FollowGivenPath(trajectory);
+      //createTrajectory("forward");
+      //return new FollowGivenPath(trajectory);
+      /*String trajectoryJSON = "paths/forward.wpilib.json";
+   trajectory = null;
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }*/
+    TrajectoryConfig config =
+        new TrajectoryConfig(
+                4.48,
+                1.631)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(DrivetrainConstants.DRIVE_KINEMATICS);
+
+    // An example trajectory to follow.  All units in meters.
+    Trajectory exampleTrajectory =
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+            // Pass through these two interior waypoints, making an 's' curve path
+            List.of(new Translation2d(.1, .1), new Translation2d(.2, -1)),
+            // End 3 meters straight ahead of where we started, facing forward
+            new Pose2d(.3, 0, new Rotation2d(0)),
+            config);
+
+      swerveControllerCommand =
+    new SwerveControllerCommand(
+        exampleTrajectory,
+        drivetrain::getCurrentPose, 
+        DrivetrainConstants.DRIVE_KINEMATICS,
+
+        // Position controllers
+        new PIDController(DrivetrainConstants.P_X_Controller, 0, 0),
+        new PIDController(DrivetrainConstants.P_Y_Controller, 0, 0),
+        thetaController,
+        drivetrain::setModuleStates, //Not sure about setModuleStates
+        drivetrain);
+
+// Reset odometry to the starting pose of the trajectory.
+drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
     }
     
     else if(m_autonChooser.getSelected().equals("forward_and_back")) {
@@ -150,6 +192,7 @@ public class RobotContainer {
     } catch (IOException ex) {
       DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
     }
+    
   }
 }
 

@@ -18,7 +18,7 @@ public class Robot extends TimedRobot {
 
   private Controller controller = Controller.getInstance();
 
- 
+  private Command m_autonomousCommand;
 
   @Override
   public void robotInit() {
@@ -29,9 +29,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    if(robotContainer.drivetrain == null){
-      System.out.println("YEs it is null");
-    }
+    
   }
 
   @Override
@@ -41,10 +39,19 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() { }
 
   @Override
-  public void autonomousInit() { }
+  public void autonomousInit() {
+    m_autonomousCommand = robotContainer.getAutonomousCommand();
+
+
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
+   }
 
   @Override
-  public void autonomousPeriodic() { }
+  public void autonomousPeriodic() {
+
+   }
 
   @Override
   public void teleopInit() { }

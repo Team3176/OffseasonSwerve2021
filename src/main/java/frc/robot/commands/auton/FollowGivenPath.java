@@ -31,7 +31,10 @@ public class FollowGivenPath extends CommandBase {
   public void initialize() {
 
     drivetrain = Drivetrain.getInstance();
-    System.out.println("Done");
+    if(drivetrain == null){
+      System.out.println("no");
+    }
+   
 
   }
 
@@ -40,7 +43,7 @@ public class FollowGivenPath extends CommandBase {
   public void execute() {
 
 
-     container.swerveControllerCommand =
+    /* container.swerveControllerCommand =
     new SwerveControllerCommand(
         trajectory,
         drivetrain::getCurrentPose, 
@@ -51,7 +54,7 @@ public class FollowGivenPath extends CommandBase {
         new PIDController(DrivetrainConstants.P_Y_Controller, 0, 0),
         container.thetaController,
         drivetrain::setModuleStates, //Not sure about setModuleStates
-        drivetrain);
+        drivetrain);*/
 
 // Reset odometry to the starting pose of the trajectory.
 drivetrain.resetOdometry(trajectory.getInitialPose());
