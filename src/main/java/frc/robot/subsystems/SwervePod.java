@@ -105,8 +105,8 @@ public class SwervePod {
          new ProfiledPIDController(
         DrivetrainConstants.P_MODULE_TURNING_CONTROLLER,0,0,
         new TrapezoidProfile.Constraints(
-            DrivetrainConstants.MAX_ROT_SPEED_RADIANS_PER_SECOND,
-            DrivetrainConstants.MAX_ROT_ACCELERATION_RADIANS_PER_SECOND_SQUARED));
+            DrivetrainConstants.MAX_MODULE_ANGULAR_SPEED_RADIANS_PER_SECOND,
+            DrivetrainConstants.MAX_MODULE_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED));
         
         /**
 		 * Config the allowable closed-loop error, Closed-Loop output will be

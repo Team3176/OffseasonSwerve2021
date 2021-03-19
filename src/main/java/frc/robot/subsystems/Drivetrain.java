@@ -431,10 +431,6 @@ public class Drivetrain extends SubsystemBase {
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(pose, gyro.getRotation2d().times(Math.PI/180)); //Not sure
 
-    podFR.goHome();
-    podFL.goHome();
-    podBL.goHome();
-    podBR.goHome();
   }
 /*
   public DifferentialDriveKinematics getKinematics() {
