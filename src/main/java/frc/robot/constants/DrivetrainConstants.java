@@ -52,12 +52,15 @@ public class DrivetrainConstants {
 
     public static final double NON_TURBO_PERCENT_OUT_CAP = 0.5;
 
+
+    public static final double LENGTH_CENTER_TOCENTER = 23.5;
+    public static final double WIDTH_CENTER_TCENTER = 23.5;
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = 
     new SwerveDriveKinematics(
-    new Translation2d(Units.inchesToMeters(LENGTH) / 2, Units.inchesToMeters(WIDTH) / 2),
-    new Translation2d(Units.inchesToMeters(LENGTH) / 2, -Units.inchesToMeters(WIDTH) / 2),
-    new Translation2d(-Units.inchesToMeters(LENGTH) / 2, -Units.inchesToMeters(WIDTH) / 2),
-    new Translation2d(-Units.inchesToMeters(LENGTH) / 2, Units.inchesToMeters(WIDTH) / 2));
+    new Translation2d(Units.inchesToMeters(LENGTH_CENTER_TOCENTER) / 2, Units.inchesToMeters(WIDTH_CENTER_TCENTER) / 2),
+    new Translation2d(Units.inchesToMeters(LENGTH_CENTER_TOCENTER) / -2, Units.inchesToMeters(WIDTH_CENTER_TCENTER) / 2),
+    new Translation2d(-Units.inchesToMeters(LENGTH_CENTER_TOCENTER) / 2, -Units.inchesToMeters(WIDTH_CENTER_TCENTER) / 2),
+    new Translation2d(-Units.inchesToMeters(LENGTH_CENTER_TOCENTER) / 2, -Units.inchesToMeters(WIDTH_CENTER_TCENTER) / 2));
 
     public static final double P_THETA_CONTROLLER = 1;
 

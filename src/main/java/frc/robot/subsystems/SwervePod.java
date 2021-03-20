@@ -203,11 +203,11 @@ public class SwervePod {
         //if (this.id == 3) {spinController.set(ControlMode.Position, 0.0); } else {   // TODO: Try this to force pod4 to jump lastEncoderPos
         if (this.podDrive > (-Math.pow(10,-10)) && this.podDrive < (Math.pow(10,-10))) {      //TODO: convert this to a deadband range.  abs(podDrive) != 0 is notationally sloppy math
             spinController.set(ControlMode.Position, this.lastEncoderPos);  
-            // SmartDashboard.putNumber("P" + (id + 1) + " lastEncoderPos", this.lastEncoderPos);
+            //SmartDashboard.putNumber("P" + (id + 1) + " lastEncoderPos", this.lastEncoderPos);
         } else {
             spinController.set(ControlMode.Position, encoderSetPos);  
             this.lastEncoderPos = encoderSetPos;
-            // SmartDashboard.putNumber("P" + (id + 1) + " lastEncoderPos", this.lastEncoderPos);
+           // SmartDashboard.putNumber("P" + (id + 1) + " lastEncoderPos", this.lastEncoderPos);
         }    
         if(id == 2) { SmartDashboard.putNumber("P" + (id) + "getSelSenPos", spinController.getSelectedSensorPosition()); }
         if(id == 1) { SmartDashboard.putNumber("P" + (id) + "getSelSenPos", spinController.getSelectedSensorPosition()); }
@@ -304,8 +304,9 @@ public class SwervePod {
 }
     public double getVelocity(){
         double speed = driveController.getSelectedSensorVelocity(1);
+        SmartDashboard.putNumber("GetSensorVelocity", speed);
       
-        speed = speed*10* Units.inchesToMeters(3.25*PI)/SwervePodConstants.DRIVE_ENCODER_UNITS_PER_REVOLUTION;
+        speed = speed*1* Units.inchesToMeters(3.25*PI)/SwervePodConstants.DRIVE_ENCODER_UNITS_PER_REVOLUTION;
         SmartDashboard.putNumber("Velocity", speed);
         return speed;
     }
