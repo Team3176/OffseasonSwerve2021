@@ -440,7 +440,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(pose, gyro.getRotation2d().times(Math.PI/180)); //Not sure
+    odometry.resetPosition(pose, gyro.getRotation2d().times(-Math.PI/180)); //Not sure
 
   }
 /*
@@ -474,11 +474,6 @@ public double getGyroYaw(){
      return rotation;
   }*/
 
-  public void podsToHome() {
-    podFR.goHome();
-    podFL.goHome();
-    podBL.goHome();
-    podBR.goHome();
-  }
+
 
 }
