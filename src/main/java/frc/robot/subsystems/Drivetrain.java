@@ -474,4 +474,11 @@ public double getGyroYaw(){
      return rotation;
   }*/
 
+  public void podsToHome() {
+    podFR.goHome();
+    podFL.goHome();
+    podBL.goHome();
+    podBR.goHome();
+  }
+
 }
