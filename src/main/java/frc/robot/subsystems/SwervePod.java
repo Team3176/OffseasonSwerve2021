@@ -283,12 +283,13 @@ public class SwervePod {
 
 
     public void setDesiredState(SwerveModuleState desiredState) {
-        
+    
         // Optimize the reference state to avoid spinning further than 90 degrees
-       
+       Rotation2d rotation = new Rotation2d(tics2Rads(spinController.getSelectedSensorPosition()));
        state =
-        SwerveModuleState.optimize(desiredState, new Rotation2d(Units.radiansToDegrees(tics2Rads(spinController.getSelectedSensorPosition())))); //I do not know if this is the angle of the encoder 
-       
+        SwerveModuleState.optimize(desiredState, rotation); //I do not know if this is the angle of the encoder 
+        SmartDashboard.putNumber("1Degrees", desiredState.angle.getDegrees());
+        SmartDashboard.putNumber("2Degrees", rotation.getDegrees());
         double driveOutput =
         m_drivePIDController.calculate(getVelocity(), state.speedMetersPerSecond);
         driveOutput = Units.metersToInches(driveOutput)/DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND;
@@ -308,7 +309,6 @@ public class SwervePod {
         SmartDashboard.putNumber("Velocity", speed);
         return speed;
     }
-
    
     public SwerveModuleState getState() {
         

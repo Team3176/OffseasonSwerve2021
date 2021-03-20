@@ -117,8 +117,8 @@ public class Drivetrain extends SubsystemBase {
     pods.add(podBL);
     pods.add(podBR);
 
-    //currentCoordType = coordType.FIELD_CENTRIC;
-    currentCoordType = coordType.ROBOT_CENTRIC;
+    currentCoordType = coordType.FIELD_CENTRIC;
+    //currentCoordType = coordType.ROBOT_CENTRIC;
 
     autonVision = false;
 
@@ -421,13 +421,22 @@ public class Drivetrain extends SubsystemBase {
 
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.normalizeWheelSpeeds(
-        desiredStates,DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND);//Units.inchesToMeters(DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND));
+        desiredStates,4.468);//Units.inchesToMeters(DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND));
         
     podFR.setDesiredState(desiredStates[0]);
     podFL.setDesiredState(desiredStates[1]);
     podBL.setDesiredState(desiredStates[2]);
     podBR.setDesiredState(desiredStates[3]);
   
+    SmartDashboard.putNumber("DesiredState0 Angle", desiredStates[0].angle.getDegrees());
+    SmartDashboard.putNumber("DesiredState1 Angle", desiredStates[1].angle.getDegrees());
+    SmartDashboard.putNumber("DesiredState2 Angle", desiredStates[2].angle.getDegrees());
+    SmartDashboard.putNumber("DesiredState3 Angle", desiredStates[3].angle.getDegrees());
+
+    SmartDashboard.putNumber("DesiredState0 Speed", desiredStates[0].speedMetersPerSecond);
+    SmartDashboard.putNumber("DesiredState1 Speed", desiredStates[1].speedMetersPerSecond);
+    SmartDashboard.putNumber("DesiredState2 Speed", desiredStates[2].speedMetersPerSecond);
+    SmartDashboard.putNumber("DesiredState3 Speed", desiredStates[3].speedMetersPerSecond);
   }
 
   public void resetOdometry(Pose2d pose) {
