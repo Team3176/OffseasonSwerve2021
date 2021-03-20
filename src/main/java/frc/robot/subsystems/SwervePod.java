@@ -283,24 +283,29 @@ public class SwervePod {
 
 
     public void setDesiredState(SwerveModuleState desiredState) {
+        
         // Optimize the reference state to avoid spinning further than 90 degrees
-        state =
-        SwerveModuleState.optimize(desiredState, new Rotation2d(tics2Rads(spinController.getSelectedSensorPosition()))); //I do not know if this is the angle of the encoder 
-
+       
+       state =
+        SwerveModuleState.optimize(desiredState, new Rotation2d(Units.radiansToDegrees(tics2Rads(spinController.getSelectedSensorPosition())))); //I do not know if this is the angle of the encoder 
+       
         double driveOutput =
         m_drivePIDController.calculate(getVelocity(), state.speedMetersPerSecond);
         driveOutput = Units.metersToInches(driveOutput)/DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND;
 
         final var turnOutput =
         m_turningPIDController.calculate(tics2Rads(spinController.getSelectedSensorPosition()), state.angle.getRadians());
-      System.out.println(driveOutput);
-      System.out.println(turnOutput);
+            SmartDashboard.putNumber("TurnOutput",turnOutput);
+            SmartDashboard.putNumber("DriveOutput",driveOutput);
+          
         set(driveOutput,turnOutput);//Units.metersToFeet(driveOutput),turnOutput);     
         
 }
     public double getVelocity(){
-        double speed = driveController.getSelectedSensorVelocity();
+        double speed = driveController.getSelectedSensorVelocity(1);
+      
         speed = speed*10* Units.inchesToMeters(3.25*PI)/SwervePodConstants.DRIVE_ENCODER_UNITS_PER_REVOLUTION;
+        SmartDashboard.putNumber("Velocity", speed);
         return speed;
     }
 

@@ -422,10 +422,12 @@ public class Drivetrain extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.normalizeWheelSpeeds(
         desiredStates,DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND);//Units.inchesToMeters(DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND));
+        
     podFR.setDesiredState(desiredStates[0]);
     podFL.setDesiredState(desiredStates[1]);
     podBL.setDesiredState(desiredStates[2]);
     podBR.setDesiredState(desiredStates[3]);
+  
   }
 
   public void resetOdometry(Pose2d pose) {
