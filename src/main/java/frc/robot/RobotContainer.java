@@ -93,16 +93,7 @@ public class RobotContainer {
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(DrivetrainConstants.DRIVE_KINEMATICS);
 
-    // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
-            config);*/
+    */
             System.out.println("Works");
        thetaController =
     new ProfiledPIDController(
@@ -125,7 +116,7 @@ public class RobotContainer {
     }
     */
     else if(m_autonChooser.getSelected().equals("forward")) {
-      //createTrajectory("forward");
+      createTrajectory("forward");
       //return new FollowGivenPath(trajectory);
       /*String trajectoryJSON = "paths/forward.wpilib.json";
    trajectory = null;
@@ -143,6 +134,7 @@ public class RobotContainer {
             .setKinematics(DrivetrainConstants.DRIVE_KINEMATICS);
 
     // An example trajectory to follow.  All units in meters.
+    /*
     Trajectory exampleTrajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
@@ -153,9 +145,12 @@ public class RobotContainer {
             new Pose2d(3, 0, new Rotation2d(0)),
             config);
 
+*/
+  
+    /*
       swerveControllerCommand =
     new SwerveControllerCommand(
-        exampleTrajectory,
+        trajectory,
         drivetrain::getCurrentPose, 
         DrivetrainConstants.DRIVE_KINEMATICS,
 
@@ -165,9 +160,9 @@ public class RobotContainer {
         thetaController,
         drivetrain::setModuleStates, //Not sure about setModuleStates
         drivetrain);
-
+*/
 // Reset odometry to the starting pose of the trajectory.
-drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
+drivetrain.resetOdometry(trajectory.getInitialPose());
     }
     
     else if(m_autonChooser.getSelected().equals("forward_and_back")) {
