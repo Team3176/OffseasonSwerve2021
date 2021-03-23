@@ -140,7 +140,7 @@ public class Drivetrain extends SubsystemBase {
     gyro.reset();
     // gyroUpdateOffset();
     updateAngle();
-    odometry = new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d());
+    odometry = new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d().times(1));
     
     // SmartDashboard.putNumber("currentAngle", this.currentAngle);
 
@@ -349,7 +349,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void updateAngle() {
     // -pi to pi; 0 = straight
-    this.currentAngle = ((((gyro.getAngle() - this.gyroOffset) * Math.PI/180.0)) % (2*Math.PI));
+    this.currentAngle = (((((gyro.getAngle()) - this.gyroOffset) * Math.PI/180.0)) % (2*Math.PI));
     // gyro.getAngle is returned in degrees.
     // 
     // Then converted to radians via "* pi/180".
@@ -428,19 +428,11 @@ public class Drivetrain extends SubsystemBase {
     podBL.setDesiredState(desiredStates[2]);
     podBR.setDesiredState(desiredStates[3]);
   
-    SmartDashboard.putNumber("DesiredState0 Angle", desiredStates[0].angle.getDegrees());
-    SmartDashboard.putNumber("DesiredState1 Angle", desiredStates[1].angle.getDegrees());
-    SmartDashboard.putNumber("DesiredState2 Angle", desiredStates[2].angle.getDegrees());
-    SmartDashboard.putNumber("DesiredState3 Angle", desiredStates[3].angle.getDegrees());
-
-    SmartDashboard.putNumber("DesiredState0 Speed", desiredStates[0].speedMetersPerSecond);
-    SmartDashboard.putNumber("DesiredState1 Speed", desiredStates[1].speedMetersPerSecond);
-    SmartDashboard.putNumber("DesiredState2 Speed", desiredStates[2].speedMetersPerSecond);
-    SmartDashboard.putNumber("DesiredState3 Speed", desiredStates[3].speedMetersPerSecond);
+   
   }
 
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(pose, gyro.getRotation2d().times(-Math.PI/180)); //Not sure
+    odometry.resetPosition(pose, gyro.getRotation2d().times(Math.PI/180)); //Not sure
 
   }
 /*
@@ -459,8 +451,9 @@ public class Drivetrain extends SubsystemBase {
        
   }
  public double getHeading() {
-    return gyro.getRotation2d().getRadians();
+    return gyro.getRotation2d().getRadians() ;//+ Math.PI/2;
   }
+
 
 /*
 public double getGyroYaw(){

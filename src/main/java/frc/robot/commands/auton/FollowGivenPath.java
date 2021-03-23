@@ -31,9 +31,7 @@ public class FollowGivenPath extends CommandBase {
   public void initialize() {
 
     drivetrain = Drivetrain.getInstance();
-    if(drivetrain == null){
-      System.out.println("no");
-    }
+    
    
 
   }

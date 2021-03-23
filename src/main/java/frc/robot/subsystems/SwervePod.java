@@ -242,12 +242,13 @@ public class SwervePod {
         //if (Math.abs(radianError) > (5 * (PI / 2))) {
         //    System.out.println("Error: Overload");
         //} else if (Math.abs(radianError) > (3 * (PI / 2))) {
+            /*
         if (Math.abs(radianError) > (3 * (PI / 2))) {      // TODO: See if commenting out "Thrust-vector sign-flip" fixes
             radianError -= Math.copySign(2 * PI, radianError);
         } else if (Math.abs(radianError) > (PI / 2)) {
             radianError -= Math.copySign(PI, radianError);
             this.velTicsPer100ms = -this.velTicsPer100ms;
-        }
+        }*/
         encoderError = rads2Tics(radianError);
         // SmartDashboard.putNumber("P" + (id + 1) + " encoderError", encoderError);
         driveCommand = encoderError + this.encoderPos + this.kEncoderOffset;

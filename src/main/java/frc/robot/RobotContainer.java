@@ -94,7 +94,7 @@ public class RobotContainer {
             .setKinematics(DrivetrainConstants.DRIVE_KINEMATICS);
 
     */
-            System.out.println("Works");
+          
        thetaController =
     new ProfiledPIDController(
         DrivetrainConstants.P_THETA_CONTROLLER, 0, 0, DrivetrainConstants.THETA_CONTROLLER_CONSTRAINTS);
@@ -116,7 +116,7 @@ public class RobotContainer {
     }
     */
     else if(m_autonChooser.getSelected().equals("forward")) {
-      createTrajectory("forward");
+      createTrajectory("L_shape");
       //return new FollowGivenPath(trajectory);
       /*String trajectoryJSON = "paths/forward.wpilib.json";
    trajectory = null;
@@ -147,7 +147,7 @@ public class RobotContainer {
 
 */
   
-    /*
+    
       swerveControllerCommand =
     new SwerveControllerCommand(
         trajectory,
@@ -160,7 +160,7 @@ public class RobotContainer {
         thetaController,
         drivetrain::setModuleStates, //Not sure about setModuleStates
         drivetrain);
-*/
+
 // Reset odometry to the starting pose of the trajectory.
 drivetrain.resetOdometry(trajectory.getInitialPose());
     }
