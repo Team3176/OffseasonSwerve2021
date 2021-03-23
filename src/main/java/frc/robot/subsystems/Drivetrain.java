@@ -368,6 +368,10 @@ public class Drivetrain extends SubsystemBase {
     this.gyroOffset = (gyro.getAngle());
   }
 
+  public double getGyroAngle() {
+    return gyro.getAngle();
+  }
+
   private double getRadius(String component) {
     // Omitted if driveStatements where we pivoted around a pod
     // This'll be orbit and dosado in the future
