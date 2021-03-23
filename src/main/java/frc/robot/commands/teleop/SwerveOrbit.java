@@ -16,7 +16,7 @@ public class SwerveOrbit extends CommandBase {
   private DoubleSupplier pov;
 
   // 24 inches for radius on right/left side and about 48 inches for orbiting cones
-  private double orbitEtherRadius = 48.0; // inches
+  private double orbitEtherRadius = 30.0; // inches
 
   private boolean wasFieldCentric;
 

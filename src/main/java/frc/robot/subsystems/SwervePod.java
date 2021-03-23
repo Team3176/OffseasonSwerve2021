@@ -111,7 +111,7 @@ public class SwervePod {
         this.driveController.configFactoryDefault();
         this.spinController.configFactoryDefault();
 
-        this.driveController.configClosedloopRamp(1.0);
+        this.driveController.configClosedloopRamp(0.5);
 
        // this.driveController.setNeutralMode(NeutralMode.Brake);
        // this.driveController.setNeutralMode(NeutralMode.Brake);
