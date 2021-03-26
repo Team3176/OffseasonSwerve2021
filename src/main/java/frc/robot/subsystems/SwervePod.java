@@ -286,10 +286,11 @@ public class SwervePod {
     public void setDesiredState(SwerveModuleState desiredState) {
     
         // Optimize the reference state to avoid spinning further than 90 degrees
-        SwerveModuleState newDesiredState = new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle.times(1));
-       Rotation2d rotation = new Rotation2d(tics2Rads(spinController.getSelectedSensorPosition()));
+        SwerveModuleState newDesiredState = new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle.times(-1));
+       Rotation2d rotation = new Rotation2d(-tics2Rads(spinController.getSelectedSensorPosition()));
        state = 
-        SwerveModuleState.optimize(newDesiredState, rotation); //I do not know if this is the angle of the encoder 
+       newDesiredState;
+        ///SwerveModuleState.optimize(newDesiredState, rotation); 
         SmartDashboard.putNumber("1Degrees", newDesiredState.angle.getDegrees());
         SmartDashboard.putNumber("2Degrees", rotation.getDegrees());
         double driveOutput =

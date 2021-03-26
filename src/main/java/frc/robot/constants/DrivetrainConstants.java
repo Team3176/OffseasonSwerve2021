@@ -67,7 +67,7 @@ public class DrivetrainConstants {
     public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS =
     new TrapezoidProfile.Constraints(
         //MAX_ROT_SPEED_RADIANS_PER_SECOND, MAX_ROT_ACCELERATION_RADIANS_PER_SECOND_SQUARED);
-        3, 3);
+        5, 1);
 
     public static final double P_X_Controller = 1;
     public static final double P_Y_Controller = 1;
