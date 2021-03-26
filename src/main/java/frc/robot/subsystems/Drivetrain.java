@@ -140,7 +140,8 @@ public class Drivetrain extends SubsystemBase {
     gyro.reset();
     // gyroUpdateOffset();
     updateAngle();
-    odometry = new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d().times(1));
+    //odometry = new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d());
+    odometry = new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, gyro.getRotation2d());
     
     // SmartDashboard.putNumber("currentAngle", this.currentAngle);
 
@@ -349,7 +350,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void updateAngle() {
     // -pi to pi; 0 = straight
-    this.currentAngle = (((((gyro.getAngle()) - this.gyroOffset) * Math.PI/180.0)) % (2*Math.PI));
+   // this.currentAngle = (((((gyro.getAngle())- this.gyroOffset) * Math.PI/180.0)) % (2*Math.PI));
     // gyro.getAngle is returned in degrees.
     // 
     // Then converted to radians via "* pi/180".
@@ -416,6 +417,8 @@ public class Drivetrain extends SubsystemBase {
   
 
   public Pose2d getCurrentPose() {
+    SmartDashboard.putNumber("odometry X", odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("odometry Y", odometry.getPoseMeters().getY());
     return odometry.getPoseMeters() ; //Does this work?
   }
 
@@ -451,7 +454,8 @@ public class Drivetrain extends SubsystemBase {
        
   }
  public double getHeading() {
-    return gyro.getRotation2d().getRadians() ;//+ Math.PI/2;
+  SmartDashboard.putNumber("get Heading", gyro.getRotation2d().getDegrees());
+    return gyro.getRotation2d().getRadians();//+ Math.PI/2;
   }
 
 

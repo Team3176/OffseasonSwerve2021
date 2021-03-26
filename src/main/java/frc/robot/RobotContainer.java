@@ -146,8 +146,8 @@ public class RobotContainer {
             config);
 
 */
-  
-    
+
+drivetrain.resetOdometry(trajectory.getInitialPose());
       swerveControllerCommand =
     new SwerveControllerCommand(
         trajectory,
