@@ -291,15 +291,15 @@ public class SwervePod {
        state = 
        newDesiredState;
         ///SwerveModuleState.optimize(newDesiredState, rotation); 
-        SmartDashboard.putNumber("1Degrees", newDesiredState.angle.getDegrees());
-        SmartDashboard.putNumber("2Degrees", rotation.getDegrees());
+        SmartDashboard.putNumber("Desired Degrees", newDesiredState.angle.getDegrees());
+        SmartDashboard.putNumber("Current Degrees", rotation.getDegrees());
         double driveOutput =
         m_drivePIDController.calculate(getVelocity(), state.speedMetersPerSecond);
-        driveOutput = .25*Units.metersToInches(driveOutput)/DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND;
+        driveOutput =.25*Units.metersToInches(driveOutput)/DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND;
 
 
         final var turnOutput =
-        m_turningPIDController.calculate(tics2Rads(spinController.getSelectedSensorPosition()), state.angle.getRadians());
+        m_turningPIDController.calculate(tics2Rads(spinController.getSelectedSensorPosition()) , state.angle.getRadians());
             SmartDashboard.putNumber("TurnOutput",turnOutput);
             SmartDashboard.putNumber("DriveOutput",driveOutput);
           
@@ -310,7 +310,7 @@ public class SwervePod {
         double speed = driveController.getSelectedSensorVelocity(1);
         //SmartDashboard.putNumber("GetSensorVelocity", speed);
       
-        speed = speed*10* Units.inchesToMeters(3.25*PI)/(SwervePodConstants.DRIVE_ENCODER_UNITS_PER_REVOLUTION * 6.17);
+        speed = speed*10* Units.inchesToMeters(3.25*PI)/(SwervePodConstants.DRIVE_ENCODER_UNITS_PER_REVOLUTION * 6.17);// 6.17 = gear ratio
         SmartDashboard.putNumber("Velocity", speed);
         return speed;
     }
