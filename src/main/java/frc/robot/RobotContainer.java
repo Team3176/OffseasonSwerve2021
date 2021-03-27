@@ -116,7 +116,7 @@ public class RobotContainer {
     }
     */
     else if(m_autonChooser.getSelected().equals("forward")) {
-      createTrajectory("L_shape");
+      createTrajectory("forward");
       //return new FollowGivenPath(trajectory);
       /*String trajectoryJSON = "paths/forward.wpilib.json";
    trajectory = null;
@@ -160,6 +160,7 @@ drivetrain.resetOdometry(trajectory.getInitialPose());
         thetaController,
         drivetrain::setModuleStates, //Not sure about setModuleStates
         drivetrain);
+if(swerveControllerCommand == null) { System.out.println("long thing is null 2"); }
 
 // Reset odometry to the starting pose of the trajectory.
 drivetrain.resetOdometry(trajectory.getInitialPose());
@@ -175,6 +176,8 @@ drivetrain.resetOdometry(trajectory.getInitialPose());
       return new FollowGivenPath(trajectory);
     }
 
+    if(swerveControllerCommand == null) { System.out.println("long thing is null"); }
+    if(drivetrain == null) { System.out.println("drivetrain is null"); }
     return swerveControllerCommand.andThen(() -> drivetrain.drive(0, 0, 0));
   }
   
@@ -190,6 +193,7 @@ drivetrain.resetOdometry(trajectory.getInitialPose());
     
   }
 }
+
 
 
 

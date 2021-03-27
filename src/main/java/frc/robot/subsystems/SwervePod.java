@@ -191,17 +191,13 @@ public class SwervePod {
         this.spinController.config_kI(kSlotIdx_spin, SmartDashboard.getNumber("I", kI_Spin), kTimeoutMs_spin);
         this.spinController.config_kD(kSlotIdx_spin, SmartDashboard.getNumber("D", kD_Spin), kTimeoutMs_spin);
         this.spinController.config_kF(kSlotIdx_spin, SmartDashboard.getNumber("F", kF_Spin), kTimeoutMs_spin);
-        // SmartDashboard.putNumber("P" + (id + 1) + " podDrive", this.podDrive);
-        // SmartDashboard.putNumber("P" + (id + 1) + " podSpin", this.podSpin);
-            // TODO: need check ether output values. speed vs %-values
+
         this.maxVelTicsPer100ms = 1 * 987.2503 * kDriveEncoderUnitsPerRevolution / 600.0;
-        this.velTicsPer100ms = this.podDrive * 2000.0 * kDriveEncoderUnitsPerRevolution / 600.0;  //TODO: rework "podDrive * 2000.0"
+        this.velTicsPer100ms = this.podDrive * 2000.0 * kDriveEncoderUnitsPerRevolution / 600.0;
         double encoderSetPos = calcSpinPos(this.podSpin);
         double tics = rads2Tics(this.podSpin);
-        // SmartDashboard.putNumber("P" + (id + 1) + " tics", tics);
-        // SmartDashboard.putNumber("P" + (id + 1) + " absTics", spinController.getSelectedSensorPosition());
-        //if (this.id == 3) {spinController.set(ControlMode.Position, 0.0); } else {   // TODO: Try this to force pod4 to jump lastEncoderPos
-        if (this.podDrive > (-Math.pow(10,-10)) && this.podDrive < (Math.pow(10,-10))) {      //TODO: convert this to a deadband range.  abs(podDrive) != 0 is notationally sloppy math
+
+        if (this.podDrive > (-Math.pow(10,-10)) && this.podDrive < (Math.pow(10,-10))) {
             spinController.set(ControlMode.Position, this.lastEncoderPos);  
             //SmartDashboard.putNumber("P" + (id + 1) + " lastEncoderPos", this.lastEncoderPos);
         } else {
@@ -298,10 +294,13 @@ public class SwervePod {
         driveOutput =.25*Units.metersToInches(driveOutput)/DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND;
 
 
-        final var turnOutput =
+        var turnOutput =
         m_turningPIDController.calculate(tics2Rads(spinController.getSelectedSensorPosition()) , state.angle.getRadians());
             SmartDashboard.putNumber("TurnOutput",turnOutput);
             SmartDashboard.putNumber("DriveOutput",driveOutput);
+
+        SwerveModuleState calculatedState = new SwerveModuleState(driveOutput, turnOutput);
+        SwerveModuleState optimizedState = SwerveModuleState.optimize(driveOutput, turnOutput);
           
         set(driveOutput,turnOutput);//Units.metersToFeet(driveOutput),turnOutput);     
         
