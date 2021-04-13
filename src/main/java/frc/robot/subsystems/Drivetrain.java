@@ -25,9 +25,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.Controller;
+import frc.robot.Robot;
 // import frc.robot.Controller;
 // import frc.robot.VisionClient;
+import frc.robot.RobotContainer;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 public class Drivetrain extends SubsystemBase {
 
@@ -82,6 +88,10 @@ public class Drivetrain extends SubsystemBase {
   private double spinCommand;
   
   public Rotation2d rotation = new Rotation2d();
+  
+  File f;
+	public BufferedWriter bw;
+	public FileWriter fw;
  
   public enum driveMode {
     DEFENSE,
@@ -104,6 +114,18 @@ public class Drivetrain extends SubsystemBase {
   public Rotation2d rotation2d;
 
   private Drivetrain() {
+    try {
+      f = new File("/home/lvuser/Output.txt");
+      if(!f.exists()){
+        f.createNewFile();
+      }
+    fw = new FileWriter(f);
+  } catch (IOException e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+    bw = new BufferedWriter(fw);
+
     // Instantiate pods
     podFR = new SwervePod(0, driveControllers[0], spinControllers[0]);
     podFL = new SwervePod(1, driveControllers[1], spinControllers[1]);
@@ -451,7 +473,19 @@ public class Drivetrain extends SubsystemBase {
         podFL.getState(),     //I don't know if this works
         podBL.getState(),
         podBR.getState());
-       
+
+        int i = (int) podFR.getState().angle.getDegrees();
+        String s=String.valueOf(i);
+        
+        try {
+         bw.write(s);
+        
+          //bw.close();
+          //fw.close();
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
   }
  public double getHeading() {
   SmartDashboard.putNumber("get Heading", gyro.getRotation2d().getDegrees());

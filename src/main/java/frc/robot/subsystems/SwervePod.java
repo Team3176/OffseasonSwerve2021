@@ -287,8 +287,8 @@ public class SwervePod {
        state = 
        newDesiredState;
         ///SwerveModuleState.optimize(newDesiredState, rotation); 
-        SmartDashboard.putNumber("Desired Degrees", newDesiredState.angle.getDegrees());
-        SmartDashboard.putNumber("Current Degrees", rotation.getDegrees());
+        SmartDashboard.putNumber("P"+this.id+" Desired Degrees", newDesiredState.angle.getDegrees());
+        SmartDashboard.putNumber("P"+this.id+"Current Degrees", rotation.getDegrees());
         double driveOutput =
         m_drivePIDController.calculate(getVelocity(), state.speedMetersPerSecond);
         driveOutput =.25*Units.metersToInches(driveOutput)/DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND;
@@ -299,8 +299,8 @@ public class SwervePod {
             SmartDashboard.putNumber("TurnOutput",turnOutput);
             SmartDashboard.putNumber("DriveOutput",driveOutput);
 
-        SwerveModuleState calculatedState = new SwerveModuleState(driveOutput, turnOutput);
-        SwerveModuleState optimizedState = SwerveModuleState.optimize(driveOutput, turnOutput);
+       // SwerveModuleState calculatedState = new SwerveModuleState();
+        //SwerveModuleState optimizedState = SwerveModuleState.optimize(driveOutput, turnOutput);
           
         set(driveOutput,turnOutput);//Units.metersToFeet(driveOutput),turnOutput);     
         

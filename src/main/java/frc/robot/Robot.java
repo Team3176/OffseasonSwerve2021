@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -19,11 +22,25 @@ public class Robot extends TimedRobot {
   private Controller controller = Controller.getInstance();
 
   private Command m_autonomousCommand;
+  File f;
+	public BufferedWriter bw;
+	FileWriter fw;
 
   @Override
   public void robotInit() {
-    
+    try {
+      f = new File("/home/lvuser/Output.txt");
+      if(!f.exists()){
+        f.createNewFile();
+      }
+    fw = new FileWriter(f);
+  } catch (IOException e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+    bw = new BufferedWriter(fw);
     robotContainer = new RobotContainer();
+
   }
 
   @Override
@@ -58,6 +75,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    try {
+			bw.write("Hellow, I'm a text file");
+			bw.close();
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
     controller.outputToSmartDashboard();
   }
 

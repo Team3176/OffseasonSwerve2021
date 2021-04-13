@@ -116,7 +116,7 @@ public class RobotContainer {
     }
     */
     else if(m_autonChooser.getSelected().equals("forward")) {
-      createTrajectory("forward");
+      //createTrajectory("L_shape");
       //return new FollowGivenPath(trajectory);
       /*String trajectoryJSON = "paths/forward.wpilib.json";
    trajectory = null;
@@ -134,7 +134,7 @@ public class RobotContainer {
             .setKinematics(DrivetrainConstants.DRIVE_KINEMATICS);
 
     // An example trajectory to follow.  All units in meters.
-    /*
+    
     Trajectory exampleTrajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
@@ -145,12 +145,12 @@ public class RobotContainer {
             new Pose2d(3, 0, new Rotation2d(0)),
             config);
 
-*/
 
-drivetrain.resetOdometry(trajectory.getInitialPose());
+
+drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
       swerveControllerCommand =
     new SwerveControllerCommand(
-        trajectory,
+        exampleTrajectory,
         drivetrain::getCurrentPose, 
         DrivetrainConstants.DRIVE_KINEMATICS,
 
@@ -160,10 +160,18 @@ drivetrain.resetOdometry(trajectory.getInitialPose());
         thetaController,
         drivetrain::setModuleStates, //Not sure about setModuleStates
         drivetrain);
-if(swerveControllerCommand == null) { System.out.println("long thing is null 2"); }
 
+        try {
+        drivetrain.bw.close();
+        drivetrain.fw.close();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+        
 // Reset odometry to the starting pose of the trajectory.
-drivetrain.resetOdometry(trajectory.getInitialPose());
+//drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
+
     }
     
     else if(m_autonChooser.getSelected().equals("forward_and_back")) {
