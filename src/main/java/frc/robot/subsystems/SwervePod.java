@@ -280,7 +280,7 @@ public class SwervePod {
     public void setDesiredState(SwerveModuleState desiredState) {
     
         // Optimize the reference state to avoid spinning further than 90 degrees
-        SwerveModuleState newDesiredState = new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle.times(-1));
+        SwerveModuleState newDesiredState = new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle.minus(new Rotation2d(tics2Rads(SwervePodConstants.SPIN_OFFSET[this.id]))));
        Rotation2d rotation = new Rotation2d(tics2Rads(spinController.getSelectedSensorPosition()-SwervePodConstants.SPIN_OFFSET[this.id]));
        state = 
        newDesiredState;
@@ -289,7 +289,7 @@ public class SwervePod {
         SmartDashboard.putNumber("P"+this.id+"Current Degrees", rotation.getDegrees());
         double driveOutput =
         m_drivePIDController.calculate(getVelocity(), state.speedMetersPerSecond);
-        driveOutput =Units.metersToInches(driveOutput)/DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND;
+        driveOutput =.25*Units.metersToInches(driveOutput)/DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND;
 
 
         var turnOutput =
