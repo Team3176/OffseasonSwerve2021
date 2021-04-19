@@ -473,6 +473,9 @@ public class Drivetrain extends SubsystemBase {
         podFL.getState(),     //I don't know if this works
         podBL.getState(),
         podBR.getState());
+    SmartDashboard.putNumber("Drivetrain.periodic(): odometry X", odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("Drivetrain.periodic(): odometry Y", odometry.getPoseMeters().getY());
+
 
         int i = (int) podFR.getState().angle.getDegrees();
         String s=String.valueOf(i);
