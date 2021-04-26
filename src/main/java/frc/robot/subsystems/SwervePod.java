@@ -278,18 +278,25 @@ public class SwervePod {
 
 
     public void setDesiredState(SwerveModuleState desiredState) {
-    
+        SmartDashboard.putNumber("P"+this.id+"Inital Angle", desiredState.angle.getDegrees());
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState newDesiredState = new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle.minus(new Rotation2d(tics2Rads(SwervePodConstants.SPIN_OFFSET[this.id]))));
        Rotation2d rotation = new Rotation2d(tics2Rads(spinController.getSelectedSensorPosition()-SwervePodConstants.SPIN_OFFSET[this.id]));
        state = 
        newDesiredState;
+
+       SmartDashboard.putNumber("P"+this.id+"Current Degrees", rotation.getDegrees());
+       SmartDashboard.putNumber("P"+this.id+"Desired Degrees", state.angle.getDegrees());
+       SmartDashboard.putNumber("P"+this.id+"Desired Velocity", state.speedMetersPerSecond);
+       SmartDashboard.putNumber("P"+this.id+"Current Velocity",getVelocity());
+
+
         ///SwerveModuleState.optimize(newDesiredState, rotation); 
-        SmartDashboard.putNumber("P"+this.id+"Desired Degrees", newDesiredState.angle.getDegrees());
-        SmartDashboard.putNumber("P"+this.id+"Current Degrees", rotation.getDegrees());
+        //SmartDashboard.putNumber("P"+this.id+"Desired Degrees", newDesiredState.angle.getDegrees());
+        //SmartDashboard.putNumber("P"+this.id+"Current Degrees", rotation.getDegrees());
         double driveOutput =
         m_drivePIDController.calculate(getVelocity(), state.speedMetersPerSecond);
-        driveOutput =.25*Units.metersToInches(driveOutput)/DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND;
+        driveOutput =Units.metersToInches(driveOutput)/DrivetrainConstants.MAX_WHEEL_SPEED_INCHES_PER_SECOND;
 
 
         var turnOutput =
@@ -311,7 +318,7 @@ public class SwervePod {
         //SmartDashboard.putNumber("GetSensorVelocity", speed);
       
         speed = speed*10* Units.inchesToMeters(3.25*PI)/(SwervePodConstants.DRIVE_ENCODER_UNITS_PER_REVOLUTION * 6.17);// 6.17 = gear ratio
-        SmartDashboard.putNumber("Velocity", speed);
+        
         return speed;
     }
    
