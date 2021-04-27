@@ -138,11 +138,11 @@ public class RobotContainer {
     Trajectory exampleTrajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
+            new Pose2d(0, 0, new Rotation2d(Math.PI/2)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(3, 0), new Translation2d(6,0)),
+            List.of(new Translation2d(0, 3), new Translation2d(0,6)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(6, 0, new Rotation2d()),
+            new Pose2d(0, 9, new Rotation2d(Math.PI/2)),
             config);
 
 
