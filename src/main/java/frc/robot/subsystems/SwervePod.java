@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -35,6 +36,7 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.SwervePodConstants;
 import edu.wpi.first.wpilibj.SpeedController;;
+import com.ctre.phoenix.CTRE.TalonSrx.SetVoltageRampRate;
 
 public class SwervePod {
 
@@ -310,8 +312,12 @@ public class SwervePod {
           
         //driveController.set(ControlMode.PercentOutput,driveOutput);
         //spinController.set(ControlMode.Position,turnOutput);
-        set(driveOutput,turnOutput);//Units.metersToFeet(driveOutput),turnOutput);     
-        
+        //set(driveOutput,turnOutput);//Units.metersToFeet(driveOutput),turnOutput);     
+        turnOutput = turnOutput * RobotController.getBatteryVoltage() / 12;
+        driveOutput = driveOutput * RobotController.getBatteryVoltage() /12;
+
+        spinController.set(ControlMode.PercentOutput,turnOutput);
+        driveController.set(ControlMode.PercentOutput,driveOutput);
 }
     public double getVelocity(){
         double speed = driveController.getSelectedSensorVelocity(1);
