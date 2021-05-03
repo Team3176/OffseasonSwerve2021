@@ -292,7 +292,7 @@ public class SwervePod {
        SmartDashboard.putNumber("P"+this.id+"Current Velocity",getVelocity());
 
 
-        SwerveModuleState.optimize(newDesiredState, rotation); 
+       //SwerveModuleState.optimize(newDesiredState, rotation); 
 
        SmartDashboard.putNumber("P"+this.id+"Current Degrees", rotation.getDegrees());
        SmartDashboard.putNumber("P"+this.id+"Desired Degrees", state.angle.getDegrees());
@@ -307,7 +307,7 @@ public class SwervePod {
 
 
         var turnOutput =
-        m_turningPIDController.calculate(tics2Rads(spinController.getSelectedSensorPosition()-SwervePodConstants.SPIN_OFFSET[this.id]) , state.angle.getRadians());
+        .25*m_turningPIDController.calculate(tics2Rads(spinController.getSelectedSensorPosition()-SwervePodConstants.SPIN_OFFSET[this.id]) , state.angle.getRadians());
         
         SmartDashboard.putNumber("TurnOutput",turnOutput);
         SmartDashboard.putNumber("DriveOutput",driveOutput);
@@ -319,8 +319,8 @@ public class SwervePod {
         //spinController.set(ControlMode.Position,turnOutput);
         //set(driveOutput,turnOutput);//Units.metersToFeet(driveOutput),turnOutput);     
 
-        turnOutput = turnOutput * RobotController.getBatteryVoltage() / 12; //Converting driveoutput to percent output
-        driveOutput = driveOutput * RobotController.getBatteryVoltage() /12; //Converting driveoutput to percent output
+        turnOutput = turnOutput / RobotController.getBatteryVoltage(); //Converting driveoutput to percent output
+        driveOutput = driveOutput / RobotController.getBatteryVoltage(); //Converting driveoutput to percent output
 
         spinController.set(ControlMode.PercentOutput,turnOutput); //Set spinController using voltage
         driveController.set(ControlMode.PercentOutput,driveOutput); //Set spinController using voltage
